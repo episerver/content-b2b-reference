@@ -28,12 +28,12 @@
     <h3 class="text-xl font-semibold mb-5" @Html.EditAttributes(x => x.CurrentContent.ShipToLabel)>@Model.CurrentContent.ShipToLabel</h3>
     <div class="actionToolbar py-2 flex flex-wrap items-center justify-between text-sm tracking-widest uppercase">
         <p  @Html.EditAttributes(x => x.CurrentContent.ItemsLabel) class="md:w-1/3 text-gray-500">
-            @Model.ShipTos.Pagination.TotalItemCount.ToString() @Model.CurrentContent.ItemsLabel
+            @(Model.ShipTos?.Pagination?.TotalItemCount.ToString() ?? "0") @Model.CurrentContent.ItemsLabel
         </p>
         <div class="md:w-1/3 flex items-center">
             <div class="flex flex-col items-center mb-8 px-4 mx-auto mt-8">
                 <div class="font-sans flex justify-end space-x-1 select-none">
-                    @if (Model.ShipTos.Pagination.Page > 1)
+                    @if ((Model.ShipTos?.Pagination?.Page ?? 0)  > 1)
                     {
                         <a href="#" data="@(Model.ShipTos.Pagination.Page - 1)" 
                         class="addresesPaginate addressesFilter flex items-center px-4 py-2 text-gray-500 bg-gray-300 rounded-md"
@@ -41,7 +41,7 @@
                             @Model.CurrentContent.PreviousLabel
                         </a>
                     }
-                    @if (Model.ShipTos.Pagination.NumberOfPages > 1)
+                    @if ((Model.ShipTos?.Pagination?.NumberOfPages ?? 0) > 1)
                     {
                         @for (var itemPage = 1; itemPage < Model.ShipTos.Pagination.NumberOfPages + 1; itemPage++)
                         {
@@ -53,7 +53,7 @@
                         }
                     }
 
-                    @if (Model.ShipTos.Pagination.Page < Model.ShipTos.Pagination.NumberOfPages)
+                    @if ((Model.ShipTos?.Pagination?.Page ?? 0) < (Model.ShipTos?.Pagination?.NumberOfPages ?? 0) )
                     {
                         <a href="#" data="@(Model.BillTos.Pagination.Page + 1)" 
                             class="addresesPaginate addressesFilter flex items-center px-4 py-2 text-gray-500 bg-gray-300 rounded-md"
