@@ -2,7 +2,7 @@
 
 namespace Sample.Models.ViewModels;
 
-public class CartPageViewModel : ContentViewModel<CartPage>, ICartViewModel
+public class CartPageViewModel : ContentViewModel<CartPage>, ICartViewModel<CartPage>
 {
     public CartPageViewModel() : this(null)
     {

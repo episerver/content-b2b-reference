@@ -1,5 +1,5 @@
 ﻿@using CommerceApiSDK.Models.Enums
-@model ICartViewModel
+@model ICartViewModel<BasePage>
 <div x-data="{ 'showModal': false }" @@keydown.escape="showModal = false">
     <h6 class="font-bold">Fulfillment Method</h6>
     <div class="grid sm:grid-cols-2 gap-3 mb-6">

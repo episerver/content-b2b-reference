@@ -10,7 +10,7 @@
     {
         <div class="grid grid-cols-2 gap-x-3">
         <div class="mb-4">
-            <label class="block mb-1"> Address Name </label>
+            <label class="block mb-1" @Html.EditAttributes(x => x.CurrentContent.AddressNameLabel)>@Model.CurrentContent.AddressNameLabel </label>
 
             <input id="editAddress_Label" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                    type="text"
@@ -28,7 +28,7 @@
                 {
                     <input id="editAddress_IsDefault" type="checkbox" class="h-4 w-4">
                 }
-                <span class="ml-2 inline-block text-gray-500"> Is Default </span>
+                <span class="ml-2 inline-block text-gray-500"  @Html.EditAttributes(x => x.CurrentContent.IsDefaultLabel)> @Model.CurrentContent.IsDefaultLabel </span>
             </label>
         </div>
     </div>
@@ -36,7 +36,7 @@
     
     <div class="grid grid-cols-2 gap-x-3">
         <div class="mb-4">
-            <label class="block mb-1"> Company Name </label>
+            <label class="block mb-1"  @Html.EditAttributes(x => x.CurrentContent.CompanyNameLabel)> @Model.CurrentContent.CompanyNameLabel </label>
 
             <input id="editAddress_CompanyName" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                    type="text"
@@ -45,7 +45,7 @@
         </div>
 
         <div class="mb-4">
-            <label class="block mb-1"> Attention </label>
+            <label class="block mb-1"  @Html.EditAttributes(x => x.CurrentContent.AttentionLabel)> @Model.CurrentContent.AttentionLabel </label>
             <input id="editAddress_Attention" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                    type="text"
                    placeholder="Type here" 
@@ -54,14 +54,14 @@
     </div>
     <div class="grid grid-cols-2 gap-x-3">
         <div class="mb-4">
-            <label class="block mb-1"> Address 1 </label>
+            <label class="block mb-1"  @Html.EditAttributes(x => x.CurrentContent.Address1Label)> @Model.CurrentContent.Address1Label </label>
             <input id="editAddress_Address1" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                    type="text"
                    placeholder="Type here" 
                    value="@(Model.IsBillTo ? (Model.BillTo?.Address1 ?? "") : (Model.ShipTo?.Address1 ?? ""))"/>
         </div>
         <div class="mb-4">
-            <label class="block mb-1"> Address 2 </label>
+            <label class="block mb-1"  @Html.EditAttributes(x => x.CurrentContent.Address2Label)> @Model.CurrentContent.Address2Label </label>
             <input id="editAddress_Address2" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                    type="text"
                    placeholder="Type here" 
@@ -70,7 +70,7 @@
     </div>
     <div x-data="countryRegions('@(Model.IsBillTo ? (Model.BillTo?.Country?.Id ?? "") : (Model.ShipTo?.Country?.Id ?? ""))')" class="grid grid-cols-2 gap-x-3">
         <div class="mb-4">
-            <label class="block mb-1"> Country </label>
+            <label class="block mb-1"  @Html.EditAttributes(x => x.CurrentContent.CountryLabel)> @Model.CurrentContent.CountryLabel </label>
             <select id="editAddress_Countries" x-model="selectedCountry" x-bind:disabled="isLoading" x-on:input.debounce="getStates()" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
                 <template x-for="option in countries">
                     <option x-bind:value="option.id" x-bind:selected="option.id === '@(Model.IsBillTo ? (Model.BillTo?.Country?.Id ?? "") : (Model.ShipTo?.Country?.Id ?? ""))'" x-text="option.name"></option>
@@ -78,7 +78,7 @@
             </select>
         </div>
         <div class="mb-4">
-            <label class="block mb-1"> State / Region </label>
+            <label class="block mb-1"  @Html.EditAttributes(x => x.CurrentContent.RegionLabel)>@Model.CurrentContent.RegionLabel </label>
             <select id="editAddress_Regions" x-model="selectedRegion" x-bind:disabled="isLoading" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
                 <template x-for="option in regions">
                     <option x-bind:value="option.id" x-bind:selected="option.id === '@(Model.IsBillTo ? (Model.BillTo?.State?.Id ?? "") : (Model.ShipTo?.State?.Id ?? ""))'" x-text="option.name"></option>
@@ -88,14 +88,14 @@
     </div>
     <div class="grid grid-cols-2 gap-x-3">
         <div class="mb-4">
-            <label class="block mb-1"> City </label>
+            <label class="block mb-1"  @Html.EditAttributes(x => x.CurrentContent.CityLabel)> @Model.CurrentContent.CityLabel </label>
             <input id="editAddress_City" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                    type="text"
                    placeholder="Type here" 
                    value="@(Model.IsBillTo ? (Model.BillTo?.City ?? "") : (Model.ShipTo?.City ?? ""))"/>
         </div>
         <div class="mb-4">
-            <label class="block mb-1"> Postal Code </label>
+            <label class="block mb-1"  @Html.EditAttributes(x => x.CurrentContent.PostalCodeLabel)> @Model.CurrentContent.PostalCodeLabel </label>
 
             <input id="editAddress_PostalCode" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                    type="text"
@@ -105,14 +105,14 @@
     </div>
     <div class="grid grid-cols-2 gap-x-3">
         <div class="mb-4">
-            <label class="block mb-1"> Email </label>
+            <label class="block mb-1"  @Html.EditAttributes(x => x.CurrentContent.EmailLabel)> @Model.CurrentContent.EmailLabel </label>
             <input id="editAddress_Email" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                    type="email"
                    placeholder="Type here" 
                    value="@(Model.IsBillTo ? (Model.BillTo?.Email ?? "") : (Model.ShipTo?.Email ?? ""))"/>
         </div>
         <div class="mb-4">
-            <label class="block mb-1"> Phone </label>
+            <label class="block mb-1"  @Html.EditAttributes(x => x.CurrentContent.PhoneLabel)> @Model.CurrentContent.PhoneLabel </label>
             <input id="editAddress_Phone" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                    type="tel"
                    placeholder="Type here" 
@@ -120,8 +120,15 @@
         </div>
     </div>
     <div class="mb-4 flex justify-start space-x-2">
-        <a href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.AddresesPage))" class="px-5 py-2 inline-block text-gray-700 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 hover:text-blue-600">  Back  </a>
-        <a id="editAddress_Save"  data-billToId="@Model.BIllToId" data-shipToId="@(Model.IsBillTo ? "": (Model.IsNew ? Guid.Empty.ToString() : Model.ShipTo.Id))" class="px-5 py-2 inline-block text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700" href="#">Save </a>
+        <a href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.AddresesPage))" 
+            class="px-5 py-2 inline-block text-gray-700 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 hover:text-blue-600"
+         @Html.EditAttributes(x => x.CurrentContent.BackButtonLabel)>  @Model.CurrentContent.BackButtonLabel  </a>
+        <a id="editAddress_Save"  
+            data-billToId="@Model.BIllToId" 
+            data-shipToId="@(Model.IsBillTo ? "": (Model.IsNew ? Guid.Empty.ToString() : Model.ShipTo.Id))" 
+            class="px-5 py-2 inline-block text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700" 
+            href="#"
+            @Html.EditAttributes(x => x.CurrentContent.SaveButtonLabel)>@Model.CurrentContent.SaveButtonLabel </a>
     </div>
 </div>
 

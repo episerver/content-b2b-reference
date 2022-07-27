@@ -2,7 +2,7 @@
 
 namespace Sample.Models.ViewModels;
 
-public interface ICartViewModel
+public interface ICartViewModel<out T> : IContentViewModel<T> where T : IContent
 {
     GetWarehouseCollectionResult Warehouses { get; set; }
     Cart Cart { get; set; }
@@ -14,4 +14,5 @@ public interface ICartViewModel
     string TaxLabel { get; set; }
     string TotalLabel { get; set; }
     string PromotionLabel { get; set; }
+
 }

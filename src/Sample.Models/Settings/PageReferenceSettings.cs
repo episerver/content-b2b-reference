@@ -10,11 +10,11 @@
 [SiteImageUrl]
 public class PageReferenceSettings : SettingsBase
 {
-    [Display(Name = "Terms page", GroupName = Global.GroupNames.SiteSettings, Order = 250)]
-    public virtual PageReference TermsPage { get; set; }
+    [Display(Name = "Contact us page", GroupName = Global.GroupNames.SiteSettings, Order = 250)]
+    public virtual PageReference ContactUsPage { get; set; }
 
-    [Display(Name = "Privacy page", GroupName = Global.GroupNames.SiteSettings, Order = 250)]
-    public virtual PageReference PrivacyPage { get; set; }
+    [Display(Name = "About us page", GroupName = Global.GroupNames.SiteSettings, Order = 250)]
+    public virtual PageReference AboutUsPage { get; set; }
 
     [Display(Name = "Search page", GroupName = Global.GroupNames.SiteSettings, Order = 460)]
     public virtual PageReference SearchPage { get; set; }

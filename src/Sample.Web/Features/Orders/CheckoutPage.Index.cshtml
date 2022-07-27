@@ -4,8 +4,8 @@
 
 <section x-data="{ showEditAddress: false  }" class="py-10 bg-gray-50">
     <div class="container max-w-screen-xl mx-auto px-4">
-        @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
         @Html.PropertyFor(x => x.CurrentContent.MainBody)
+        @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
         <div class="flex flex-col md:flex-row gap-4 lg:gap-8">
             <main class="md:w-2/3">
                 <article class="border border-gray-200 bg-white shadow-sm rounded p-4 lg:p-6 mb-5">
@@ -16,7 +16,7 @@
                     <div class="flex justify-between">
                         <h2 class="text-xl font-semibold">@Model.CurrentContent.BillingAddressDescriptionLabel</h2>
                     </div>
-                     @await Html.PartialAsync("_EditAddress")
+                     @await Html.PartialAsync("_EditAddress", Model)
                     <div class="grid sm:grid-cols-3 gap-3 mb-6">
                         @foreach (var address in Model.Addresses?.BillTos ?? new List<BillTo>())
                         {

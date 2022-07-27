@@ -6,40 +6,26 @@
         <hr class="h-px mt-6 bg-gray-700 border-none">
         <div class="flex flex-col items-center justify-between mt-6 md:flex-row">
             <div>
-                <h2 class="font-bold text-xl text-bold" @Html.EditAttributes(x => x.OurCompanyHeading)>@Model.OurCompanyHeading</h2>
-               @foreach(var link in Model.CompanyLinks)
-               {
-                    <div>
-                        <a href="@Url.GetFriendlyUrl(link.Href)" title="@link.Title">@link.Text</a>
-                    </div>
-               }
+                <a href="/" class="text-xl font-bold" @Html.EditAttributes(x => x.Home)>@Model.Home</a>
             </div>
-            <div>
-               <h2 class="font-bold text-xl text-bold" @Html.EditAttributes(x => x.SupportHeading)>@Model.SupportHeading</h2>
-               @foreach(var link in Model.SupportLinks ?? new EPiServer.SpecializedProperties.LinkItemCollection())
-               {
-                    <div>
-                        <a href="@Url.GetFriendlyUrl(link.Href)" title="@link.Title">@link.Text</a>
-                    </div>
-               }
+            <div @Html.EditAttributes(x => x.Copyright)>
+                &copy; @Model.Copyright @DateTime.Now.Year.ToString()
             </div>
-            <div>
-               <h2 class="font-bold text-xl text-bold" @Html.EditAttributes(x => x.BrandHeading)>@Model.BrandHeading</h2>
-               @foreach(var link in Model.BrandLinks ?? new EPiServer.SpecializedProperties.LinkItemCollection())
-               {
-                    <div>
-                        <a href="@Url.GetFriendlyUrl(link.Href)" title="@link.Title">@link.Text</a>
-                    </div>
-               }
-            </div>
-            <div>
-               <h2 class="font-bold text-xl text-bold" @Html.EditAttributes(x => x.ProductLineHeading)>@Model.ProductLineHeading</h2>
-               @foreach(var link in Model.ProductLineLinks ?? new EPiServer.SpecializedProperties.LinkItemCollection())
-               {
-                    <div>
-                        <a href="@Url.GetFriendlyUrl(link.Href)" title="@link.Title">@link.Text</a>
-                    </div>
-               }
+            <div class="flex mt-4 md:m-0">
+                <div class="-mx-4">
+                    <a href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.AboutUsPage))" 
+                        class="px-4 text-sm" 
+                        title="@Model.AboutUs"
+                        @Html.EditAttributes(x => x.AboutUs)>
+                        @Model.AboutUs
+                    </a>
+                    <a href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.ContactUsPage))" 
+                        class="px-4 text-sm" 
+                        title="@Model.ContactUs"
+                        @Html.EditAttributes(x => x.ContactUs)>
+                        @Model.ContactUs
+                    </a>
+                </div>
             </div>
         </div>
     </div>

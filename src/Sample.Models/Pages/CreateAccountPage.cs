@@ -91,6 +91,24 @@ public class CreateAccountPage : BasePage
     )]
     public virtual string SignMeUpText { get; set; }
 
+    [CultureSpecific]
+    [Display(
+        Name = "Have Account Text",
+        Description = "have account Text",
+        GroupName = Global.GroupNames.Labels,
+        Order = 10
+    )]
+    public virtual string HaveAccountText { get; set; }
+
+    [CultureSpecific]
+    [Display(
+        Name = "Sign in Text",
+        Description = "Sign in Text",
+        GroupName = Global.GroupNames.Labels,
+        Order = 10
+    )]
+    public virtual string SigninText { get; set; }
+
     public override void SetDefaultValues(ContentType contentType)
     {
         base.SetDefaultValues(contentType);
@@ -108,5 +126,7 @@ public class CreateAccountPage : BasePage
             $"<p><strong>Password Requirements:</strong></p>{Environment.NewLine}<p>Password must be at least 7 characters long.<br />"
                 + "Password must include at least one number.</p>"
         );
+        SigninText = "Sign in";
+        HaveAccountText = "Already have an account?";
     }
 }

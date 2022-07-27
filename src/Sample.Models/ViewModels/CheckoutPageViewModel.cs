@@ -2,7 +2,7 @@
 
 namespace Sample.Models.ViewModels;
 
-public class CheckoutPageViewModel : ContentViewModel<CheckoutPage>, ICartViewModel
+public class CheckoutPageViewModel : ContentViewModel<CheckoutPage>, ICartViewModel<CheckoutPage>
 {
     public CheckoutPageViewModel()
     {

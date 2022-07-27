@@ -5,8 +5,8 @@
             @Model?.CurrentContent?.MetaTitle
         </h2>
         <article>
-            @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
             @Html.PropertyFor(x => x.CurrentContent.MainBody)
+            @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
         </article>
     </div>
 </section>

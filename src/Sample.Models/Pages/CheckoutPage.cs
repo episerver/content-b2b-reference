@@ -361,6 +361,18 @@ public class CheckoutPage : BasePage
     [Display(Name = "Email Invalid Error", GroupName = Global.GroupNames.Labels, Order = 67)]
     public virtual string EmailInvalidError { get; set; }
 
+    [CultureSpecific]
+    [Display(Name = "Address Label", GroupName = Global.GroupNames.Labels, Order = 67)]
+    public virtual string AddressLabel { get; set; }
+
+    [CultureSpecific]
+    [Display(Name = "Is Default Label", GroupName = Global.GroupNames.Labels, Order = 67)]
+    public virtual string IsDefaultLabel { get; set; }
+
+    [CultureSpecific]
+    [Display(Name = "CloseLabel", GroupName = Global.GroupNames.Labels, Order = 67)]
+    public virtual string CloseLabel { get; set; }
+
     public override void SetDefaultValues(ContentType contentType)
     {
         base.SetDefaultValues(contentType);
@@ -426,5 +438,8 @@ public class CheckoutPage : BasePage
         PhoneNumberInvalidError = "Phone Number is not valid!";
         EmailInvalidError = "Email is not valid!";
         CreditCardDetailsLabel = "Credit Card Details";
+        AddressLabel = "Label";
+        IsDefaultLabel = "Is Default";
+        CloseLabel = "Close";
     }
 }

@@ -4,7 +4,7 @@
 }
 
 <div class="mx-auto px-4">
-    <h3 class="text-xl font-semibold mb-5">Bill To</h3>
+    <h3 class="text-xl font-semibold mb-5"  @Html.EditAttributes(x => x.CurrentContent.BillToLabel)>@Model.CurrentContent.BillToLabel</h3>
     <div class="flex flex-row mb-5 gap-2">
         <select id="addresses_BillTo" class="cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-4/6">
             @foreach (var billTo in Model.BillTos?.BillTos ?? new List<BillTo>())
@@ -19,27 +19,35 @@
                 }
             }
         </select>
-        <a  href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.AddresesPage) + $"/edit?billToId={Model.BIllToId}")" class="px-4 py-2 text-blue-600 border border-gray-300 rounded-md hover:bg-gray-100">
-			<i class="mr-1 fa fa-edit"></i> Edit Bill To
+        <a  href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.AddresesPage) + $"/edit?billToId={Model.BIllToId}")" 
+            class="px-4 py-2 text-blue-600 border border-gray-300 rounded-md hover:bg-gray-100"
+             @Html.EditAttributes(x => x.CurrentContent.EditBillToLabel)>
+			<i class="mr-1 fa fa-edit"></i>@Model.CurrentContent.EditBillToLabel
 		</a>
     </div>
-    <h3 class="text-xl font-semibold mb-5">Ship To</h3>
+    <h3 class="text-xl font-semibold mb-5" @Html.EditAttributes(x => x.CurrentContent.ShipToLabel)>@Model.CurrentContent.ShipToLabel</h3>
     <div class="actionToolbar py-2 flex flex-wrap items-center justify-between text-sm tracking-widest uppercase">
-        <p class="md:w-1/3 text-gray-500">@Model.ShipTos.Pagination.TotalItemCount.ToString() Items</p>
+        <p  @Html.EditAttributes(x => x.CurrentContent.ItemsLabel) class="md:w-1/3 text-gray-500">
+            @Model.ShipTos.Pagination.TotalItemCount.ToString() @Model.CurrentContent.ItemsLabel
+        </p>
         <div class="md:w-1/3 flex items-center">
             <div class="flex flex-col items-center mb-8 px-4 mx-auto mt-8">
                 <div class="font-sans flex justify-end space-x-1 select-none">
                     @if (Model.ShipTos.Pagination.Page > 1)
                     {
-                        <a href="#" data="@(Model.ShipTos.Pagination.Page - 1)" class="addresesPaginate addressesFilter flex items-center px-4 py-2 text-gray-500 bg-gray-300 rounded-md">
-                            Previous
+                        <a href="#" data="@(Model.ShipTos.Pagination.Page - 1)" 
+                        class="addresesPaginate addressesFilter flex items-center px-4 py-2 text-gray-500 bg-gray-300 rounded-md"
+                         @Html.EditAttributes(x => x.CurrentContent.PreviousLabel)>
+                            @Model.CurrentContent.PreviousLabel
                         </a>
                     }
                     @if (Model.ShipTos.Pagination.NumberOfPages > 1)
                     {
                         @for (var itemPage = 1; itemPage < Model.ShipTos.Pagination.NumberOfPages + 1; itemPage++)
                         {
-                            <a href="#" data="@itemPage" class="addresesPaginate addressesFilter px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-teal-400 hover:text-white" style="transition: all 0.2s ease;">
+                            <a href="#" data="@itemPage" 
+                            class="addresesPaginate addressesFilter px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-teal-400 hover:text-white"
+                            style="transition: all 0.2s ease;">
                                 @itemPage.ToString()
                             </a>
                         }
@@ -47,8 +55,10 @@
 
                     @if (Model.ShipTos.Pagination.Page < Model.ShipTos.Pagination.NumberOfPages)
                     {
-                        <a href="#" data="@(Model.BillTos.Pagination.Page + 1)" class="addresesPaginate addressesFilter flex items-center px-4 py-2 text-gray-500 bg-gray-300 rounded-md">
-                            Next
+                        <a href="#" data="@(Model.BillTos.Pagination.Page + 1)" 
+                            class="addresesPaginate addressesFilter flex items-center px-4 py-2 text-gray-500 bg-gray-300 rounded-md"
+                             @Html.EditAttributes(x => x.CurrentContent.NextLabel)>
+                            @Model.CurrentContent.NextLabel
                         </a>
                     }
                 </div>
@@ -56,8 +66,11 @@
         </div>
         <div class="md:w-1/3">
             <div>
-                <label class="block mb-1">Search</label>
-                <input id="addresses_search" placeholder="Search Ship To" type="text" class="addressesFilter addressesSearch appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6">
+                <label class="block mb-1" @Html.EditAttributes(x => x.CurrentContent.SearchLabel)>@Model.CurrentContent.SearchLabel</label>
+                <input id="addresses_search" 
+                    placeholder="@Model.CurrentContent.SearchPlaceholderLabel" 
+                    type="text" 
+                    class="addressesFilter addressesSearch appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6">
             </div>
         </div>
     </div>

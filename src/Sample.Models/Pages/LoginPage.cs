@@ -65,6 +65,10 @@ public class LoginPage : BasePage
     [Display(Name = "Login Title", GroupName = Global.GroupNames.Labels, Order = 13)]
     public virtual string LoginTitle { get; set; }
 
+    [CultureSpecific]
+    [Display(Name = "No Account Label", GroupName = Global.GroupNames.Labels, Order = 13)]
+    public virtual string NoAccountLabel { get; set; }
+
     public override void SetDefaultValues(ContentType contentType)
     {
         base.SetDefaultValues(contentType);
@@ -80,5 +84,6 @@ public class LoginPage : BasePage
             "Continue to checkout without signing in,you will have the opportunity to register after checkout.";
         GuestLoginButtonText = "Continue as Guest";
         LoginTitle = "Registered Customers";
+        NoAccountLabel = "Don’t have an account? ";
     }
 }
