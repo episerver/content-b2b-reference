@@ -23,16 +23,7 @@
 		<PackageReference Include="Serilog.Sinks.File" Version="$(SerilogFile)" />
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="$(SystemConfiguration)" />
 		<ProjectReference Include="..\Sample.Services\Sample.Services.csproj" />
-		<Content Remove="Features\Shared\Views\TopHeaderBarBlock.cshtml" />
 		<Content Remove="modules\_protected\EPiServer.Forms\Forms.config" />
 		<EmbeddedResource Include="lang\**\*" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="clientResources\scripts\modules\productAutoComplete.ts" />
-	  <None Remove="clientResources\scripts\modules\quickOrder.ts" />
-	</ItemGroup>
-	<ItemGroup>
-	  <TypeScriptCompile Include="clientResources\scripts\modules\productAutoComplete.ts" />
-	  <TypeScriptCompile Include="clientResources\scripts\modules\quickOrder.ts" />
 	</ItemGroup>
 </Project>
