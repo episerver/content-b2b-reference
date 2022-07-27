@@ -1,0 +1,281 @@
+﻿@using Microsoft.AspNetCore.Http.Extensions
+@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.ProductListViewModel
+@{
+    var url = new Uri(UriHelper.GetDisplayUrl(Context.Request)).GetLeftPart(UriPartial.Path);
+    var pagination = Model.ProductCollection.Pagination;
+    var pageName = Model.Category == null ? "SearchPage" : "ProductList";
+    var className = Model.Category == null ? "" : (Model.Category.SubCategories.Count() > 0 ? "d-none" : "");
+}
+
+
+@if (Model.CatalogPage?.BreadCrumbs?.Any() ?? false)
+{
+    <section class="py-4">
+        <div class="container max-w-screen-xl mx-auto px-4">
+            <ol class="inline-flex flex-wrap text-gray-600 space-x-1 md:space-x-3 items-center">
+                @foreach (var breadCrumb in Model.CatalogPage.BreadCrumbs.Where(x => !string.IsNullOrEmpty(x.Url)))
+                {
+                    <li class="inline-flex items-center">
+                        <a class="text-gray-600 hover:text-blue-600" href="@($"/{Model.CurrentContent.Language.Name}{breadCrumb.Url}")">@breadCrumb.Text</a>
+                        @if (!breadCrumb.CategoryId.Equals(Model.CatalogPage.BreadCrumbs.Where(x => !string.IsNullOrEmpty(x.Url)).Last().CategoryId))
+                        {
+                            <i class="ml-3 text-gray-400 fa fa-chevron-right"></i>
+                        }
+                    </li>
+                }
+            </ol>
+        </div>
+    </section>
+}
+
+@if (Model.Category?.SubCategories != null)
+{
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        @foreach (var cat in Model.Category.SubCategories)
+        {
+            <article class="shadow-sm rounded bg-white border border-gray-200 mb-5">
+                <div class="relative p-1">
+                    <a href="@url/@cat.UrlSegment" class="text-gray-600 hover:text-blue-500">
+                        <img src="@cat.SmallImagePath" class="mx-auto" style="height: 240px" height="240" alt="@cat.Name">
+                    </a>
+                </div>
+                <div class="p-4 border-t border-t-gray-200">
+                    <h6>
+                        <a href="@url/@cat.UrlSegment" class="text-gray-600 hover:text-blue-500">@cat.Name</a>
+                    </h6>
+                </div>
+            </article>
+        }
+    </div>
+}
+
+@if (Model.ProductCollection.Products.Any())
+{
+    <section class="py-2">
+        <div class="container max-w-screen-xl mx-auto px-4">
+            @using (Html.BeginForm("Index", " CatalogPage", FormMethod.Get, new { @class = "actionSearchForm" }))
+            {
+                <input class="actionPageInfo"  id="FilterOption_Page" name="FilterOptionViewModel.Page" type="hidden" value="@Model.FilterOptionViewModel.Page" />
+                <input class="actionPageSizeInfo" id="FilterOption_PageSize" name="FilterOptionViewModel.PageSize" type="hidden" value="@Model.FilterOptionViewModel.PageSize" />
+                <input class="actionSortInfo" id="FilterOption_Sort" name="FilterOptionViewModel.Sort" type="hidden" value="@Model.FilterOptionViewModel.Sort" />
+                <input class="actionViewModeInfo" id="FilterOption_ViewSwitcher" name="FilterOptionViewModel.ViewMode" type="hidden" value="@Model.FilterOptionViewModel.ViewMode" />
+
+                <div class="actionToolbar py-2 flex flex-wrap items-center justify-between text-sm tracking-widest uppercase">
+                    <p class="text-gray-500">@Model.ProductCollection.Pagination.TotalItemCount.ToString() Items</p>
+                    <div class="flex items-center">
+                        <p class="text-gray-500">Views</p>
+                        <a class="pl-1 actionViewMode actionUpdatePage" data="vm-list" href="#">
+                            <i class="fa fa-th"></i>
+                        </a>
+                        <a class="pl-1 actionViewMode actionUpdatePage" data="vm-grid" href="#">
+                            <i class="fa fa-list"></i>
+                        </a>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="flex flex-col items-center mb-8 px-4 mx-auto mt-8">
+                            <div class="font-sans flex justify-end space-x-1 select-none">
+                                @if (Model.ProductCollection.Pagination.Page > 1)
+                                {
+                                    <a href="#" data="@(Model.ProductCollection.Pagination.Page - 1)" class="actionPaginate actionUpdatePage flex items-center px-4 py-2 text-gray-500 bg-gray-300 rounded-md">
+                                        Previous
+                                    </a>
+                                }
+                                @if (Model.ProductCollection.Pagination.NumberOfPages > 1)
+                                {
+                                    @for (var itemPage = 1; itemPage < Model.ProductCollection.Pagination.NumberOfPages + 1; itemPage++)
+                                    {
+                                        <a href="#" data="@itemPage" class="actionPaginate actionUpdatePage px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-teal-400 hover:text-white" style="transition: all 0.2s ease;">
+                                            @itemPage.ToString()
+                                        </a>
+                                    }
+                                }
+
+                                @if (Model.ProductCollection.Pagination.Page < Model.ProductCollection.Pagination.NumberOfPages)
+                                {
+                                    <a href="#" data="@(Model.ProductCollection.Pagination.Page + 1)" class="actionPaginate actionUpdatePage flex items-center px-4 py-2 text-gray-500 bg-gray-300 rounded-md">
+                                        Next
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div x-data="{ pageSizeOpen: false }">
+                        <p class="text-gray-500 inline">Page Size</p>
+                        <button class="font-medium text-gray-700"
+                        type="button"
+                        @@click.prevent="pageSizeOpen = !pageSizeOpen">
+                            @Model.ProductCollection.Pagination.PageSize.ToString()
+                            <i class="fa fa-chevron-down"></i>
+                        </button>
+
+                        <!-- Dropdown menu -->
+                        <div x-show="pageSizeOpen" x-cloak @@click.away="pageSizeOpen=false" class="absolute bg-white text-base z-50 list-none divide-y divide-gray-100 rounded shadow">
+                            <ul class="py-1" aria-labelledby="dropdown">
+                                @foreach (var p in pagination.PageSizeOptions)
+                                {
+                                    <li>
+                                        <a href="#" data="@p.ToString()" class="actionPageSize actionUpdatePage text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">@p.ToString()</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div x-data="{ sortOpen: false }">
+                        <p class="text-gray-500 inline">Sort by</p>
+                        <button class="font-medium text-gray-700"
+                        type="button"
+                        @@click.prevent="sortOpen = !sortOpen">
+                            @Model.ProductCollection.Pagination.SortOptions.First(x => x.SortType == Model.ProductCollection.Pagination.SortType).DisplayName
+                            <i class="fa fa-chevron-down"></i>
+                        </button>
+
+                        <!-- Dropdown menu -->
+                        <div x-show="sortOpen" x-cloak @@click.away="sortOpen=false" class="absolute bg-white text-base z-50 list-none divide-y divide-gray-100 rounded shadow">
+                            <ul class="py-1" aria-labelledby="dropdown">
+                                @foreach (var p in pagination.SortOptions)
+                                {
+                                    <li>
+                                        <a href="#" data="@p.SortType" class="actionSort actionUpdatePage text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">@p.DisplayName</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row -mx-4">
+                    <aside class="actionFacets w-full md:w-1/3 lg:w-1/4 px-4">
+                        <!-- filter wrap -->
+                        <a class="md:hidden mb-5  w-full text-center px-4 py-2 inline-block text-lg text-gray-700 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 hover:text-blue-600" href="#">
+                            Filter by
+                        </a>
+
+                        <div class="px-6 py-4 border border-gray-200 bg-white rounded shadow-sm">
+                            @if (Model.ProductCollection.BrandFacets?.Any() ?? false)
+                            {
+                                <h3 class="font-semibold mb-2">Brands</h3>
+                                <ul class="space-y-1">
+                                    @foreach (var brand in Model.ProductCollection.BrandFacets)
+                                    {
+                                        <li>
+                                            <label class="flex items-center  actionFacet actionUpdatePage">
+                                                @if (brand.Selected)
+                                                {
+                                                    <input name="@($"brand_{brand.Name}")" type="checkbox" data-facetKey="@($"brand:{brand.Id.ToString()}")" checked="" class="actionSearchFacet h-4 w-4">
+                                                }
+                                                else
+                                                {
+                                                    <input name="@($"brand_{brand.Name}")" type="checkbox" data-facetKey="@($"brand:{brand.Id.ToString()}")" class="actionSearchFacet h-4 w-4">
+                                                }
+                                                <span class="ml-2 text-gray-500"> @brand.Name (@brand.Count.ToString())</span>
+                                            </label>
+                                        </li>
+                                    }
+                                </ul>
+
+                                <hr class="my-4">
+                            }
+                            @if (Model.ProductCollection.ProductLineFacets?.Any() ?? false)
+                            {
+                                <h3 class="font-semibold mb-2">Product Lines</h3>
+                                <ul class="space-y-1">
+                                    @foreach (var productLine in Model.ProductCollection.ProductLineFacets)
+                                    {
+                                        <li>
+                                            <label class="flex items-center  actionFacet actionUpdatePage">
+                                                @if (productLine.Selected)
+                                                {
+                                                    <input name="@($"productLine_{productLine.Name}")" type="checkbox" data-facetKey="@($"productLine:{productLine.Id.ToString()}")" checked="" class="actionSearchFacet h-4 w-4">
+                                                }
+                                                else
+                                                {
+                                                    <input name="@($"productLine_{productLine.Name}")" type="checkbox" data-facetKey="@($"productLine:{productLine.Id.ToString()}")" class="actionSearchFacet h-4 w-4">
+                                                }
+                                                <span class="ml-2 text-gray-500"> @productLine.Name (@productLine.Count.ToString())</span>
+                                            </label>
+                                        </li>
+                                    }
+                                </ul>
+
+                                <hr class="my-4">
+                            }
+                            @if (Model.ProductCollection.AttributeTypeFacets?.Any() ?? false)
+                            {
+                                @foreach (var attributeType in Model.ProductCollection.AttributeTypeFacets)
+                                {
+                                    <h3 class="font-semibold mb-2">@attributeType.Name</h3>
+                                    <ul class="space-y-1">
+                                        @foreach (var facet in attributeType.AttributeValueFacets)
+                                        {
+                                            <li>
+                                                <label class="flex items-center actionFacet actionUpdatePage">
+                                                    @if (facet.Selected)
+                                                    {
+                                                        <input name="@($"attribute_{facet.Id.ToString("N")}")" type="checkbox" data-facetKey="@($"attribute:{facet.AttributeValueId.ToString()}")" checked="" class="actionSearchFacet h-4 w-4">
+                                                    }
+                                                    else
+                                                    {
+                                                        <input name="@($"attribute_{facet.Id.ToString("N")}")" type="checkbox" data-facetKey="@($"attribute:{facet.AttributeValueId.ToString()}")" class="actionSearchFacet h-4 w-4">
+                                                    }
+                                                    <span class="ml-2 text-gray-500"> @facet.ValueDisplay (@facet.Count.ToString())</span>
+                                                </label>
+                                            </li>
+                                        }
+                                    </ul>
+
+                                    <hr class="my-4">
+                                }
+                            }
+                        </div>
+                        <!-- filter wrap -->
+
+                    </aside> <!-- col.// -->
+                    <main class="md:w-2/3 lg:w-3/4 px-4 actionProducts">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            @foreach (var product in Model.ProductCollection.Products)
+                            {
+                                <div class="flex flex-col">
+                                    <!-- COMPONENT: PRODUCT CARD -->
+                                    <article class="flex-1 shadow-sm rounded bg-white border border-gray-200">
+                                        <a href="@($"/{Model.Language}{product.ProductDetailUrl}")" class="block relative p-1">
+                                            <img src="@(product.MediumImagePath)" class="mx-auto w-auto" height="240" alt="@product.Name">
+                                        </a>
+                                        <div class="p-4 border-t border-t-gray-200">
+                                            <p class="font-semibold">@product.BasicListPrice.ToString("c")</p>
+                                            <div class="h-16">
+                                                <a href="@($"/{Model.Language}{product.ProductDetailUrl}")" class="text-gray-600 mb-3 hover:text-blue-500">
+                                                    @product.ShortDescription
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <a class="actionAddToCart px-4 py-2 inline-block text-white text-center bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+                                                   href="#"
+                                                   data-productId="@product.Id.ToString()"
+                                                   data-unitOfMeasure="@product.UnitOfMeasure">
+                                                    Add to cart
+                                                </a>
+                                                <a class="px-3 py-2 inline-block text-blue-600 border border-gray-300 rounded-md hover:bg-gray-100" href="#">
+                                                    <i class="fa fa-heart"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </article>
+                                    <!-- COMPONENT: PRODUCT CARD //END -->
+                                </div>
+                            }
+                        </div> <!-- grid .// -->
+                        <div id="addToCartToast" class="invisible alert-toast fixed bottom-0 right-0 m-8 w-5/6 md:w-full max-w-sm">
+                            <label id="cartToast" class="close cursor-pointer flex items-start justify-between w-full p-2 bg-green-500 h-24 rounded shadow-lg text-white"
+                                title="close">
+                                <span id="cartToastMessage"></span>
+                                <svg id="closeCartToast" class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                                    <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                                </svg>
+                            </label>
+                        </div>
+                    </main>  <!-- col.// -->
+                </div> <!-- grid.// -->
+            }
+        </div> <!-- container .// -->
+    </section>
+}

@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<Import Project="..\..\build\dependencies.props" />
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="AngleSharp" Version="$(AngleSharp)" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="$(AutoMapperExtensions)" />
+		<PackageReference Include="EPiServer.CloudPlatform.Cms" Version="$(CloudPlatformVersion)" />
+		<PackageReference Include="EPiServer.CMS" Version="$(CmsUiVersionCommon)" />
+		<PackageReference Include="EPiServer.Cms.AspNetCore.Routing" Version="$(CmsCoreVersionCommon)" />
+		<PackageReference Include="EPiServer.Find.Cms" Version="$(FindVersion)" />
+		<PackageReference Include="EPiServer.Forms" Version="$(FormsVersion)" />
+		<PackageReference Include="EPiServer.Framework" Version="$(CmsCoreVersionCommon)" />
+		<PackageReference Include="EPiServer.Framework.AspNetCore" Version="$(CmsCoreVersionCommon)" />
+		<PackageReference Include="EPiServer.Hosting" Version="$(CmsCoreVersionCommon)" />
+		<PackageReference Include="Geta.NotFoundHandler" Version="$(GetaNotFound)" />
+		<PackageReference Include="Serilog.Sinks.AzureApp" Version="$(SerilogAzureApp)" />
+		<PackageReference Include="System.Linq.Async" Version="$(SystemLingAsync)" />
+		<PackageReference Include="Serilog" Version="$(Serilog)" />
+		<PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCore)" />
+		<PackageReference Include="Serilog.Sinks.File" Version="$(SerilogFile)" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="$(SystemConfiguration)" />
+		<ProjectReference Include="..\Sample.Services\Sample.Services.csproj" />
+		<Content Remove="Features\Shared\Views\TopHeaderBarBlock.cshtml" />
+		<Content Remove="modules\_protected\EPiServer.Forms\Forms.config" />
+		<EmbeddedResource Include="lang\**\*" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="clientResources\scripts\modules\productAutoComplete.ts" />
+	  <None Remove="clientResources\scripts\modules\quickOrder.ts" />
+	</ItemGroup>
+	<ItemGroup>
+	  <TypeScriptCompile Include="clientResources\scripts\modules\productAutoComplete.ts" />
+	  <TypeScriptCompile Include="clientResources\scripts\modules\quickOrder.ts" />
+	</ItemGroup>
+</Project>

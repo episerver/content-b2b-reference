@@ -1,0 +1,64 @@
+﻿@inject IUrlResolver urlResolver
+@model List<MenuItemViewModel>
+
+@if (Model != null && Model.Count > 0)
+{
+    <nav class="hidden lg:block bg-white border-b-2 border-gray-300 text-gray-900" aria-label="Primary menu">
+        <div class="container mx-auto flex justify-between">
+            <ul id="primary-menu-list" class="flex lg:flex-wrap lg:items-center lg:space-x-1 menu-wrapper">
+                @foreach (var menuItem in Model)
+                {
+                    if (menuItem.ChildLinks == null || menuItem.ChildLinks.Count <= 0)
+                    {
+                        <li class="hover:bg-gray-10">
+                            <a href="@(string.IsNullOrEmpty(menuItem.Uri) ? "javascript:void(0);" : menuItem.Uri)" class="relative block py-6 px-2 lg:p-6 text-sm lg:text-base font-bold">
+                                @menuItem.Name
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <!--Toggleable Link-->
+                        <li class="toggleable hover:bg-yellow-500 hover:text-white">
+                            <input type="checkbox" value="selected" id="toggle-one" class="toggle-input">
+                            <label for="toggle-one" class="block cursor-pointer py-6 px-4 lg:p-6 text-sm lg:text-base font-bold">@menuItem.Name</label>
+                            <div role="toggle" class="relative z-20 p-6 mega-menu mb-16 sm:mb-0 shadow-xl bg-amber-400">
+                                <div class="container mx-auto w-full flex flex-wrap justify-between mx-2">
+                                    @foreach (var childHeader in menuItem.ChildLinks)
+                                    {
+                                        <div class="px-4 flex flex-wrap border-gray-600 pb-6 pt-6 lg:pt-3">
+                                           <div class="flex flex-col md:flex-row">
+                                               <div class="md:w-2/4">
+                                                    @if (!string.IsNullOrEmpty(childHeader.MainCategoryText))
+                                                    {
+                                                        <h3 class="pt-3 font-bold text-xl text-white text-bold mb-2">@childHeader.MainCategoryText</h3>
+                                                    }
+                                                    
+                                                    @if (!ContentReference.IsNullOrEmpty(childHeader.CategoryImage))
+                                                    {
+                                                        <img height="200" width="200" class="mx-auto" src="@Url.ContentUrl(childHeader.CategoryImage)"/>
+                                                    }
+                                                </div>
+                                                <div class="md:w-2/4">
+                                                    @foreach (var childLink in childHeader.ListCategories)
+                                                    {
+                                                        <div class="p-1">
+                                                            <a href="@urlResolver.GetUrl(childLink.Href)" class="block p-3 text-white">
+                                                                @childLink.Text
+                                                            </a>
+                                                        </div>
+                                                    }
+                                                </div>
+                                           </div>
+                                            
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </nav>
+}

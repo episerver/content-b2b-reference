@@ -1,0 +1,16 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.PromoBarBlockViewModel
+@{
+    var CreateAccountClass = Model.CurrentBlock.CTAImage != null ? "create-account secondary mb-15" : "create-account";
+    var containerClass = Model.CurrentBlock.CTAImage != null ? "container align-items-center" : "container";
+}
+<div class="@CreateAccountClass">
+    <div class="@containerClass">
+        <span class="text">@Html.PropertyFor(x => x.CurrentBlock.Title)</span>
+        @if (Model.CurrentBlock.CTAImage != null)
+        {
+            <span class="icon mr-30"><img src="@Url.ContentUrl(Model.CurrentBlock.CTAImage)" alt="icon"></span>
+        }
+        <a href="@Url.ContentUrl(Model.CurrentBlock.CtaLink)" class="link">@Html.PropertyFor(x => x.CurrentBlock.CtaText)</a>
+    </div>
+</div>

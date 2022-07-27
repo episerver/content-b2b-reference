@@ -1,0 +1,22 @@
+﻿@inject IUrlResolver urlResolver
+@model List<SelectListItem>
+
+@if (Model != null && Model.Count > 0)
+{
+    <section class="py-4">
+        <div class="container max-w-screen-xl mx-auto px-4">
+            <ol class="inline-flex flex-wrap text-gray-600 space-x-1 md:space-x-3 items-center">
+                @foreach (var breadCrumb in Model)
+                {
+                    <li class="inline-flex items-center">
+                        <a class="text-gray-600 hover:text-blue-600" href="@(breadCrumb.Disabled ? "#" : breadCrumb.Value)">@breadCrumb.Text</a>
+                        @if (!breadCrumb.Text.Equals(Model.Last().Text))
+                        {
+                            <i class="ml-3 text-gray-400 fa fa-chevron-right"></i>
+                        }
+                    </li>
+                }
+            </ol>
+        </div>
+    </section>
+}

@@ -1,0 +1,95 @@
+﻿@model CommerceApiSDK.Models.Results.GetOrderCollectionResult
+<div id="orderHistoryTable" class="p-2 md:p-8 overflow-auto relative">
+    <input type="hidden" value="@Model.Pagination.TotalItemCount.ToString()" id="orderHistory_TotalCount" />
+    <table class="table-fixed border-x border-b w-full whitespace-no-wrap">
+        <thead>
+            <tr class="text-xs font-semibold uppercase bg-gray-200">
+                <th data-sort="WebOrderNumber" class="orderHistorySort px-3 py-3">
+                    Order #
+                    <i class="fa fa-sort"></i>
+                </th>
+                <th data-sort="OrderDate" class="orderHistorySort px-3 py-3">
+                    Date
+                </th>
+                <th data-sort="OrderTotal" class="orderHistorySort px-3 py-3">
+                    Order Total
+                    <i class="fa fa-sort"></i>
+                </th>
+                <th data-sort="Status" class="orderHistorySort px-3 py-3">
+                    Status
+                    <i class="fa fa-sort"></i>
+                </th>
+                <th data-sort="StCompanyName" class="orderHistorySort px-3 py-3">
+                    Ship To / Pick up
+                    <i class="fa fa-sort"></i>
+                </th>
+                <th data-sort="CustomerPO" class="orderHistorySort px-3 py-3">
+                    PO #
+                    <i class="fa fa-sort"></i>
+                </th>
+                <th class="px-3 py-3 text-right">
+                    Manage
+                </th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y">
+            @foreach (var order in Model.Orders)
+            {
+                <tr class="odd:bg-gray-100 hover:!bg-stone-200 text-xs">
+                    <td class="px-3 py-3">
+                        <a href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.OrderDetailPage) + $"?orderNumber={order.WebOrderNumber}")" class="py-2 px-4 text-gray-700 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700">
+                            @order.WebOrderNumber
+                        </a>
+                    </td>
+                    <td class="px-3 py-3">
+                        @order.OrderDate.ToShortDateString()
+                    </td>
+                    <td class="px-3 py-3">
+                        @order.OrderGrandTotalDisplay
+
+                    </td>
+                    <td class="px-3 py-3">
+                        @if (order.Status.Contains("Complete", StringComparison.InvariantCultureIgnoreCase) || order.Status.Contains("Completed", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                                @order.StatusDisplay
+                            </span>
+                        }
+                        else if (order.Status.Contains("Review", StringComparison.InvariantCultureIgnoreCase) || order.Status.Contains("CancellationRequested", StringComparison.InvariantCultureIgnoreCase) ||
+                        order.Status.Contains("Backordered", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            <span class="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full">
+                                @order.StatusDisplay
+                            </span>
+                        }
+                        else if (order.Status.Contains("Void", StringComparison.InvariantCultureIgnoreCase) || order.Status.Contains("Canceled", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            <span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">
+                                @order.StatusDisplay
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">
+                                @order.StatusDisplay
+                            </span>
+                        }
+                    </td>
+                    <td class="px-3 py-3">
+                        <address>
+                            @order.STCompanyName <br/> @order.STAddress1 <br/> @order.ShipToCity, @order.ShipToState, @order.ShipToPostalCode
+                        </address>
+                    </td>
+                    <td class="px-3 py-3">
+                        @order.CustomerPO
+                    </td>
+                    <td class="px-3 py-3 flex justify-end gap-1">
+                        <a class="px-2 py-1 inline-block text-gray-500 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 hover:text-blue-600" href="#">
+                            <i class="fa fa-cart-plus"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

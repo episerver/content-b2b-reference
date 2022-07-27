@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="..\..\build\dependencies.props" />
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+  <ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<ProjectReference Include="..\Sample.Models\Sample.Models.csproj" />
+		<Using Include="CommerceApiSDK.Models" />
+		<Using Include="CommerceApiSDK.Models.Parameters" />
+		<Using Include="CommerceApiSDK.Models.Results" />
+		<Using Include="System" />
+		<Using Include="System.Collections.Generic" />
+		<Using Include="System.Linq" />
+		<Using Include="System.Threading.Tasks" />
+  </ItemGroup>
+</Project>

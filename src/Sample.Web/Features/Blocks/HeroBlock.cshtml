@@ -1,0 +1,15 @@
+﻿@model IBlockViewModel<HeroBlock>
+@Html.FullRefreshPropertiesMetaData(new[] { "BackgroundImage" })
+
+<div class="@($"{Model.CurrentBlock.Padding} {Model.CurrentBlock.Margin}")">
+    <div class="hero min-h-screen relative z-10" style="background-image: url('@Url.ContentUrl(Model.CurrentBlock.BackgroundImage)');">
+        <div class="hero-overlay bg-opacity-60"></div>
+        <div class="hero-content text-center">
+            <div class="max-w-md">
+                <h1 class="@("mb-5 text-5xl font-bold " + Model.CurrentBlock.TextColor)" @Html.EditAttributes(x => x.CurrentBlock.Title)>@Model.CurrentBlock.Title</h1>
+                <p class="@("mb-5 " + Model.CurrentBlock.TextColor)" @Html.EditAttributes(x => x.CurrentBlock.Description)>@Model.CurrentBlock.Description</p>
+                <button class="@("btn btn-primary " + Model.CurrentBlock.ButtonTextColor + " " + Model.CurrentBlock.ButtonColor)" @Html.EditAttributes(x => x.CurrentBlock.ButtonText)>@Model.CurrentBlock.ButtonText</button>
+            </div>
+        </div>
+    </div>
+</div>

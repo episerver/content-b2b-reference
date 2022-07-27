@@ -1,0 +1,181 @@
+﻿@model Sample.Models.ViewModels.SavedOrdersPageViewModel
+
+<!-- Saved Order Container block to be extracted -->
+<div class="container">
+    <div class="page-content saved-orders" role="main">
+        <div class="ui-lock use-fastclick"></div>
+        <div class="cms-rearrangeable">
+            <div class="row main-row">
+                <div class="col-12">
+                    <div class="saved-order">
+                        <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-10" @Html.EditAttributes(x => x.CurrentContent.MetaTitle)><span>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span></h1>
+                        <form class="">
+                            <section class="accordion search-orders">
+                                <div class="cm">
+                                    <input id="accord-1" class="accord-check" type="checkbox">
+                                    <input type="hidden" id="hdnsavedOrderPage" value="@Url.ContentUrl(Model.CurrentContent.SavedOrderPageLink)" />
+                                    <label for="accord-1" class="accord-head" @Html.EditAttributes(x => x.CurrentContent.TabName)>@Html.PropertyFor(x => x.CurrentContent.TabName)</label>
+                                    <article class="accord-content">
+                                        <div class="row">
+                                            <div class="col-lg-4 search-col-1">
+                                                <div class="search-total">
+                                                    <label @Html.EditAttributes(x => x.CurrentContent.OrderTotal)>@Html.PropertyFor(x => x.CurrentContent.OrderTotal)</label>
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <select id="OrderTotalOperator" name="OrderTotalOperator">
+                                                                <option value="">@Html.Translate("Select").GetString()</option>
+                                                                <option value="Greater Than">@Html.Translate("Greater Than").GetString()</option>
+                                                                <option value="Less Than">@Html.Translate("Less Than").GetString()</option>
+                                                                <option value="Equal To">@Html.Translate("Equal To").GetString()</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <input name="OrderTotal" id="OrderTotal" value="" type="text">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 search-col-2">
+                                                <div class="search-date">
+                                                    <label @Html.EditAttributes(x => x.CurrentContent.DateRange)>@Html.PropertyFor(x => x.CurrentContent.DateRange)</label>
+                                                    <div class="row">
+                                                        <div class="col-6 search-date-from">
+                                                            <em>@Html.PropertyFor(x => x.CurrentContent.DateRangeFrom)</em>
+                                                            <input name="FromDate" id="fromdate" class="datepicker" type="date">
+                                                        </div>
+                                                        <div class="col-6 search-date-to">
+                                                            <em>@Html.PropertyFor(x => x.CurrentContent.DateRangeTo)</em>
+                                                            <input name="FromDate" id="todate" class="datepicker" type="date">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btns">
+                                            <button id="savedOrdersListViewSearchButton" type="submit" class="btn btn-primary btn-search">@Html.PropertyFor(x => x.CurrentContent.SearchButton)</button>
+                                            <button id="savedOrdersListViewClearButton" type="submit" class="btn btn-primary-outline btn-clear">@Html.PropertyFor(x => x.CurrentContent.ClearButton)</button>
+                                        </div>
+                                    </article>
+                                </div>
+                            </section>
+                        </form>
+
+                        <div class="">
+                            <div class="results-count"><span class="result-num">@(Model.SavedOrdersViewModel.CartCollection.Pagination != null ? Model.SavedOrdersViewModel.CartCollection.Pagination.TotalItemCount : 0)</span> <span class="result-lbl">@Html.PropertyFor(x => x.CurrentContent.OrdersFoundText)</span></div>
+                            @if (Model.SavedOrdersViewModel.CartCollection.Pagination != null && Model.SavedOrdersViewModel.CartCollection.Pagination.TotalItemCount > Model.SavedOrdersViewModel.CartCollection.Pagination.DefaultPageSize)
+                            {
+                                <div class="uibar tertiary paginator-34 ptop">
+                                    <ul>
+                                        <li class="results-list row">
+                                            <div class="small-6 columns per-page">
+                                                <label>@Html.PropertyFor(x => x.CurrentContent.PerPage)</label>
+                                            </div>
+                                            <div class="small-6 columns per-page-select">
+                                                <select name="select" id="select" class="" onchange="">
+                                                    @foreach (var pageSize in Model.SavedOrdersViewModel.CartCollection.Pagination.PageSizeOptions)
+                                                    {
+                                                        <option value="@pageSize">@pageSize</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </li>
+                                        <li class="pagination" id="topPagingContainer">
+                                            <div class="arrow unavailable page-prev">
+                                                <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-prev p-first disabled pagerNextPageArrow"></a>
+                                                <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-prev disabled pagerNextPageArrow"></a>
+                                            </div>
+                                            <div class="page-current">
+                                                <span class="current-page">1</span> @Html.PropertyFor(x => x.CurrentContent.PageOf)
+                                                <span class="total-pages">2</span>
+                                            </div>
+                                            <div class="arrow unavailable page-next">
+                                                <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-next pagerNextPageArrow"></a>
+                                                <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-next p-last pagerNextPageArrow"></a>
+                                            </div>
+                                    </ul>
+                                </div>
+                            }
+                            <div class="overflow-table">
+                                @Html.HiddenFor(x => x.OrderDetailsPageLink, new { id = "detailPageUrl" })
+                                <table class="responsive info-tbl">
+                                    <tbody>
+                                        @if (Model.SavedOrdersViewModel.CartCollection.Carts.Count > 0)
+                                        {
+                                        <thead>
+                                            <tr>
+                                                <th class="col-date">
+                                                    <span class="sticky-first">
+                                                        <a id="" href="" data-sort="OrderDate" class="sort sort-descending">
+                                                            @Html.PropertyFor(x => x.CurrentContent.HeaderDate)
+                                                        </a>
+                                                    </span>
+                                                </th>
+                                                <th class="col-shipto">
+                                                    <a id="" href="" data-sort="CustomerSequence" class="sort">
+                                                        @Html.PropertyFor(x => x.CurrentContent.HeaderShipTo)
+                                                    </a>
+                                                </th>
+                                                <th class="col-tot">
+                                                    <a id="" href="" data-sort="OrderTotal" class="sort">
+                                                        @Html.PropertyFor(x => x.CurrentContent.HeaderTotal)
+                                                    </a>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        foreach (var cart in Model.SavedOrdersViewModel.CartCollection.Carts)
+                                        {
+                                            <tr class="">
+                                                @if (!EPiServer.Editor.PageEditing.PageIsInEditMode)
+                                                {
+                                                    <td class="col-date"><a href="@(string.Format("{0}?cartId={1}", Model.OrderDetailsPageLink, cart.Id))">@(cart.OrderDate.HasValue ? cart.OrderDate.Value.Date.ToShortDateString() : "")</a></td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="col-date"><a href="@(string.Format("{0}&cartId={1}", Model.OrderDetailsPageLink, cart.Id))">@(cart.OrderDate.HasValue ? cart.OrderDate.Value.Date.ToShortDateString() : "")</a></td>
+                                                }
+                                                <td class="col-shipto">@(cart.ShipToLabel)</td>
+                                                <td class="col-tot">@cart.OrderSubTotalDisplay</td>
+                                            </tr>
+                                        }
+                                    }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @if (Model.SavedOrdersViewModel.CartCollection.Carts.Count > 0)
+                                {
+                                    <div class="uibar tertiary paginator-34 pbtm">
+                                        <ul>
+                                            <li class="pagination" id="btmPagingContainer">
+
+                                                <div class="arrow unavailable page-prev">
+                                                    <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-prev p-first disabled pagerNextPageArrow"></a>
+                                                    <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-prev disabled pagerNextPageArrow"></a>
+                                                </div>
+                                                <div class="page-current">
+                                                    <span class="current-page">1</span> @Html.PropertyFor(x => x.CurrentContent.PageOf)
+                                                    <span class="total-pages">2</span>
+                                                </div>
+                                                <div class="arrow unavailable page-next">
+                                                    <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-next pagerNextPageArrow"></a>
+                                                    <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-next p-last pagerNextPageArrow"></a>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script id="oh-template" type="text/x-custom-template">
+        <tr>
+            <td class="col-date"><a aria-label="date" href="#" class="link-action"> </a></td>
+            <td class="col-shipto"></td>
+            <td class="col-tot"></td>
+        </tr>
+    </script>

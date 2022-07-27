@@ -1,0 +1,11 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model IBlockViewModel<QuickLinksBlock>
+<ul class="list-unstyled list-cart-tools">
+    @if (Model.CurrentBlock != null && Model.CurrentBlock.Links != null)
+    {
+        foreach (var link in @Model.CurrentBlock.Links)
+        {
+            <li><a href="@Url.PageUrl(link.Href)">@link.Text</a></li>
+        }
+    }
+</ul>

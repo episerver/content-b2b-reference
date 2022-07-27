@@ -1,0 +1,59 @@
+﻿
+@model LoginPageViewModel
+@{
+    var guestUserButtonDisabled = "";
+    if (!Model.LoginViewModel.ShouldShowGuestUserButton)
+    {
+        guestUserButtonDisabled = "disabled";
+    }
+}
+<div style="max-width:360px" class="mt-10 mb-20 p-4 md:p-7 mx-auto rounded bg-white shadow-lg">
+	<form id="signin-form"  role="form" method="post" action="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.LoginPage) + "?ReturnUrl=" + Model.LoginViewModel.ReturnUrl)">
+        @Html.AntiForgeryToken()
+        <h2 class="mb-5 text-2xl font-semibold">@Model.CurrentContent.LoginTitle</h2>
+        @if (Model.ErrorMessage.Count() > 0)
+        {
+            <div class="validation-summary-error-side">
+                @foreach (var error in Model.ErrorMessage)
+                {
+                    <div class="text-red-500">
+                        <span class="err-message">@error</span>
+                    </div>
+                }
+            </div>
+        }
+
+		<div class="mb-4">
+			<label class="block mb-1">@Model.CurrentContent.UsernameLabel </label>
+			<input name="LoginViewModel.Username" 
+                class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full" 
+                type="text" 
+                placeholder="Type here">
+		</div>
+					
+		<div class="mb-4">
+			<label class="block mb-1"> @Model.CurrentContent.PasswordLabel </label>
+			<input name="LoginViewModel.Password"
+                class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
+                type="password" 
+                placeholder="Type here">
+		</div>
+
+		<label class="flex items-center w-max mb-5">
+			<input checked name="LoginViewModel.RememberMe" type="checkbox" class="h-4 w-4">
+			<span class="ml-2 inline-block text-gray-500">@Model.CurrentContent.RememberMeLabel</span>
+		</label>
+
+		<button type="submit" class="px-4 py-2 text-center w-full inline-block text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700">
+            @Model.CurrentContent.SignInText
+        </button>
+
+		<p class="text-center mt-5">
+			Don’t have an account?  <a class="text-blue-500" href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(settings => settings.RegisterPage))">@Model.CurrentContent.CreateAccountText</a>
+		</p>
+
+        <p class="text-center mt-5">
+			<a class="text-blue-500" href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(settings => settings.ForgotPasswordPage))">@Model.CurrentContent.ForgetPasswordText</a>
+		</p>
+	</form>
+</div>

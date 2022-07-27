@@ -1,0 +1,27 @@
+﻿@inject IUrlResolver urlResolver
+@model EPiServer.SpecializedProperties.LinkItemCollection
+
+@if (Model != null && Model.Count > 0)
+{
+    <ul>
+        @foreach (var link in Model)
+        {
+            <li>
+                @if (this.Context.Request.Path.ToString().TrimEnd('/').Contains(urlResolver.GetUrl(link.Href).TrimEnd('/')))
+                {
+                    <a title="@link.Title" class="block px-3 py-2 text-blue-500 bg-gray-100 hover:bg-blue-100 hover:text-blue-500 rounded-md" href="@urlResolver.GetUrl(link.Href)">
+                        @link.Text
+                    </a>
+                }
+                else
+                {
+                    <a title="@link.Title" class="block px-3 py-2 text-gray-800 hover:bg-blue-100 hover:text-blue-500 rounded-md" href="@urlResolver.GetUrl(link.Href)">
+                        @link.Text
+                    </a>
+                }
+
+            </li>
+        }
+
+    </ul>
+}

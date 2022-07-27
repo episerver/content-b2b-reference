@@ -1,0 +1,211 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.WishListViewModel
+<div class="container wishlist" id="wishListPage">
+    <div class="page-content" role="main">
+        <div class="cms-rearrangeable">
+            <div class="row main-row">
+                <div class="col-12">
+                    <div class="order-history">
+                        <form novalidate="novalidate" action="/account/history/order-history" id="orderHistorySearchForm" method="get" name="orderHistorySearchForm">
+
+                            <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-10"><span>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span></h1>
+                        </form>                    <p class="error"></p><div class="validation-summary-valid" data-valmsg-summary="true">
+                            <ul>
+                                <li style="display:none"></li>
+                            </ul>
+                        </div><p></p>
+                        <div class="uibar tertiary paginator-34 ptop">
+                            <div class="col-1 per-page">
+                                <div><label>@Html.PropertyFor(x => x.CurrentContent.DropdownLabel)</label></div>
+                            </div>
+                            <div class="col-6 per-page-select" style="text-align: left">
+                                @Html.DropDownListFor(m => m.SelectedWishList, Model.WishLists, new { id = "select-wish-list" })
+                            </div>
+                            <div class="btns"><button class="btn btn-primary btn-add-cart" id="btnDeleteWishList" data-wishlisturl="@Url.ContentUrl(Model.CurrentContent.WishListUrl)" data-getwishlistmethodname="GetWishListLines" data-removewishlistmethodname="RemoveWishList" data-removewishlistlinemethodname="RemoveWishListLine" data-popup-titlemsg="@Model.CurrentContent.WishListDeletePopUpTitle" data-popup-msg="@Model.CurrentContent.WishListDeletePopUpConfirmationMessage">@Html.PropertyFor(x => x.CurrentContent.DeleteListButtonLabel) </button></div>
+                        </div>
+                        @if (Model.CanAddAllToCart)
+                        {
+                            <div class="btns">
+                                <button class="btn btn-primary wishlist-add-all-to-cart btnAddAllItems" data-enable="@Model.CurrentContent.EnablePopup" data-title="@Model.CurrentContent.WishListCartPopUpConfirmationTitle" data-text="@("Checkout")" data-msg='@Model.CurrentContent.WishlistEmptyValidationError' data-popup-caption="@Model.CurrentContent.WishListCartPopUpConfirmationTitle" data-popup-msg="@Model.CurrentContent.WishListPopUpConfirmationMessage" data-addtocart-link='@Url.ContentUrl(Model.CurrentContent.CartPageUrl)' data-addalltocartmethodname='AddAllToCartCheckout' data-link='@Model.CurrentContent.CartPageUrl' style="display: @(Model.WishListLines.Count > 0 ? "block" : "none")">@Html.PropertyFor(x => x.CurrentContent.AddAllToCartButtonText)</button>
+                            </div>
+                        }
+                        else
+                        {
+                            if (Model.WishListLines.Count != Model.OutOfStockStatusCount)
+                            {
+                                <div class="btns">
+                                    <button class="btn btn-primary wishlist-add-all-to-cart btnAddAllItems" data-enable="@Model.CurrentContent.EnablePopup" data-popup-caption="@Model.CurrentContent.WishListCartPopUpConfirmationTitle" data-popup-msg="@Model.CurrentContent.WishListPopUpConfirmationMessage" data-title="Added To Cart" data-text="Checkout" data-msg='("Add All to Cart Popup")' data-link='@Model.CurrentContent.CartPageUrl' style="display: @(Model.WishListLines.Count > 0 ? "block" : "none")">@Html.PropertyFor(x => x.CurrentContent.AddAllToCartButtonText)</button>
+                                </div>
+                            }
+                        }
+                        <div class="wishlist-addalltocart-space-top"></div>
+                        <input type="hidden" id="sitelanguage" value="@Model.Language" />
+                        @if (Model.WishListLines.Count > 0)
+                        {
+                            <ul class="item-list cart-items wishlist-addalltocart-space-bottom">
+                                @foreach (var line in Model.WishListLines)
+                                {
+                                    <li class="row item-block checkout-item isc-productContainer" data-lineid="@line.Id" data-productid="@line.ProductId">
+                                        <div class="small-3 columns item-thumb">
+                                            <a href="@(line.ProductId != null ? Model.Language + "" + Url.ContentUrl(line.Uri) : "#")">
+                                                <img src="@line.SmallImagePath">
+                                            </a>
+                                        </div>
+                                        <div class="small-9 columns item-details">
+                                            <div class="item-name"><a href="@(line.ProductId != null ? Model.Language + "" + Url.ContentUrl(line.Uri) : "#")">@line.ShortDescription</a></div>
+                                            @if (!string.IsNullOrEmpty(line.ERPNumber))
+                                            {
+                                                <div class="item-num wishlist-label-size">
+                                                    <span>@Html.PropertyFor(x => x.CurrentContent.ErpLabel) @line.ERPNumber</span>
+
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(line.ManufacturerItem))
+                                            {
+                                                <div class="item-num wishlist-label-size">
+                                                    <span>@Html.PropertyFor(x => x.CurrentContent.Mfg) @line.ManufacturerItem</span>
+                                                </div>
+                                            }
+                                            <div class="item-num wishlist-label-size">
+                                                <strong>Color:</strong>
+                                                <span class="title">Louver Matte Grey/Red</span>
+                                            </div>
+                                            <div class="item-num wishlist-label-size">
+                                                <strong>Size:</strong>
+                                                <span class="text">S</span>
+                                            </div>
+                                            <div class="item-num wishlist-label-size">
+                                                <strong>Size:</strong>
+                                                <span class="text">S</span>
+                                            </div>
+                                            <div class="item-num">
+                                                <a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description"></a>
+                                                <a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description"></a>
+                                                <a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description"></a>
+                                                <a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description"></a>
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(line.CustomerName))
+                                            {
+                                                <div class="item-num">
+                                                    <span>@Html.PropertyFor(x => x.CurrentContent.PartNumber)</span>
+                                                    <span class="item-num-sku">@line.CustomerName</span>
+                                                </div>
+                                            }
+                                            <div class="price">
+                                                <span name="PriceDisplay" class="price">@line.Pricing.UnitRegularPriceDisplay</span>
+                                                <span>/</span>
+                                                <span class="selected-uom">@line.UnitOfMeasure</span>
+                                            </div>
+                                            <div class="actions-panel">
+                                                <div class="item-actions-panel">
+                                                    <div class="item-actions-wrap" data-productId="@line.ProductId">
+                                                        <div class="info-block input-qty-pane">
+                                                            <label>@Html.PropertyFor(x => x.CurrentContent.QtyLabel): </label>
+                                                            <label> <input type="number" name="quantity" id="@("qty_"+line.Id)"  data-qtyinput="" value="@Math.Round(line.QtyOrdered, 0)" min="1" oninput="this.value = !!this.value && Math.abs(this.value) >= 1 ? Math.abs(this.value) : null" class="qty"></label>
+                                                        </div>
+                                                        <div class="action wishlist-addalltocart-space-top" data-productId="@line.ProductId" data-uom="@line.UnitOfMeasure" data-time="@DateTime.Now" data-popup-caption="@Model.CurrentContent.WishListCartPopUpConfirmationTitle" data-popup-msg="@Model.CurrentContent.WishListPopUpConfirmationMessage" data-text="Checkout" data-title="Added to Cart" data-link='@Model.CurrentContent.CartPageUrl' data-enable="@Model.CurrentContent.EnablePopup" data-addtocart-link="@Url.ContentUrl(Model.CurrentContent.CartPageUrl)" data-popup-enable="@Model.CurrentContent.EnablePopup" data-addtocarturl="AddToCart">
+                                                            <button class="btn btn-primary btnAddCart" id="@("btnAddCart_"+line.Id)" data-time="@DateTime.Now" data-popup-caption="@Model.CurrentContent.WishListCartPopUpConfirmationTitle" data-popup-msg="@Model.CurrentContent.WishListPopUpConfirmationMessage" data-text="Checkout" data-title="Added to Cart" data-link='@Model.CurrentContent.CartPageUrl' data-enable="@Model.CurrentContent.EnablePopup" data-addtocart-link="@Url.ContentUrl(Model.CurrentContent.CartPageUrl)" data-popup-enable="@Model.CurrentContent.EnablePopup" data-addtocarturl="AddToCart">@Html.PropertyFor(x => x.CurrentContent.AddToCartButtonText)</button>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="remove">
+                                            <a aria-label="Remove WishList Product" class="btn btn-remove isc-removeWishListProduct" href="javascript:void(0)"><i class="foundicon-remove"></i></a>
+                                        </div>
+                                    </li>
+                                }
+
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul class="item-list cart-items" style="display: none;"></ul>
+                        }
+                        <div class="h3" id="error-msg" data-emptylistmsg="@Html.PropertyFor(x => x.CurrentContent.WishlistNoProductValidationError)"
+                            data-nolistmsg="@Html.PropertyFor(x => x.CurrentContent.WishlistEmptyValidationError)"></div>
+
+                        @if (Model.CanAddAllToCart)
+                        {
+                            <div class="btns">
+                                <button class="btn btn-primary wishlist-add-all-to-cart btnAddAllItems" data-enable="@Model.CurrentContent.EnablePopup" data-title="@Model.CurrentContent.WishListCartPopUpConfirmationTitle" data-text="@("Checkout")" data-msg='@Model.CurrentContent.WishlistEmptyValidationError' data-popup-caption="@Model.CurrentContent.WishListCartPopUpConfirmationTitle" data-popup-msg="@Model.CurrentContent.WishListPopUpConfirmationMessage" data-addtocart-link='@Url.ContentUrl(Model.CurrentContent.CartPageUrl)' data-addalltocartmethodname='AddAllToCartCheckout' data-link='@Model.CurrentContent.CartPageUrl' style="display: @(Model.WishListLines.Count > 0 ? "block" : "none")">@Html.PropertyFor(x => x.CurrentContent.AddAllToCartButtonText)</button>
+                            </div>
+                        }
+                        else
+                        {
+                            if (Model.WishListLines.Count != Model.OutOfStockStatusCount)
+                            {
+                                <div class="btns">
+                                    <button class="btn btn-primary wishlist-add-all-to-cart btnAddAllItems" data-enable="@Model.CurrentContent.EnablePopup" data-popup-caption="@Model.CurrentContent.WishListCartPopUpConfirmationTitle" data-popup-msg="@Model.CurrentContent.WishListPopUpConfirmationMessage" data-title="Added To Cart" data-text="Checkout" data-msg='("Add All to Cart Popup")' data-link='@Model.CurrentContent.CartPageUrl' style="display: @(Model.WishListLines.Count > 0 ? "block" : "none")" >@Html.PropertyFor(x => x.CurrentContent.AddAllToCartButtonText)</button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul id="line-template" style="display: none;">
+        <li class="row item-block checkout-item isc-productContainer" data-lineid="" data-productid="">
+            <div class="small-3 columns item-thumb">
+                <a href="">
+                    <img src="" alt="">
+                </a>
+            </div>
+            <div class="small-9 columns item-details">
+                <div class="item-name">
+                    <a href=""></a>
+                </div>
+                <div name="erp-number" class="item-num wishlist-label-size">
+                    <span>@Html.PropertyFor(x => x.CurrentContent.ErpLabel)</span>
+                    <span class="item-num-sku"></span>
+                </div>
+                <div name="mfg-number" class="item-num wishlist-label-size">
+                    <span>@Html.PropertyFor(x => x.CurrentContent.Mfg)</span>
+                    <span class="item-num-sku"></span>
+                </div>
+                <div class="item-num wishlist-label-size">
+                    <strong>Color:</strong>
+                    <span class="title">Louver Matte Grey/Red</span>
+                </div>
+                <div class="item-num wishlist-label-size">
+                    <strong>Size:</strong>
+                    <span class="text">S</span>
+                </div>
+                <div class="item-num">
+                    <a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description"></a>
+                    <a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description"></a>
+                    <a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description"></a>
+                    <a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description"></a>
+                </div>
+                <div class="price">
+                    <span name="PriceDisplay" class="price"></span>
+                    <span>/</span>
+                    <span class="selected-uom">@Html.PropertyFor(x => x.CurrentContent.UomLabel)</span>
+                </div>
+                <div class="actions-panel">
+                    <div class="item-actions-panel">
+                        <div class="item-actions-wrap">
+                            <div class="info-block input-qty-pane">
+                                <label>@Html.PropertyFor(x => x.CurrentContent.QtyLabel): </label>
+                                <label>  <input type="text" name="quantity" data-qtyinput="" min="1" value="" class="qty" oninput="this.value = !!this.value && Math.abs(this.value) >= 1 ? Math.abs(this.value) : null"></label>
+                            </div>
+                            <div class="action wishlist-addalltocart-space-top" data-productid="" data-uom="">
+                                <button class="btn btn-primary btnAddCart" data-time="@DateTime.Now" data-popup-caption="@Model.CurrentContent.WishListCartPopUpConfirmationTitle" data-popup-msg="@Model.CurrentContent.WishListPopUpConfirmationMessage" data-text="Checkout" data-title="Added to Cart" data-link='@Model.CurrentContent.CartPageUrl' data-enable="@Model.CurrentContent.EnablePopup" data-addtocart-link="@Url.ContentUrl(Model.CurrentContent.CartPageUrl)" data-popup-enable="@Model.CurrentContent.EnablePopup" data-addtocarturl="AddToCart">@Html.PropertyFor(x => x.CurrentContent.AddToCartButtonText)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="remove">
+                <a aria-label="Remove WishList Product" class="btn btn-remove isc-removeWishListProduct"  href="javascript:void(0)"><i class="foundicon-remove"></i></a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+
+
+

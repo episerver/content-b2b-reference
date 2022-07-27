@@ -1,0 +1,66 @@
+﻿@model AddressesViewModel
+<div id="addressesTable" class="p-2 overflow-auto relative">
+    <input type="hidden" id="addresses_Page" value="@Model.ShipTosQueryParameters.Page" />
+    <input type="hidden" id="addresses_PageSize"value="@Model.ShipTosQueryParameters.PageSize" />
+    <input type="hidden" id="addresses_Filter" value="@Model.ShipTosQueryParameters.Filter" />
+    <table class="table-fixed border-x border-b w-full whitespace-no-wrap">
+        <thead>
+            <tr class="text-xs font-semibold uppercase bg-gray-200">
+                <th class="p-1">
+                    Label
+                </th>
+                <th class="p-1">
+                    City
+                </th>
+                <th class="p-1">
+                    State
+                </th>
+                <th class="p-1">
+                    Country
+                </th>
+                <th class="p-1">
+                    Email
+                </th>
+                <th class="p-1">
+                    Phone
+                </th>
+                <th class="p-1">
+                    Default
+                </th>
+            </tr>
+        </thead>
+        <tbody class="">
+            @foreach (var shipTo in Model.ShipTos?.ShipTos ?? new List<ShipTo>())
+            {
+                <tr class="odd:bg-gray-100 hover:!bg-stone-200 text-xs">
+                    <td class="p-1">
+                        <a href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.AddresesPage) + $"/edit?billToId={Model.BIllToId}&shipToId={shipTo.Id}")" class="py-2 px-4 text-gray-700">
+                            @shipTo.CustomerSequence
+                        </a>
+                    </td>
+                    <td class="p-1">
+                        @shipTo.City
+                    </td>
+                    <td class="p-1">
+                        @shipTo.State?.Abbreviation
+                    </td>
+                    <td class="p-1">
+                        @shipTo.Country?.Abbreviation
+                    </td>
+                    <td class="p-1">
+                        @shipTo.Email
+                    </td>
+                    <td class="p-1">
+                        @shipTo.Phone
+                    </td>
+                    <td class="p-1">
+                        @if (shipTo.IsDefault)
+                        {
+                            <i class="fa fa-check"></i>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

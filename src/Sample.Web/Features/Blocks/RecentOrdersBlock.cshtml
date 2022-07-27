@@ -1,0 +1,49 @@
+﻿@using EPiServer.Web.Mvc.Html
+
+@model Sample.Models.ViewModels.RecentOrderBlockViewModel
+
+<div class="recent-orders-heading">
+    <div class="h4" @Html.EditAttributes(x => x.RecentOrdersBlock.RecentOrdersText)> @Html.PropertyFor(x => x.RecentOrdersBlock.RecentOrdersText)</div>
+</div>
+@if (Model.OrderHistoryViewModel.OrderCollection.Orders.Count > 0)
+{
+    <div class="recent-orders-btnview">
+        <a href="@Model.ViewAllLink" class="btn btn-primary" @Html.EditAttributes(x => x.RecentOrdersBlock.ViewAllButtonText)> @Html.PropertyFor(x => x.RecentOrdersBlock.ViewAllButtonText)</a>
+    </div>
+}
+<div class="overflow-table">
+    <table class="info-tbl recent-order-table">
+        <tbody>
+            @if (Model.OrderHistoryViewModel.OrderCollection.Orders.Count > 0)
+            {
+            <thead>
+                <tr>
+                    <th class="col-date"><a href="#" aria-label="OrderDate" data-sort="OrderDate" class="sort no-sort">@Html.PropertyFor(x => x.RecentOrdersBlock.HeaderDate)</a></th>
+                    <th class="col-ordernum"><a href="#" aria-label="WebOrderNumber"  data-sort="WebOrderNumber" class="sort">@Html.PropertyFor(x => x.RecentOrdersBlock.HeaderOrderNo)</a></th>
+                    <th class="col-shipto"><a href="#" aria-label="CustomerSequence"  data-sort="CustomerSequence" class="sort">@Html.PropertyFor(x => x.RecentOrdersBlock.HeaderShipTo)</a></th>
+                    <th class="col-status"><a href="#" aria-label="Status"  data-sort="Status" class="sort">@Html.PropertyFor(x => x.RecentOrdersBlock.HeaderStatus)</a></th>
+                    <th class="col-erp"><a href="#"  aria-label="ERPOrderNumber" data-sort="ERPOrderNumber" class="sort">@Html.PropertyFor(x => x.RecentOrdersBlock.HeaderWebOrderNo)</a></th>
+                    <th class="col-po"><a href="#" aria-label="CustomerPO"  data-sort="CustomerPO" class="sort">@Html.PropertyFor(x => x.RecentOrdersBlock.HeaderPoNo)</a></th>
+                    <th class="col-tot"><a href="#" aria-label="OrderTotal"  data-sort="OrderTotal" class="sort">@Html.PropertyFor(x => x.RecentOrdersBlock.HeaderTotal)</a></th>
+                </tr>
+            </thead>
+            foreach (var getorder in Model.OrderHistoryViewModel.OrderCollection.Orders)
+            {
+                <tr>
+                    <td class="col-date"><a aria-label="OrderNumber" href="@(string.Format("{0}?ordernumber={1}", @Url.ContentUrl(Model.RecentOrdersBlock.OrderDetailsLink), getorder.WebOrderNumber))">@getorder.OrderDate.ToUniversalTime().ToShortDateString()</a></td>
+                    <td class="col-ordernum"><a aria-label="OrderNumber" href="@(string.Format("{0}?ordernumber={1}",  @Url.ContentUrl(Model.RecentOrdersBlock.OrderDetailsLink), getorder.WebOrderNumber))">@getorder.ErpOrderNumber</a></td>
+                    <td class="col-shipto">@getorder.STCompanyName</td>
+                    <td class="col-status">@getorder.Status</td>
+                    <td class="col-erp">@getorder.WebOrderNumber</td>
+                    <td class="col-po">@getorder.CustomerPO</td>
+                    <td class="col-tot">@getorder.OrderGrandTotalDisplay</td>
+                </tr>
+            }
+        }
+            </tbody>
+        </table>
+        @if (Model.OrderHistoryViewModel.OrderCollection.Orders.Count == 0)
+        {
+            <div class="results-count"><span class="result-num">@(Model.OrderHistoryViewModel.OrderCollection.Pagination != null ? Model.OrderHistoryViewModel.OrderCollection.Pagination.TotalItemCount : 0)</span> <span class="result-lbl">order(s) found</span></div>
+        }
+    </div>

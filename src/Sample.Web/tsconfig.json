@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "lib": ["DOM", "ESNext"],
+        "jsx": "react",
+        "noEmit": true,
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "allowJs": true
+    },
+    "include": ["clientResources/scripts/**/*"],
+    "exclude": ["node_modules", "dist"]
+}

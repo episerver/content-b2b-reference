@@ -1,0 +1,78 @@
+﻿@model OrderHistoryPageViewModel
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@{
+    Layout = "~/Features/MyAccount/_SidebarLayout.cshtml";
+}
+<div x-data="{ openFilter: false }" class="">
+    <h2 class="text-3xl font-semibold mb-6">Order History.</h2>
+    <div class="flex justify-between mb-6">
+        <label id="orderHistory_TotalOrders">@Model.OrderCollection.Pagination.TotalItemCount orders</label>
+        <a @@click="openFilter = !openFilter">
+            <i class="fa fa-filter"></i>
+        </a>
+    </div>
+    <div x-show="openFilter" class="flex flex-row flex-wrap">
+        <div class="basis-full md:basis-1/3 mb-5">
+            <label class="block mb-1">Product</label>
+            <input id="filter_Product" placeholder="Product Number" type="text" class="actionHistorySort appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6" />
+            <input type="hidden" id="filter_Sort" value="@Model.QueryParameters.Sort"/>
+        </div>
+        <div class="basis-full md:basis-1/3  mb-5">
+            <label class="block mb-1">PO #</label>
+            <input id="filter_PONumber" placeholder="PO Number" type="text" class="actionHistorySort appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6" />
+            <label class="block mb-1">Order #</label>
+            <input id="filter_OrderNumber" placeholder="Order Number" type="text" class="actionHistorySort appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6" />
+        </div>
+        <div class="basis-full md:basis-1/3  mb-5">
+            <label class="block mb-1">From Date</label>
+            <input id="filter_FromDate" placeholder="@DateTime.Now.ToShortDateString()" type="date" class="actionHistorySort appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6" />
+            <label class="block mb-1">To Date</label>
+            <input id="filter_ToDate" placeholder="@DateTime.Now.ToShortDateString()" type="date" class="actionHistorySort appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6" />
+        </div>
+        <div class="basis-full md:basis-1/3  mb-5">
+            <label class="block mb-1">Ship To </label>
+            <select id="filter_ShipTo" class="actionHistorySort block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6">
+                @foreach (var shipto in Model.ShipToCollection.ShipTos)
+                {
+                    if (shipto.Id == Model.QueryParameters.CustomerSequence)
+                    {
+                        <option selected="selected" value="@shipto.CustomerSequence">@shipto.Label</option>
+                    }
+                    else
+                    {
+                        <option value="@shipto.CustomerSequence">@shipto.Label</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="basis-full md:basis-1/3  mb-5">
+            <label class="block mb-1">Status </label>
+            <select id="filter_Status" class="actionHistorySort block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6">
+                @foreach (var status in Model.OrderStatus)
+                {
+                    if (Model.QueryParameters.Status != null && Model.QueryParameters.Status.Contains(status.Value))
+                    {
+                        <option selected="selected" value="@status.Value">@status.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@status.Value">@status.Text</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="basis-full md:basis-1/3  mb-5">
+            <label class="block mb-1">Order Total </label>
+            <select id="filter_OrderType" class="actionHistorySort block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6">
+                <option value="">@Html.TranslateFallback("Select", "Select")</option>
+                <option value="Greater Than">@Html.TranslateFallback("Greater Than", "Greater Than")</option>
+                <option value="Less Than">@Html.TranslateFallback("Less Than", "Less Than")</option>
+                <option value="Equal To">@Html.TranslateFallback("Equal To", "Equal To")</option>
+            </select>
+            <label class="block mb-1">Amount </label>
+            <input id="filter_OrderAmount" placeholder="100" type="number" class="actionHistorySort appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6" />
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("_OrderHistoryTable", Model.OrderCollection)

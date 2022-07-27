@@ -1,0 +1,207 @@
+﻿@model Sample.Models.ViewModels.CheckoutPageViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration configuration
+<section x-data="{ showEditAddress: false  }" class="py-10 bg-gray-50">
+    <div class="container max-w-screen-xl mx-auto px-4">
+        <div class="flex flex-col md:flex-row gap-4 lg:gap-8">
+            <main class="md:w-2/3">
+                <input type="hidden" id="txAuthenticationKey" value="@Model.TokenExDto?.AuthenticationKey">
+                <input type="hidden" id="txOrigin" value="@Model.TokenExDto?.Origin">
+                <input type="hidden" id="txTimestamp" value="@Model.TokenExDto?.Timestamp">
+                <input type="hidden" id="txTokenExId" value="@Model.TokenExDto?.TokenExId">
+                <input type="hidden" id="txTokenScheme" value="@Model.TokenExDto?.TokenScheme">
+
+                <article x-data="{ paymentMethod: 'CC' }" class="border border-gray-200 bg-white shadow-sm rounded p-4 lg:p-6 mb-5">
+                    <h2 class="text-3xl font-semibold mb-6">@Model.CurrentContent.OrderReviewLabel</h2>
+                    <div class="flex justify-between">
+                        <h2 class="text-xl font-semibold">@Model.CurrentContent.ShippingInformation</h2>
+                    </div>
+                    <div x-data="carrierServices()" class="grid md:grid-cols-3 gap-x-3">
+                        <div class="mb-4 md:col-span-1">
+                            <label class="block mb-1"> @Model.CurrentContent.SelectCarrier </label>
+                            <select id="checkout_Carriers" x-model="selectedCarrier" x-bind:disabled="isLoading" x-on:input.debounce.750="getServices()" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                <template x-for="option in carriers">
+                                    <option x-bind:value="option.id" x-bind:selected="option.id === selectedCarrier" x-text="option.description"></option>
+                                </template>
+                            </select>
+                        </div>
+
+                        <div class="mb-4 md:col-span-1">
+                            <label class="block mb-1"> @Model.CurrentContent.SelectService </label>
+                            <select id="checkout_Services" x-model="selectedService" x-bind:disabled="isLoading" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                <template x-for="option in services">
+                                    <option x-bind:value="option.id" x-bind:selected="option.id === selectedService" x-text="option.description"></option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="mb-4 md:col-span-1">
+                            <label class="block mb-1"> @Model.CurrentContent.DeliveryDateText </label>
+                            <input type="date" id="checkout_DeliveryDate" class="mb-1 appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full" />
+                            <label class="block mb-1"> @Model.CurrentContent.DeliveryDateInfo </label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <h2 class="text-xl font-semibold">@Model.CurrentContent.PaymentDetailsSubtitle</h2>
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-3 mb-6">
+                        <div class="mb-4 md:col-span-1">
+                            <label class="block mb-1"> @Model.CurrentContent.PaymentMethod </label>
+                            <select id="checkout_PaymentMethods" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                @foreach (var paymentOption in Model.Cart.PaymentOptions.PaymentMethods)
+                                {
+                                    if (paymentOption.Name == Model.Cart.PaymentMethod.Name)
+                                    {
+                                        <option selected="selected" value="@paymentOption.Name">@paymentOption.Description</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@paymentOption.Name">@paymentOption.Description</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-4 md:col-span-1">
+                            <label class="block mb-1"> @Model.CurrentContent.PoNumber </label>
+                            <input type="text" id="checkout_PONumber" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full" />
+                        </div>
+                    </div>
+                    <div id="paymentMethodNewCard" class="grid sm:grid-cols-2 gap-3 mb-6">
+                        <div class="mb-4 md:col-span-1">
+                            <h2 class="text-xl font-semibold">@Model.CurrentContent.CreditCardDetailsLabel</h2>
+                            <label class="flex items-center w-max my-4">
+                                @if ((Model.Cart.PaymentOptions?.CanStorePaymentProfile ?? false))
+                                {
+                                    <input id="checkout_SaveCard" name="checkout_SaveCard" type="checkbox" class="h-4 w-4">
+                                }
+                                else
+                                {
+                                    <input disabled="disabled" id="checkout_SaveCard" name="checkout_SaveCard" type="checkbox" class="h-4 w-4">
+                                }
+                                
+                                <span class="ml-2 inline-block text-gray-500"> @Model.CurrentContent.SaveCardLabel </span>
+                            </label>
+                            <label class="block mb-1"> @Model.CurrentContent.NameOnCard </label>
+                            <input type="text" id="checkout_NameOnCard" class="mb-1 appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full" />
+                            <label class="block mt-1 mb-1"> @Model.CurrentContent.CardNumber </label>
+                            <div id="tokenExCardNumber" class="w-full h-12 mb-1"></div>
+                            <label class="block mb-1"> @Model.CurrentContent.ExpirationDate </label>
+                            <input type="text" id="checkout_ExpirationDate" placeholder="MM/YY" class="mb-1 appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-20" />
+                            <label class="block mb-1"> @Model.CurrentContent.SecurityCode </label>
+                            <div id="tokenExSecurityCode" class="w-full h-12 mb-1"></div>
+                        </div>
+                        <div x-data="{ useNewCCAddress: false }" class="mb-4 md:col-span-1">
+                            <h2 class="text-xl font-semibold">@Model.CurrentContent.CreditCardAddress</h2>
+                            <label class="flex items-center w-max my-4">
+                                <input @@click="useNewCCAddress = !useNewCCAddress" id="checkout_UseBillingAddress" name="checkout_UseBillingAddress" type="checkbox" checked="checked" class="h-4 w-4">
+                                <span class="ml-2 inline-block text-gray-500"> @Model.CurrentContent.UseBillingAddress </span>
+                            </label>
+                            <div x-show="useNewCCAddress === false">
+                                <h2 class="text-lg font-semibold">
+                                    @Model.CurrentContent.BillingAddressDescriptionLabel
+                                </h2>
+                                <address>
+                                    <p>@Model.Cart.BillTo.CompanyName</p>
+                                    @if (!string.IsNullOrEmpty(Model.Cart.BillTo.Attention))
+                                    {
+                                        <p>@Model.CurrentContent.Attention: @Model.Cart.BillTo.Attention</p>
+                                    }
+                                    <p>@Model.Cart.BillTo.Address1</p>
+                                    @if (!string.IsNullOrEmpty(Model.Cart.BillTo.Address2))
+                                    {
+                                        <p>@Model.Cart.BillTo.Address2</p>
+                                    }
+                                    <p>@Model.Cart.BillTo.City, @(Model.Cart.BillTo.State?.Name ?? ""), @Model.Cart.BillTo.PostalCode </p>
+                                    <p>@Model.Cart.BillTo.Email</p>
+                                </address>
+                            </div>
+                            <div x-data="countryRegions()" x-show="useNewCCAddress">
+                                <div class="mb-4">
+                                    <label class="block mb-1"> Address 1 </label>
+                                    <input id="ccAddress_Address1" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
+                                        type="text"
+                                        placeholder="Type here" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block mb-1"> Country </label>
+                                    <select id="ccAddress_Countries" x-model="selectedCountry" x-bind:disabled="isLoading" x-on:input.debounce.750="getStates()" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                        <template x-for="option in countries">
+                                            <option x-bind:value="option.id" x-bind:selected="option.id === selectedCountry" x-text="option.name"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block mb-1"> State / Region </label>
+                                    <select id="ccAddress_Regions" x-model="selectedRegion" x-bind:disabled="isLoading" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                        <template x-for="option in regions">
+                                            <option x-bind:value="option.id" x-bind:selected="option.id === selectedRegion" x-text="option.name"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                               
+                                <div class="mb-4">
+                                    <label class="block mb-1"> City </label>
+                                    <input id="ccAddress_City" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
+                                            type="text"
+                                            placeholder="Type here" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block mb-1"> Postal Code </label>
+
+                                    <input id="ccAddress_PostalCode" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
+                                            type="text"
+                                            placeholder="Type here" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="paymentMethodExistingCard" class="hidden mb-6">
+                        <label class="block mb-1"> <b class="font-semibold">@Model.CurrentContent.BillingAddressDescriptionLabel:</b>@Model.Cart.BillTo.FullAddress  </label>
+                        <label class="block mb-1"> @Model.CurrentContent.SecurityCode </label>
+                        <div id="savedTokenExSecurityCode" class="w-full h-12 mb-1"></div>
+                    </div>
+                </article> <!-- card.// -->
+
+            </main>
+            <aside class="md:w-1/3">
+
+                <article class="text-gray-600" style="max-width: 350px">
+                    <div class="flex justify-end space-x-2">
+                        <a class="actionSubmitOrder px-4 py-3 mb-2 inline-block text-lg w-full text-center font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+                           href="#"> @Model.CurrentContent.PlaceOrderButtonText </a>
+                        <a class="px-4 py-3 mb-2 inline-block text-lg w-full text-center font-medium  text-gray-700 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 hover:text-blue-600"
+                           href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.ChecoutPage) + "?step=address")"> Back </a>
+                    </div>
+                    
+
+                    @await Html.PartialAsync("_OrderTotals", Model)
+
+                    <hr class="my-4">
+
+                    <h2 class="text-lg font-semibold mb-3">Items in cart</h2>
+                    @foreach (var line in Model.Cart.CartLines)
+                    {
+                        <figure class="flex items-center mb-4 leading-5">
+                            <div>
+                                <div class="block relative w-20 h-20 rounded p-1 border border-gray-200">
+                                    <img width="70" height="70" src="@line.SmallImagePath" alt="@line.AltText">
+                                    <span class="absolute -top-2 -right-2 w-6 h-6 text-sm text-center flex items-center justify-center text-white bg-gray-400 rounded-full">
+                                        @(line.QtyOrdered.Value.ToString("f0") ?? "1")
+                                    </span>
+                                </div>
+                            </div>
+                            <figcaption class="ml-3">
+                                <p> @line.ShortDescription </p>
+                                <p class="mt-1 text-gray-400"> Total: @line.Pricing.ExtendedUnitNetPriceDisplay </p>
+                            </figcaption>
+                        </figure>
+                    }
+                     <a class="actionSubmitOrder px-4 py-3 mb-2 inline-block text-lg w-full text-center font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+                           href="#"> @Model.CurrentContent.PlaceOrderButtonText </a>
+                </article>
+            </aside>
+        </div>
+    </div>
+</section>
+@section AdditionalScripts {
+    <script type="text/javascript" src="@configuration.GetSection("TokenExUrl")?.Value" async></script>
+}

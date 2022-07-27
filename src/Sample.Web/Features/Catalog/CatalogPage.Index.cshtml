@@ -1,0 +1,21 @@
+@model Sample.Models.ViewModels.CatalogViewModel
+@using EPiServer.Web.Mvc.Html
+
+@if (Model?.ProductListViewModel != null)
+{
+    @await Html.PartialAsync("PLPBannerImage", Model.ProductListViewModel.Category)
+}
+
+<div class="container mx-auto">
+    
+    @if (Model?.ProductDetailViewModel != null)
+    {
+        @await Html.PartialAsync("ProductDetail", Model.ProductDetailViewModel)
+    }
+    else
+    {
+        @await Html.PartialAsync("ProductList", Model?.ProductListViewModel)
+    }
+</div>
+
+

@@ -1,0 +1,18 @@
+﻿@inject IUrlResolver urlResolver 
+@model List<MenuItemViewModel>
+
+@if (Model != null && Model.Count > 0)
+{
+    <div>
+        <ul>
+            @foreach (var menuItem in Model)
+            {
+                <li class="mb-1">
+                    <a href="@(string.IsNullOrEmpty(menuItem.Uri) ? "javascript:void(0);" : menuItem.Uri)" class="block p-4 text-xl font-semibold rounded">
+                        @menuItem.Name
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+}

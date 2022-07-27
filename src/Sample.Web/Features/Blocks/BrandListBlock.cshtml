@@ -1,0 +1,29 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.BrandListBlockViewModel
+
+<section class="brands-section">
+    <div class="container">
+        <div class="h5 block-heading">
+            <span>
+                @Html.EditAttributes(x => x.BrandListBlock.Title)
+                @Html.PropertyFor(x => x.BrandListBlock.Title)
+            </span>
+        </div>
+        <div class="brands-slider brands">
+            @foreach (var brand in Model.Brands.Brands)
+            {
+                var altText = brand.LogoAltText == null ? brand.Name : brand.LogoAltText;
+                <div class="slick-item">
+                    <a href="#"><img src="@brand.LogoLargeImagePath" alt="@altText"></a>
+                </div>
+            }
+            <div class="slickBrands-nav-holder">
+                <div class="container">
+                    <div class="count-outer">
+                        <div class="slideCount"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

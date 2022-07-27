@@ -1,0 +1,226 @@
+﻿@using EPiServer.Web.Mvc.Html
+@using Microsoft.AspNetCore.Http.Extensions
+@model Sample.Models.ViewModels.InvoiceDetailsPageViewModel
+@{
+    var url = new Uri(UriHelper.GetDisplayUrl(Context.Request)).GetLeftPart(UriPartial.Authority);
+    url = string.Format("{0}/{1}", url, Model.Language);
+}
+<main id="main">
+    <div class="container order-confirmation-holder checkout-confirmation-page">
+        <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-10">
+            <span @Html.EditAttributes(x => x.CurrentContent.MetaTitle)>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span>
+        </h1>
+        <div class="info-order-table">
+            <div class="summary-heading">
+                <div class="block-left"><strong>@Html.PropertyFor(x => x.CurrentContent.InvoiceNo)</strong> @Model.InvoiceDetailsViewModel.Invoice.InvoiceNumber</div>
+            </div>
+            <div class="row summary-info-cols">
+                <div class="col-md-4">
+                    <div class="summary-info">
+                        <ul class="list-unstyled order-status">
+                            <li>
+                                <strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.InvoiceDate)</strong> <time datetime="2021-01-15">@Model.InvoiceDetailsViewModel.Invoice.InvoiceDate.Value.ToString("MMM dd yyyy")</time>
+                            </li>
+                            <li><strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.InvoiceDueDate)</strong><time datetime="2021-01-15">@Model.InvoiceDetailsViewModel.Invoice.DueDate.Value.ToString("MMM dd yyyy")</time></li>
+                            @if (Model.InvoiceDetailsViewModel.Invoice.Terms != "")
+                            {
+                                <li>
+                                    <strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.Terms)</strong>
+                                    @Model.InvoiceDetailsViewModel.Invoice.Terms
+                                </li>
+                            }
+                            <li><strong class="info-text-title">@Model.CurrentContent.PoNumber</strong> @Model.InvoiceDetailsViewModel.Invoice.CustomerPO</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="shipping-detail-text">
+                        <strong class="info-text-title">@Model.CurrentContent.ShippingAddress</strong>
+                        <address>
+                            @Model.InvoiceDetailsViewModel.Invoice.STCompanyName<br>
+                            @Model.InvoiceDetailsViewModel.Invoice.STAddress1
+                            @if (!string.IsNullOrEmpty(Model.InvoiceDetailsViewModel.Invoice.STAddress2))
+                            {
+                                @Model.InvoiceDetailsViewModel.Invoice.STAddress2
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.InvoiceDetailsViewModel.Invoice.ShipToCity) && (Model.InvoiceDetailsViewModel.Invoice.ShipToState != null && Model.InvoiceDetailsViewModel.Invoice.ShipToState != null) && !string.IsNullOrEmpty(Model.InvoiceDetailsViewModel.Invoice.ShipToPostalCode))
+                            {
+                                var shipInfo = Model.InvoiceDetailsViewModel.Invoice.ShipToCity + ", " + Model.InvoiceDetailsViewModel.Invoice.ShipToState + ", " + Model.InvoiceDetailsViewModel.Invoice.ShipToPostalCode + ", " + Model.InvoiceDetailsViewModel.Invoice.STCountry;
+                                @shipInfo
+                            }
+                        </address>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="shipping-detail-text">
+                        <strong class="info-text-title">@Model.CurrentContent.BillingAddress</strong>
+                        <address>
+                            @Model.InvoiceDetailsViewModel.Invoice.BTCompanyName<br>
+                            @Model.InvoiceDetailsViewModel.Invoice.BTAddress1
+                            @if (!string.IsNullOrEmpty(Model.InvoiceDetailsViewModel.Invoice.BTAddress2))
+                            {
+                                @Model.InvoiceDetailsViewModel.Invoice.BTAddress2
+                            }
+                            @if (!string.IsNullOrEmpty(Model.InvoiceDetailsViewModel.Invoice.BillToCity) && (Model.InvoiceDetailsViewModel.Invoice.BillToState != null && Model.InvoiceDetailsViewModel.Invoice.BillToState != null) && !string.IsNullOrEmpty(Model.InvoiceDetailsViewModel.Invoice.BillToPostalCode))
+                            {
+                                var shipInfo = Model.InvoiceDetailsViewModel.Invoice.BillToCity + ", " + Model.InvoiceDetailsViewModel.Invoice.BillToState + ", " + Model.InvoiceDetailsViewModel.Invoice.BillToPostalCode + ", " + Model.InvoiceDetailsViewModel.Invoice.BTCountry;
+                                @shipInfo
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.InvoiceDetailsViewModel.Invoice.Notes))
+                            {
+                                <h3 style="display: inline">@Model.CurrentContent.NotesLabel</h3>
+                                <span>@Model.InvoiceDetailsViewModel.Invoice.Notes</span>
+                            }
+                        </address>
+                    </div>
+                    <div class="shipping-detail-text">
+                        <strong class="info-text-title">@Model.CurrentContent.ShippingMethodLabel</strong>
+                        @Model.InvoiceDetailsViewModel.Invoice.ShipViaDescription<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-order-table">
+            <div class="summary-heading d-none d-md-block">
+                <div class="row d-md-flex justify-content-between align-items-center">
+                    <div class="col-md-6 col-lg-8">@Model.CurrentContent.Headerproduct</div>
+                    <div class="col-md-6 col-lg-4 d-flex align-items-center mx-n3 text-center">
+                        <div class="col-heading w-25 px-3">@Model.CurrentContent.HeaderPrice</div>
+                        <div class="col-heading w-25 px-3">@Model.CurrentContent.HeaderQtyOrdered</div>
+                        <div class="col-heading w-25 px-3">@Model.CurrentContent.HeaderQtyShipped</div>
+                        <div class="col-heading w-25 px-3">@Model.CurrentContent.HeaderSubTotal</div>
+                    </div>
+                </div>
+            </div>
+            <div class="product-order-summary product-info-block secondary">
+                @foreach (var line in Model.InvoiceDetailsViewModel.Invoice.InvoiceLines)
+                {
+                    url = string.Format("{0}{1}", url, line.ProductUri);
+                    <div class="product-order-info" data-lineId="@line.Id" data-uom="@line.UnitOfMeasure" data-qty="@line.QtyInvoiced">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-8">
+                                <div class="product-info">
+                                    <div class="product-image mb-0">
+                                        @if (line.MediumImagePath != null)
+                                        {
+                                            <a href="@line.ProductUri" aria-label="productinvoice"><img src="@line.MediumImagePath" alt="productimg"></a>
+                                        }
+                                    </div>
+                                    <div class="product-description">
+                                        <div class="title-holder">
+                                            <div class="h3" itemprop="name">
+                                                @if (line.ProductUri != null)
+                                                {
+                                                    <a href="@(line.Id != null ? url : "#")">
+                                                        <span>
+                                                            @{ var description = line.ShortDescription == null ? line.Description : line.ShortDescription; }
+                                                            @description
+                                                        </span>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <div>
+                                                        <span>
+                                                            @{ var description = line.ShortDescription == null ? line.Description : line.ShortDescription; }
+                                                            @description
+                                                        </span>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="meta-price-stat">
+                                            <ul class="list-inline prod-meta">
+                                                <li>Item @line.ProductErpNumber</li>
+                                                <li class="d-none d-lg-inline-block">Model @line.ManufacturerItem</li>
+                                            </ul>
+                                            <ul class="product-spec-list list-unstyled p-0 m-0">
+                                                <li>
+                                                    <strong>Color:</strong>
+                                                    <span class="title">Louver Matte Grey/Red</span>
+                                                </li>
+                                                <li class="no-after-line">
+                                                    <strong>Size:</strong>
+                                                    <span class="text">S</span>
+                                                </li>
+                                                <li class="d-md-none">
+                                                    <span class="text">@line.UnitPriceDisplay</span>
+                                                </li>
+                                                <li class="d-md-none">
+                                                    <strong>Qty:</strong>
+                                                    <span class="text">@Convert.ToInt32(line.QtyInvoiced).ToString()</span>
+                                                </li>
+                                                <li class="d-md-none">
+                                                    <strong>Shipped:</strong>
+                                                    <span class="text">@Convert.ToInt32(line.QtyInvoiced).ToString()</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4 d-none d-md-flex mx-n3 text-center">
+                                <div class="col-info w-25 px-3">
+                                    @line.UnitPriceDisplay/@line.UnitOfMeasure
+                                </div>
+                                <div class="col-info w-25 px-3">
+                                    @Convert.ToInt32(line.QtyInvoiced).ToString()
+                                </div>
+                                <div class="col-info w-25 px-3">
+                                    @Convert.ToInt32(line.QtyInvoiced).ToString()
+                                </div>
+                                <div class="col-info w-25 px-3">
+                                    <strong>@line.LineTotalDisplay</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="product-order-footer row justify-content-between">
+                <div class="col-md-6 col-lg-8">
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <ul class="list-unstyled list-order-summary">
+                        <li class="d-flex justify-content-between">
+                            <span class="info-title pr-1 text-uppercase">@Model.CurrentContent.InvoiceSubtotalLabel</span>
+                            <strong class="font-weight-medium">@Model.InvoiceDetailsViewModel.Invoice.ProductTotalDisplay</strong>
+                        </li>
+                        @if (Model.InvoiceDetailsViewModel.Invoice.DiscountAmount > 0)
+                        {
+                            <li class="d-flex justify-content-between">
+                                <span class="info-title pr-1 text-uppercase">@Model.CurrentContent.PromotionLabel</span>
+                                <strong class="font-weight-medium">-@Model.InvoiceDetailsViewModel.Invoice.DiscountAmountDisplay</strong>
+                            </li>
+                        }
+                        <li class="d-flex justify-content-between">
+                            <span class="info-title pr-1 text-uppercase">@Model.CurrentContent.ShippingHandlingLabel</span>
+                            <strong class="font-weight-medium">@Model.InvoiceDetailsViewModel.Invoice.ShippingAndHandlingDisplay</strong>
+                        </li>
+                        <li class="d-flex justify-content-between">
+                            <span class="info-title pr-1 text-uppercase">@Model.CurrentContent.TaxLabel</span>
+                            <strong class="font-weight-medium">@Model.InvoiceDetailsViewModel.Invoice.TaxAmountDisplay</strong>
+                        </li>
+                        <li class="d-flex justify-content-between pr-1">
+                            <span class="title font-weight-bold text-uppercase">@Model.CurrentContent.TotalLabel</span>
+                            <strong class="font-weight-bold">@Model.InvoiceDetailsViewModel.Invoice.InvoiceTotalDisplay</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="product-order-footer row justify-content-between">
+                <div class="col-md-6 col-lg-8">
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="btn-holder btn-holder-order-detail btn-saved-order-view"> <a href="javascript: window.print();" class="btn btn-outline-primary d-block d-md-inline-block btn-saved-order-view">@Html.PropertyFor(x => x.CurrentContent.PrintButton)</a></div>
+                    <div class="btn-holder btn-holder-order-detail btn-saved-order-view">
+                        <a href="@Model.ReturnPageLink" class="btn btn-outline-primary d-block d-md-inline-block btn-saved-order-view">@Model.CurrentContent.ReturnButton</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

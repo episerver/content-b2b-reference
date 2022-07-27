@@ -1,0 +1,41 @@
+@model IBlockViewModel<ButtonBlock>
+
+@{
+    var style = "";
+    var classes = "";
+
+    if (Model.CurrentBlock.TextColorOverride)
+    {
+        classes += $"{Model.CurrentBlock.ButtonTextColor} ";
+    }
+
+    if (Model.CurrentBlock.BorderStyleOverride)
+    {
+        style += $"border: {Model.CurrentBlock.BorderWidth}px {Model.CurrentBlock.BorderStyle} {Model.CurrentBlock.ButtonBorderColor};";
+    }
+
+    if (Model.CurrentBlock.ShowTransparentBackground)
+    {
+        classes += $"bg-transparent ";
+    }
+    else if (Model.CurrentBlock.BackgroundColorOverride)
+    {
+        classes += $"{Model.CurrentBlock.ButtonBackgroundColor} ";
+    }
+}
+
+<div style="opacity:@Model.CurrentBlock.BlockOpacity;"
+     class="@($"{Model.CurrentBlock.Padding} {Model.CurrentBlock.Margin}")">
+    <a style="@style"
+       title="@Model.CurrentBlock.ButtonText" 
+       class="@($"px-4 py-2 inline-block text-lg rounded-md {classes} {Model.CurrentBlock.ButtonStyle}")"
+       href="@Url.ContentUrl(Model.CurrentBlock.ButtonLink)" @Html.EditAttributes(m => m.CurrentBlock.ButtonText)>
+        @{
+            var buttonText = string.IsNullOrWhiteSpace(Model.CurrentBlock.ButtonText)
+                ? "Button text"
+                : Model.CurrentBlock.ButtonText;
+        }
+        @buttonText
+    </a>
+    <p>@Html.PropertyFor(m => m.CurrentBlock.ButtonCaption)</p>
+</div>

@@ -1,0 +1,47 @@
+﻿@model MyAccountPageViewModel
+@{
+    Layout = "~/Features/MyAccount/_SidebarLayout.cshtml";
+}
+<div class="container">
+    <div class="page-content order-history" role="main">
+        <div class="ui-lock use-fastclick"></div>
+        <div class="cms-rearrangeable">
+            <div class="row main-row">
+                <div class="col-md-12">
+
+                    <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-10" @Html.EditAttributes(x => x.CurrentContent.MetaTitle)>
+                        <span>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span>
+                    </h1>
+                    
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="my-account-quicklink">
+                                <div class="h5 block-heading my-account-quicklinkheading" @Html.EditAttributes(x => x.CurrentContent.QuickLinkHeading)>
+                                    <span>@Html.PropertyFor(x => x.CurrentContent.QuickLinkHeading)</span>
+                                </div>
+                                @Html.PropertyFor(x => x.CurrentContent.QuickLinksContentArea)
+                                <div class="h5 block-heading my-account-mylistheading" @Html.EditAttributes(x => x.CurrentContent.MyListsHeading)>
+                                    <span>@Html.PropertyFor(x => x.CurrentContent.MyListsHeading)</span>
+                                </div>
+                                <ul class="list-unstyled list-cart-tools">
+                                    @foreach (var wishList in Model.MyAccountViewModel?.WishListCollection)
+                                    {
+                                        <li>
+                                            <a href="@Model.MyAccountViewModel.MyListLink?id=@wishList.Id">@wishList.Name</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="h4" @Html.EditAttributes(x => x.CurrentContent.DashboardTitle)> @Html.PropertyFor(x => x.CurrentContent.DashboardTitle)</div>
+                            <div>
+                                @Html.PropertyFor(x => x.CurrentContent.RecentOrdersContentArea)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

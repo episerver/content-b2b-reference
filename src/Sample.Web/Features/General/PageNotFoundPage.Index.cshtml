@@ -1,0 +1,18 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.PageNotFoundPageViewModel
+
+<div class="container">
+    <div class="page-content order-history" role="main">
+        <div class="ui-lock use-fastclick"></div>
+        <div class="cms-rearrangeable">
+            <div class="row main-row">
+                <div class="col-md-12">
+                    <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-10" @Html.EditAttributes(x => x.CurrentContent.MessageTitle)>
+                        <span>@Html.PropertyFor(x => x.CurrentContent.MessageTitle)</span>
+                    </h1>
+                    <div class="pw-note" @Html.EditAttributes(x => x.CurrentContent.Message)>@Html.PropertyFor(x => x.CurrentContent.Message)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,235 @@
+﻿@model SavedOrderDetailPageViewModel
+@{
+    Layout = "~/Features/MyAccount/_SidebarLayout.cshtml";
+}
+<main id="main">
+    <div class="container order-confirmation-holder checkout-confirmation-page saved-order-details">
+        @using (Html.BeginForm("Index", "SavedOrderDetailPage", new { ReturnUrl = "/" }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-10">
+                <span>@Html.PropertyFor(x => x.CurrentContent.SavedOrderDetailsHeading)</span>
+            </h1>
+            <div class="info-order-msg">
+                <a href="@Url.ContentUrl(Model.CurrentContent.ReturntoSavedOrdersLink)" class="link-continue-shop">@Html.PropertyFor(x => x.CurrentContent.ReturntoSavedOrdersText)</a>
+            </div>
+            <div class="info-order-table">
+                <div class="summary-heading">
+                    <div class="block-left">
+                        <strong>@Html.PropertyFor(x => x.CurrentContent.DateHeading):</strong>
+                        <time datetime="2021-01-15">
+                            @if (Model.SavedOrderDetailViewModel.Cart.OrderDate.HasValue)
+                            {
+                                @Model.SavedOrderDetailViewModel.Cart.OrderDate.Value.ToString("MMM dd yyyy")
+                            }
+                        </time>
+                    </div>
+                </div>
+                <div class="row summary-info-cols">
+                    <div class="col-md-4">
+                        <div class="summary-info">
+                            <ul class="list-unstyled order-status">
+                                <li>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="shipping-detail-text">
+                            <strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.ShippingInformationHeading)</strong>
+                            <address>
+                                @if (Model.SavedOrderDetailViewModel.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.ShipTo.CompanyName))
+                                {
+                                    @Model.SavedOrderDetailViewModel.Cart.ShipTo.CompanyName
+                                }
+                                @if (Model.SavedOrderDetailViewModel.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.ShipTo.Address1))
+                                {
+                                    @Model.SavedOrderDetailViewModel.Cart.ShipTo.Address1
+                                }
+                                @if (Model.SavedOrderDetailViewModel.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.ShipTo.Address2))
+                                {
+                                    @Model.SavedOrderDetailViewModel.Cart.ShipTo.Address2
+                                }
+                                @if (Model.SavedOrderDetailViewModel.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.City) && (Model.SavedOrderDetailViewModel.Cart.BillTo.State != null && Model.SavedOrderDetailViewModel.Cart.BillTo.State.Name != null) && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.PostalCode))
+                                {
+                                    var shipInfo = Model.SavedOrderDetailViewModel.Cart.ShipTo.City + "," + Model.SavedOrderDetailViewModel.Cart.ShipTo.State.Name + "," + Model.SavedOrderDetailViewModel.Cart.ShipTo.PostalCode;
+                                    @shipInfo
+                                }
+                                @if (Model.SavedOrderDetailViewModel.Cart.ShipTo != null && Model.SavedOrderDetailViewModel.Cart.ShipTo.Country != null)
+                                {
+                                    @Model.SavedOrderDetailViewModel.Cart.ShipTo.Country.Name
+                                }
+                                @if(Model.SavedOrderDetailViewModel.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.ShipTo.Phone))
+                                {
+                                    @Model.SavedOrderDetailViewModel.Cart.ShipTo.Phone
+                                }
+                            </address>
+                        </div>
+                        <div class="shipping-detail-text">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        @Html.HiddenFor(x => x.SavedOrderDetailViewModel.CartId)
+                        <input type="hidden" id="cartid" value="Model.SavedOrderDetailViewModel.CartId" />
+                        <div class="shipping-detail-text">
+                            <strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.BillingInformationHeading)</strong>
+                            <address>
+                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.CompanyName))
+                                {
+                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.CompanyName
+                                }
+                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.Address1))
+                                {
+                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.Address1
+                                }
+                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(@Model.SavedOrderDetailViewModel.Cart.BillTo.Address2))
+                                {
+                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.Address2
+                                }
+                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.City) && (Model.SavedOrderDetailViewModel.Cart.BillTo.State != null && Model.SavedOrderDetailViewModel.Cart.BillTo.State.Name != null) && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.PostalCode))
+                                {
+                                    var billInfo = Model.SavedOrderDetailViewModel.Cart.BillTo.City + "," + Model.SavedOrderDetailViewModel.Cart.BillTo.State.Name + "," + Model.SavedOrderDetailViewModel.Cart.BillTo.PostalCode;
+                                    @billInfo
+                                }
+                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && Model.SavedOrderDetailViewModel.Cart.BillTo.Country != null)
+                                {
+                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.Country.Name
+                                }
+                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.Phone))
+                                {
+                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.Phone
+                                }
+                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.Email))
+                                {
+                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.Email
+                                }
+                            </address>
+                        </div>
+                        <div class="shipping-detail-text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="product-order-table">
+                <div class="summary-heading d-none d-md-block">
+                    <div class="row d-md-flex justify-content-between align-items-center">
+                        <div class="col-md-6 col-lg-8">@Html.PropertyFor(x => x.CurrentContent.HeaderProduct)</div>
+                        <div class="col-md-6 col-lg-4 d-flex align-items-center mx-n3 text-center">
+                            <div class="col-heading w-25 px-3">@Html.PropertyFor(x => x.CurrentContent.HeaderPrice)</div>
+                            <div class="col-heading w-25 px-3">@Html.PropertyFor(x => x.CurrentContent.HeaderQty)</div>
+                            <div class="col-heading w-25 px-3">@Html.PropertyFor(x => x.CurrentContent.HeaderSubTotal)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-order-summary product-info-block secondary">
+                    @if (Model.SavedOrderDetailViewModel.Cart.CartLines.Count > 0)
+                    {
+                        foreach (var line in Model.SavedOrderDetailViewModel.Cart.CartLines)
+                        {
+                            <div class="product-order-info savedOrderdetail"  data-lineId="@line.Id" data-productid="@line.ProductId" data-uom="@line.UnitOfMeasure" data-qty="@Convert.ToInt32(line.QtyOrdered).ToString()">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-8">
+                                        <div class="product-info">
+                                            <div class="product-image mb-0">
+                                                <img src="@line.SmallImagePath" alt="@line.AltText">
+                                            </div>
+                                            <div class="product-description">
+                                                <div class="title-holder">
+                                                    
+                                                    <div class="h3" itemprop="name">
+                                                        <strong class="d-md-block mb-md-10"> </strong>
+                                                        <a href="@(line.ProductId != null ? Model.SavedOrderDetailViewModel.Language + "" + Url.ContentUrl(line.ProductUri) : "#")">
+                                                            <span>
+                                                                @line.ShortDescription
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="meta-price-stat">
+                                                    <ul class="list-inline prod-meta">
+                                                        <li>Item #@line.ErpNumber</li>
+                                                        <li class="d-none d-lg-inline-block">Model #@line.ManufacturerItem</li>
+                                                    </ul>
+                                                    <ul class="product-spec-list list-unstyled p-0 m-0">
+                                                        <li>
+                                                            <strong>Color:</strong>
+                                                            <span class="title">Louver Matte Grey/Red</span>
+                                                        </li>
+                                                        <li class="no-after-line">
+                                                            <strong>Size:</strong>
+                                                            <span class="text">S</span>
+                                                        </li>
+                                                        <li class="d-md-none">
+                                                            <span class="text">@line.Pricing.UnitNetPriceDisplay/@line.BaseUnitOfMeasureDisplay</span>
+                                                        </li>
+                                                        <li class="d-md-none">
+                                                            <strong>@line.Pricing.ExtendedUnitNetPriceDisplay</strong>
+                                                            <span class="text"></span>
+                                                        </li>
+                                                        <li class="d-md-none">
+                                                            <strong>Qty:</strong>
+                                                            <span class="text">@Convert.ToInt32(line.QtyOrdered).ToString()</span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 d-none d-md-flex mx-n3 text-center">
+                                        <div class="col-info w-25 px-3">
+                                            @line.Pricing.UnitNetPriceDisplay/@line.UnitOfMeasure
+                                        </div>
+                                        <div class="col-info w-25 px-3">
+                                            @Convert.ToInt32(line.QtyOrdered).ToString()
+                                        </div>
+                                        @*<div class="col-info w-25 px-3">
+                                            2
+                                        </div>*@
+                                    <div class="col-info w-25 px-3">
+                                        @line.Pricing.ExtendedUnitNetPriceDisplay
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="product-order-footer row justify-content-between">
+                    <div class="col-md-6 col-lg-8">
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <ul class="list-unstyled list-order-summary">
+                            <li class="d-flex justify-content-between">
+                                <span class="info-title pr-1 text-uppercase">@Html.PropertyFor(x => x.CurrentContent.SubTotalText)</span>
+                                <strong class="font-weight-medium">@Model.SavedOrderDetailViewModel.Cart.OrderSubTotalDisplay</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-order-footer row justify-content-between">
+                    <div class="col-md-6 col-lg-4">
+                    </div>
+                    <div class="col-md-6 col-lg-8">
+                        <div class="btn-holder btn-holder-saved-order-detail btn-saved-order-view"> <a id="" href="javascript: window.print();" class="btn btn-outline-primary d-block d-md-inline-block">@Html.PropertyFor(x => x.CurrentContent.PrintText)</a></div>
+
+                        <div class="btn-holder btn-holder-saved-order-detail btn-saved-order-view">
+                            <button id="placeDeleteOrder" type="submit" class="btn btn-outline-primary d-block d-md-inline-block btn-saved-order-view" value="<%= Html.Encode(Resources.Messages.deleteOrder)%>" name="deleteSubmitButton">@Html.PropertyFor(x => x.CurrentContent.DeleteSavedOrderText)</button>
+                        </div>
+
+                        <div class="btn-holder btn-holder-saved-order-detail btn-saved-order-view" id="actionWrap">
+                            <button id="AddAlltoList" type="button" class="btn btn-outline-primary d-block d-md-inline-block btn-saved-order-view">@Html.PropertyFor(x => x.CurrentContent.AddAlltoListText)</button>
+                            <div id="addAlltoPopup" class="item-actions-wrap"> 
+                            </div>
+                        </div>
+
+                        <div class="btn-holder btn-saved-order-view">
+                            <button id="placesavedorder" type="submit" class="btn btn-outline-primary d-block d-md-inline-block btn-placed-saved-order btn-saved-order-view" value="<%= Html.Encode(Resources.Messages.savedOrder)%>" name="saveSubmitButton">@Html.PropertyFor(x => x.CurrentContent.PlaceSavedOrderText)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</main>
+
+

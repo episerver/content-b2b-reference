@@ -1,0 +1,227 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.ProductDetailViewModel
+@using Newtonsoft.Json
+
+@if (Model.CatalogPage.BreadCrumbs?.Any() ?? false)
+{
+    <section class="py-4">
+        <div class="container max-w-screen-xl mx-auto px-4">
+            <ol class="inline-flex flex-wrap text-gray-600 space-x-1 md:space-x-3 items-center">
+                @foreach (var breadCrumb in Model.CatalogPage.BreadCrumbs.Where(x => !string.IsNullOrEmpty(x.Url)))
+                {
+                    <li class="inline-flex items-center">
+                        <a class="text-gray-600 hover:text-blue-600" href="@($"/{Model.CurrentContent.Language.Name}{breadCrumb.Url}")">@breadCrumb.Text</a>
+                        @if (!breadCrumb.CategoryId.Equals(Model.CatalogPage.BreadCrumbs.Where(x => !string.IsNullOrEmpty(x.Url)).Last().CategoryId))
+                        {
+                            <i class="ml-3 text-gray-400 fa fa-chevron-right"></i>
+                        }
+                    </li>
+                }
+            </ol>
+        </div>
+    </section>
+}
+
+<section class="bg-white py-10">
+    <div class="container max-w-screen-xl mx-auto px-4">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <aside>
+                <!-- gallery -->
+                <div class="border border-gray-200 shadow-sm p-3 text-center rounded mb-5">
+                    @if (Model.ProductModel.Product.ProductImages?.Any() ?? false)
+                    {
+                        <img x-ref="mainImage" loading="lazy" class="object-cover inline-block" width="400" src="@Model.ProductModel.Product.ProductImages.First().LargeImagePath" alt="@Model.ProductModel.Product.ProductImages.First().AltText" />
+                    }
+                </div>
+                <div class="space-x-2 overflow-auto text-center whitespace-nowrap">
+                    @foreach (var productImage in Model.ProductModel.Product.ProductImages)
+                    {
+                        <a href="#" class="inline-block border border-gray-200 p-1 rounded-md hover:border-blue-500">
+                            <img class="w-14 h-14" src="@productImage.SmallImagePath" alt="@productImage.AltText" x-on:click="$refs.mainImage.src = '@productImage.LargeImagePath'" />
+                        </a>
+                    }
+                </div>
+                <!-- gallery end.// -->
+            </aside>
+            <main>
+                <h2 class="font-semibold text-2xl mb-4">
+                    @Model.ProductModel.Product.ShortDescription
+                </h2>
+
+                <p class="mb-4 font-semibold text-xl">
+                    @if (Model.ProductModel.Product.BasicListPrice > 0)
+                    {
+                        @(@Model.ProductModel.Product.CurrencySymbol + @Model.ProductModel.Product.BasicListPrice.ToString("F2"))
+                        if (!string.IsNullOrEmpty(Model.ProductModel.Product.UnitOfMeasureDisplay))
+                        {
+                            <span class="text-base font-normal">/@Model.ProductModel.Product.UnitOfMeasureDisplay</span>
+                        }
+                    }
+                    else
+                    {
+                        @Html.Raw("Login to see pricing")
+                    }
+                </p>
+
+                @if (!string.IsNullOrEmpty(Model.ProductModel.Product.HtmlContent))
+                {
+                    <p class="mb-4 text-gray-500">
+                        @Html.Raw(await Model.ProductModel.Product.HtmlContent.GetBodyInnerHtml())
+                    </p>
+                }
+                <ul class="mb-5">
+                    <li class="mb-1 ">
+                        <b class="font-medium w-1/3 inline-block">Part Number:</b>
+                        <span class="text-gray-500 w-2/3">@Model.ProductModel.Product.Name</span>
+                    </li>
+                    <li class="mb-1">
+                        <b class="font-medium w-1/3 inline-block">MFG Number:</b>
+                        <span class="text-gray-500 w-2/3">@Model.ProductModel.Product.ManufacturerItem</span>
+                    </li>
+                    @if (Model.ProductModel.Product.AttributeTypes?.Any() ?? false)
+                    {
+                        foreach (var attributeTypes in Model.ProductModel.Product.AttributeTypes)
+                        {
+                            <li class="mb-1">
+                                <b class="font-medium w-1/3 inline-block">@attributeTypes.Label:</b>
+                                <span class="text-gray-500 w-2/3">@string.Join(",", attributeTypes.AttributeValues.Select(x => x.ValueDisplay))</span>
+                            </li>
+                        }
+                    }
+                </ul>
+
+                @if (Model.ProductModel.Product.StyleTraits.Count() > 0)
+                {
+                    <div class="flex flex-wrap mb-4">
+                        @foreach (var styleTraits in Model.ProductModel.Product.StyleTraits.OrderBy(x => x.Name).ToList())
+                        {
+                            <div class="relative w-1/3 lg:w-1/4 mr-2 mb-4">
+                                <select name="@styleTraits.Name" class="block appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 pr-5 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                    @foreach (var value in styleTraits.StyleValues)
+                                    {
+                                        <option value="@value.Value@value.ValueDisplay"></option>
+                                    }
+                                </select>
+                                <i class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                    <svg width="24" height="24" class="fill-current h-5 w-5" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z" /></svg>
+                                </i>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- action buttons -->
+                <div x-data="{ addToCartOpen: false }" class="flex flex-wrap gap-2">
+                    <input type="number" class="w-14 border border-gray-300" id="productQuantity" name="productQuantity" value="1" />
+                    <a data-productId="@Model.ProductModel.Product.Id.ToString()" 
+                        data-unitOfMeasure="@Model.ProductModel.Product.UnitOfMeasure"
+                        class="actionAddToCart px-4 py-2 inline-block text-white bg-amber-500 border border-transparent rounded-md hover:bg-amber-600"
+                        href="#">
+                        <i class="fa fa-shopping-cart mr-2"></i>
+                        Add to cart
+                    </a>
+                    <a class="px-4 py-2 inline-block text-blue-600 border border-gray-300 rounded-md hover:bg-gray-100"
+                       href="#">
+                        <i class="fa fa-heart mr-2"></i>
+                        Save for later
+                    </a>
+                    <div id="addToCartToast" class="invisible alert-toast fixed bottom-0 right-0 m-8 w-5/6 md:w-full max-w-sm">
+                        <label id="cartToast" class="close cursor-pointer flex items-start justify-between w-full p-2 bg-green-500 h-24 rounded shadow-lg text-white" 
+                          title="close">
+                          <span id="cartToastMessage"></span>
+                          <svg id="closeCartToast" class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                            <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                          </svg>
+                        </label>
+                  </div>
+                </div>
+            </main>
+        </div> 
+    </div>
+</section>
+
+@if ((Model.ProductModel.Product.Specifications?.Any() ?? false) || (Model.ProductModel.Product.Documents?.Any() ?? false))
+{
+    <section class="bg-gray-100 py-10">
+        <div class="container max-w-screen-xl mx-auto px-4">
+            <div class="flex flex-wrap -mx-2">
+				<div class="lg:w-3/4 px-2">
+                    <div class="bg-white" x-data="{ tab: '@Model.ProductModel.Product.Specifications.First().Name' }">
+                        <nav class="flex flex-col sm:flex-row">
+                            @foreach (var specification in Model.ProductModel.Product.Specifications)
+                            {
+                                <button @@click.prevent="tab = '@specification.Name'" 
+                                    x-bind:class="tab != '@specification.Name' ? '' : 'text-blue-500 border-b-2 font-medium border-blue-500'"
+                                    class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none">
+                                    @specification.NameDisplay
+                                </button>
+                            }
+                            @if (Model.ProductModel.Product.Documents?.Any() ?? false)
+                            {
+                                <button @@click.prevent="tab = 'documents'" 
+                                    x-bind:class="tab != 'documents' ? '' : 'text-blue-500 border-b-2 font-medium border-blue-500'"
+                                    class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none">
+                                    Documents
+                                </button>
+                         
+                            }
+                        </nav>
+                        @foreach (var specification in Model.ProductModel.Product.Specifications)
+                        {
+                            <article x-show="tab === '@specification.Name'" class="border border-gray-200 shadow-sm rounded bg-white">
+                                @if (!string.IsNullOrEmpty(specification.HtmlContent))
+                                {
+                                    <p class="mb-4 text-gray-500">
+                                        @Html.Raw(await specification.HtmlContent.GetBodyInnerHtml())
+                                    </p>
+                                }
+                            </article>
+                        }
+                        @if (Model.ProductModel.Product.Documents?.Any() ?? false)
+                        {
+                            <article x-show="tab === 'documents'" class="border border-gray-200 shadow-sm rounded bg-white">
+                                <div class="bg-white text-base z-50 list-none divide-y divide-gray-100 rounded shadow">
+						            <ul class="py-1">
+                                        @foreach (var document in Model.ProductModel.Product.Documents)
+                                        {
+                                            <li>
+										        <a href="@document.FilePath" target="_blank" class="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">
+                                                    @document.Description
+                                                </a>
+									        </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                </div>
+                <aside class="lg:w-1/4 px-2">
+                    <article class="border border-gray-200 shadow-sm rounded bg-white p-4">
+						<h3 class="mb-5 text-lg font-semibold">Accessories</h3>
+                        @if (Model.ProductModel.Product.CrossSells?.Any() ?? false)
+                        {
+                            foreach (var crossSell in Model.ProductModel.Product.CrossSells)
+                            {
+                                <figure class="flex flex-row mb-4">
+							        <div>
+								        <a href="@($"/{Model.CurrentContent.Language.Name}{crossSell.ProductDetailUrl}")" class="block w-20 h-20 rounded border border-gray-200 overflow-hidden">
+									        <img src="@crossSell.SmallImagePath" alt="@crossSell.AltText">
+								        </a>
+							        </div>
+							        <figcaption class="ml-3">
+								        <p
+                                            ><a href="@($"/{Model.CurrentContent.Language.Name}{crossSell.ProductDetailUrl}")" class="text-gray-600 hover:text-blue-600">@crossSell.ShortDescription</a>
+                                        </p>
+								        <p class="mt-1 font-semibold">@(crossSell.CurrencySymbol + crossSell.BasicListPrice.ToString("F2"))</p>
+							        </figcaption>
+						        </figure>
+                            }
+                        }
+                    </article>
+                </aside>
+            </div>
+        </div> <!-- container.// -->
+    </section>
+}

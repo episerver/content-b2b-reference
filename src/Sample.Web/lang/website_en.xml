@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<languages>
+	<language name="English" id="en">
+		<CreateAccount>
+			<Form>
+				<Empty>
+					<Email>Email is required</Email>
+					<Username>Username is required</Username>
+					<Password>Password is required</Password>
+					<ConfirmPassword>Confirm Password is required</ConfirmPassword>
+				</Empty>
+				<Label>
+					<Email>Email Address</Email>
+					<Username>Username</Username>
+					<Password>Password</Password>
+					<ConfirmPassword>Confirm Password</ConfirmPassword>
+					<IsSubscribed>Sign me up for newsletters and product updates.</IsSubscribed>
+				</Label>
+				<Error>
+					<InvalidEmail>You have to enter a valid email address</InvalidEmail>
+					<InvalidConfirmPassword>Password combination does not match</InvalidConfirmPassword>
+					<InvalidInput>The format of the entered value is invalid, avoid using &lt; phrase &gt;</InvalidInput>
+					<CreateAccountFailure>Failed to create account.</CreateAccountFailure>
+					<UsernameAlreadyExists>Username already exists!</UsernameAlreadyExists>
+					<PasswordStrengthFailure>Password does not meets requirement!</PasswordStrengthFailure>
+				</Error>
+			</Form>
+		</CreateAccount>
+		<Login>
+			<Form>
+				<Empty>
+					<Username>Username is required</Username>
+					<Password>Password is required</Password>
+				</Empty>
+				<Label>
+				</Label>
+				<Error>
+					<LoginFailure>Failed to login.</LoginFailure>
+					<ForgotPasswordFailure>Invalid username or email.</ForgotPasswordFailure>
+					<InvalidCredentials>Invalid Username / Password combination</InvalidCredentials>
+				</Error>
+			</Form>
+		</Login>
+		<ForgotPassword>
+			<Form>
+				<Empty>
+					<Username>Username is required</Username>
+				</Empty>
+				<Error>
+				</Error>
+			</Form>
+		</ForgotPassword>
+
+		<ChangePassword>
+			<Form>
+				<Empty>
+					<CurrentPassword>Current Password is required</CurrentPassword>
+					<Password>New Password is required</Password>
+					<ConfirmPassword>Confirm Password is required</ConfirmPassword>
+				</Empty>
+				<Label>
+					<CurrentPassword>Current Password*</CurrentPassword>
+					<Password>New Password*</Password>
+					<ConfirmPassword>Confirm Password*</ConfirmPassword>
+				</Label>
+				<Error>
+					<InvalidConfirmPassword>Password combination does not match</InvalidConfirmPassword>
+					<ChangePasswordFailure>Unable to change password. Please contact support.</ChangePasswordFailure>
+				</Error>
+			</Form>
+		</ChangePassword>
+		<ResetPassword>
+			<Form>
+				<Empty>
+					<NewPassword>New Password is required</NewPassword>
+					<ConfirmPassword>Confirm new Password is required</ConfirmPassword>
+
+				</Empty>
+				<Label>
+					<NewPassword>New Password*</NewPassword>
+					<ConfirmPassword>Confirm New Password*</ConfirmPassword>
+				</Label>
+				<Error>
+					<InvalidConfirmPassword>Password combination does not match</InvalidConfirmPassword>
+					<ResetPasswordFailure>Unable to reset password. Please contact support.</ResetPasswordFailure>
+				</Error>
+				<Success>
+					<ResetPasswordSuccess>Your password was reset successfully. Please sign in with your username and new password.</ResetPasswordSuccess>
+				</Success>
+			</Form>
+		</ResetPassword>
+		<displaychannels>
+			<displaychannel name="mobile">
+				<name>Mobile</name>
+			</displaychannel>
+			<displaychannel name="web">
+				<name>Web</name>
+			</displaychannel>
+		</displaychannels>
+		<displayoptions>
+			<full>Full (1/1)</full>
+			<half>Half (1/2)</half>
+			<onesixth>One Sixth (1/6)</onesixth>
+			<onethird>One Third (1/3)</onethird>
+			<twothird>Two Thirds (2/3)</twothird>
+			<fivesixth>Five Sixths (5/6)</fivesixth>
+		</displayoptions>
+		<resolutions>
+			<standard>Standard (1366x768)</standard>
+			<ipadhorizontal>iPad horizontal (1024x768)</ipadhorizontal>
+			<iphonevertical>iPhone vertical (320x568)</iphonevertical>
+			<androidvertical>Android vertical (480x800)</androidvertical>
+			<iphone11>iPhone 11 (414x896)</iphone11>
+			<ipadair>iPad Air (768x1024)</ipadair>
+		</resolutions>
+
+		<Addresses>
+			<Form>
+				<Empty>
+					<FirstName>First Name is required</FirstName>
+					<LastName>Last Name is required</LastName>
+					<CompanyName>Company Name is required</CompanyName>
+					<Address1>Address1 is required</Address1>
+					<Country>Country is required</Country>
+					<State>State is required</State>
+					<City>City Name is required</City>
+					<PostalCode>Postal Code is required</PostalCode>
+					<Phone>Phone Number is required</Phone>
+					<Email>Email address is required</Email>
+					<field>Field is Required</field>
+				</Empty>
+
+				<Label>
+					<FirstName>First Name</FirstName>
+					<LastName>Last Name</LastName>
+					<CompanyName>Company Name or C/O</CompanyName>
+					<Address1>Address1</Address1>
+					<Address2>Address 2</Address2>
+					<Country>Country</Country>
+					<State>State/Province</State>
+					<City>City</City>
+					<PostalCode>ZIP/Postal Code</PostalCode>
+					<Phone>Phone Number</Phone>
+					<Email>Email Address</Email>
+				</Label>
+
+				<Error>
+					<InvalidEmail>You have to enter a valid email address</InvalidEmail>
+					<InvalidPhoneNumber>Phone number must contain at least 10 digits. The following special characters are allowed: ()/-.+</InvalidPhoneNumber>
+				</Error>
+			</Form>
+		</Addresses>
+		<Checkout>
+			<Form>
+				<Empty>
+					<CardHolderName>Card holder name is required</CardHolderName>
+					<CardNumber>Credit card number is required</CardNumber>
+					<SecurityCode>Security Code is required</SecurityCode>
+					<PoNumber>PO Number is required</PoNumber>
+					<PromotionCode>Promotion Code is required</PromotionCode>
+					<ExpirationMonth>Expiration Date is required</ExpirationMonth>
+					<ExpirationYear>Expiration Date is required</ExpirationYear>
+					<CardType>Card Type is required</CardType>
+					<PaymentMethod>Payment Method is required</PaymentMethod>
+				</Empty>
+				<Error>
+					<InvalidCardNumber>Invalid Credit card number</InvalidCardNumber>
+					<InvalidSecurityCode>Invalid CVV number.</InvalidSecurityCode>
+				</Error>
+
+				<CreditCard>
+					<Empty>
+						<Address>Address is required</Address>
+						<Country>Country is required</Country>
+						<State>State is required</State>
+						<City>City is required</City>
+						<PostalCode>Postal Code is required</PostalCode>
+					</Empty>
+				</CreditCard>
+				<Shipping>
+					<Empty>
+						<Carrier>Shipping Carrier is required</Carrier>
+						<Service>Shipping Service is required</Service>
+					</Empty>
+				</Shipping>
+			</Form>
+		</Checkout>
+		<QuickOrder>
+			<Form>
+				<Error>
+					<Empty>Please select product and continue!</Empty>
+					<InvalidQuantity>Quantity should be greater then zero!</InvalidQuantity>
+					<EmptyProduct>Please add product and continue!</EmptyProduct>
+				</Error>
+			</Form>
+		</QuickOrder>
+		<Address>
+			<Form>
+				<Empty>
+					<FirstName>First Name is required</FirstName>
+					<LastName>Last Name is required</LastName>
+					<CompanyName>Company Name is required</CompanyName>
+					<Address1>Address1 is required</Address1>
+					<Country>Country is required</Country>
+					<State>State is required</State>
+					<City>City Name is required</City>
+					<PostalCode>PostalCode is required</PostalCode>
+					<Phone>Phone Number is required</Phone>
+					<Email>Email address is required</Email>
+				</Empty>
+
+				<Label>
+					<FirstName>First Name</FirstName>
+					<LastName>Last Name</LastName>
+					<CompanyName>Company Name or C/O</CompanyName>
+					<Address1>Address1</Address1>
+					<Address2>Address 2</Address2>
+					<Country>Country</Country>
+					<State>State/Province</State>
+					<City>City</City>
+					<PostalCode>ZIP/Postal Code</PostalCode>
+					<Phone>Phone Number</Phone>
+					<Email>Email Address</Email>
+				</Label>
+
+				<Error>
+					<InvalidEmail>You have to enter a valid email address</InvalidEmail>
+					<InvalidPhoneNumber>Phone number must contain at least 10 digits. The following special characters are allowed: ()/-.+</InvalidPhoneNumber>
+				</Error>
+			</Form>
+		</Address>
+	</language>
+</languages>

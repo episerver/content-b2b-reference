@@ -1,0 +1,21 @@
+<Project>
+	<PropertyGroup>
+		<DependencyVersions_props>true</DependencyVersions_props>
+		<CmsCoreVersionCommon>12.8.0</CmsCoreVersionCommon>
+		<CmsUiVersionCommon>12.9.0</CmsUiVersionCommon>
+		<FormsVersion>5.2.0</FormsVersion>
+		<CloudPlatformVersion>1.0.5</CloudPlatformVersion>
+		<CommerceApiSdk>0.1.25</CommerceApiSdk>
+		<SystemLingAsync>6.0.1</SystemLingAsync>
+		<FindVersion>14.1.0</FindVersion>
+		<DependencyInjection>6.0.0</DependencyInjection>
+		<GetaNotFound>2.0.0</GetaNotFound>
+		<AutoMapperExtensions>11.0.0</AutoMapperExtensions>
+		<Serilog>2.11.0</Serilog>
+		<SerilogAspNetCore>5.0.0</SerilogAspNetCore>
+		<SerilogFile>5.0.0</SerilogFile>
+		<SerilogAzureApp>3.1.0</SerilogAzureApp>
+		<SystemConfiguration>6.0.0</SystemConfiguration>
+		<AngleSharp>0.17.1</AngleSharp>
+	</PropertyGroup>
+</Project>

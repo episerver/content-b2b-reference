@@ -1,0 +1,69 @@
+@model IBlockViewModel<TeaserBlock>
+
+@Html.FullRefreshPropertiesMetaData(new[] { "Image", "SecondImage" })
+
+@using (Html.BeginConditionalLink(!ContentReference.IsNullOrEmpty(Model.CurrentBlock.Link),
+    Url.PageLinkUrl(Model.CurrentBlock.Link),
+    Model.CurrentBlock.Heading))
+{
+    <div class="teaser-block @(Model.CurrentBlock.Padding + " " + Model.CurrentBlock.Margin + " " + Model.CurrentBlock.BackgroundColor + " " + @Model.CurrentBlock.HeadingColor)"
+         style="opacity:@Model.CurrentBlock.BlockOpacity; height: @(Model.CurrentBlock.Height)px;">
+
+        @if (!Model.CurrentBlock.Description.IsNullOrEmpty())
+        {
+            <div class="w-full">
+                <p class="teaser-block__description" @Html.EditAttributes(x => x.CurrentBlock.Description)>@Model.CurrentBlock.Description</p>
+            </div>
+        }
+        else
+        {
+            if (Model.CurrentBlock.Image != null)
+            {
+                <div class="flex flex-row pt-3">
+                    <div class="basis-1/3">
+                        <div @Html.EditAttributes(x => x.CurrentBlock.Image)>
+                            <img class="img-fluid lazyload" style="width: @(Model.CurrentBlock.ImageSize)%" data-src="@Url.ContentUrl(Model.CurrentBlock.Image)" />
+                        </div>
+                    </div>
+                    <div class="basis-2/3">
+                        <div class="teaser-block__heading" style="font-size: @(Model.CurrentBlock.HeadingSize)px; text-decoration: @Model.CurrentBlock.HeadingStyle" @Html.EditAttributes(x => x.CurrentBlock.Heading)>
+                            @Model.CurrentBlock.Heading
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="w-full">
+                    <div class="teaser-block__heading" style="font-size: @(Model.CurrentBlock.HeadingSize)px; text-decoration: @Model.CurrentBlock.HeadingStyle" @Html.EditAttributes(x => x.CurrentBlock.Heading)>
+                        @Model.CurrentBlock.Heading
+                    </div>
+                </div>
+            }
+
+            if (Model.CurrentBlock.SecondImage != null)
+            {
+                <div class="flex flex-row">
+                    <div class="basis-1/3">
+                        <div @Html.EditAttributes(x => x.CurrentBlock.SecondImage)>
+                            <img class="img-fluid lazyload" style="width: @(Model.CurrentBlock.SecondImageSize)%" data-src="@Url.ContentUrl(Model.CurrentBlock.SecondImage)" />
+                        </div>
+                    </div>
+                    <div class="basis-2/3">
+                        <div class="teaser-block__text  @Model.CurrentBlock.TextColor" @Html.EditAttributes(x => x.CurrentBlock.Text)>
+                            @Html.Raw(Model.CurrentBlock.Text)
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="w-full">
+                    <div class="teaser-block__text @Model.CurrentBlock.TextColor" @Html.EditAttributes(x => x.CurrentBlock.Text)>
+                        @Html.Raw(Model.CurrentBlock.Text)
+                    </div>
+                </div>
+            }
+        }
+    </div>
+}

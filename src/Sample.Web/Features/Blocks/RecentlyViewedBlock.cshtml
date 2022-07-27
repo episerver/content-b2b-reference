@@ -1,0 +1,20 @@
+﻿@using EPiServer.Web.Mvc.Html
+
+@model Sample.Models.ViewModels.RecentlyViewedBlockViewModel
+
+@if (Model.ProductCollection.Products != null && Model.ProductCollection.Products.Count() > 0)
+{
+    <div class="container">
+        <div class="h5 block-heading"><span @Html.EditAttributes(x => x.RecentlyViewedBlock.Title)>@Html.PropertyFor(x => x.RecentlyViewedBlock.Title)</span></div>
+        <div class="recent-product-slider">
+            
+            <div class="slick-nav-hold">
+                <div class="container">
+                    <div class="count-outer">
+                        <div class="slideCount"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

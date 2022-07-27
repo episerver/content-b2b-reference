@@ -1,0 +1,170 @@
+﻿@using EPiServer.Web.Mvc.Html
+@using Microsoft.AspNetCore.Http.Extensions
+@model Sample.Models.ViewModels.ReturnRequestPageViewModel
+@{ 
+    var url = new Uri(UriHelper.GetDisplayUrl(Context.Request)).GetLeftPart(UriPartial.Authority);
+    url = string.Format("{0}/{1}", url, Model.Language);
+}
+<div class="container checkout-confirmation-page order-confirmation-holder">
+    <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-30" @Html.EditAttributes(x => x.CurrentContent.MetaTitle)><span>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span></h1>
+    <div class="info-order-table">
+        <div class="summary-heading">
+            <input type="hidden" id="web-order-number" value="@Model.ReturnRequestViewModel.Order.WebOrderNumber" />
+            <div class="block-left"><strong>@Html.PropertyFor(x => x.CurrentContent.WebOrderNumberLabel)</strong> @Model.ReturnRequestViewModel.Order.WebOrderNumber</div>
+        </div>
+        <div class="row summary-info-cols">
+            <div class="col-md-4">
+                <div class="summary-info">
+                    <ul class="list-unstyled order-status">
+                        <li><strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.WebOrderNumberLabel)</strong> @Model.ReturnRequestViewModel.Order.WebOrderNumber</li>
+                        <li>
+                            <strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.OrderDateLabel)</strong> <time datetime="2021-01-15">@Model.ReturnRequestViewModel.Order.OrderDate.ToString("MMM dd yyyy")</time>
+                        </li>
+                        <li><strong class="info-text-title">@Model.CurrentContent.PoNumberLabel</strong> @Model.ReturnRequestViewModel.Order.CustomerPO</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="shipping-detail-text">
+                    <strong class="info-text-title">@Model.CurrentContent.BillingAddressInformationLabel</strong>
+                    <address>
+                        @Model.ReturnRequestViewModel.Order.BTCompanyName<br>
+                        @Model.ReturnRequestViewModel.Order.BTAddress1
+                        @if (!string.IsNullOrEmpty(Model.ReturnRequestViewModel.Order.BTAddress2))
+                        {
+                            @Model.ReturnRequestViewModel.Order.BTAddress2
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.ReturnRequestViewModel.Order.BillToCity) && (Model.ReturnRequestViewModel.Order.BillToState != null && Model.ReturnRequestViewModel.Order.ShipToState != null) && !string.IsNullOrEmpty(Model.ReturnRequestViewModel.Order.BillToPostalCode))
+                        {
+                            var shipInfo = Model.ReturnRequestViewModel.Order.BillToCity + "," + Model.ReturnRequestViewModel.Order.BillToState + " " + Model.ReturnRequestViewModel.Order.BillToPostalCode + "," + Model.ReturnRequestViewModel.Order.BTCountry;
+                            @shipInfo
+                        }
+                    </address>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="product-order-table">
+        <div class="summary-heading d-none d-md-block">
+            <div class="row d-md-flex justify-content-between align-items-center">
+                <div class="col-md-5">@Html.PropertyFor(x => x.CurrentContent.HeaderProductLabel)</div>
+                <div class="col-md-7 d-flex align-items-center mx-n3 text-center">
+                    <div class="col-heading w-20 px-3">@Html.PropertyFor(x => x.CurrentContent.HeaderPriceLabel)</div>
+                    <div class="col-heading w-20 px-3">@Html.PropertyFor(x => x.CurrentContent.HeaderQtyOrderedLabel)</div>
+                    <div class="col-heading w-20 px-3">@Html.PropertyFor(x => x.CurrentContent.HeaderQtyReturningLabel)</div>
+                    <div class="col-heading w-40 px-3 text-left">@Html.PropertyFor(x => x.CurrentContent.HeaderReturnReasonLabel)</div>
+                </div>
+            </div>
+        </div>
+        <div class="product-order-summary product-info-block secondary return-request-table">
+            @foreach (var line in Model.ReturnRequestViewModel.Order.OrderLines)
+            {
+                var producturl = string.Format("{0}{1}", url, line.ProductUri);
+                <div class="product-order-info" data-lineId="@line.Id" data-ProductId="@line.ProductId" data-uom="@line.UnitOfMeasure" data-qty="@line.QtyOrdered">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="product-info">
+                                <div class="product-image mb-0">
+                                    <a href=@producturl><img src="@line.MediumImagePath" alt="@line.AltText"></a>
+                                </div>
+                                <div class="product-description">
+                                    <div class="title-holder">
+                                        <div class="h3" itemprop="name">
+                                            <a href="@(line.ProductId != null ? producturl : "#")">
+                                                <span class="return-productdescription">
+                                                    @line.ShortDescription
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="meta-price-stat">
+                                        <ul class="list-inline prod-meta">
+                                            <li>Item @line.ProductErpNumber</li>
+                                            <li class="d-none d-lg-inline-block">@Model.CurrentContent.ModelNoLabel @line.ManufacturerItem</li>
+                                        </ul>
+                                        <ul class="product-spec-list list-unstyled p-0 m-0">
+                                            <li>
+                                                <strong>Color:</strong>
+                                                <span class="title">Louver Matte Grey/Red</span>
+                                            </li>
+                                            <li class="no-after-line">
+                                                <strong>Size:</strong>
+                                                <span class="text">S</span>
+                                            </li>
+                                            <li class="d-md-none">
+                                                <span class="text">@line.UnitCostDisplay</span>
+                                            </li>
+                                            <li class="d-md-none">
+                                                <strong>Qty:</strong>
+                                                <span class="text">@Convert.ToInt32(line.QtyOrdered).ToString()</span>
+                                            </li>
+                                            <li class="d-md-none">
+                                                <strong>Shipped:</strong>
+                                                <span class="text">@Convert.ToInt32(line.QtyOrdered).ToString()</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7 d-none d-md-flex mx-n3 text-center">
+                            <div class="col-info w-20 px-3">
+                                @line.UnitCostDisplay/@line.UnitOfMeasure
+                            </div>
+                            <div class="col-info w-20 px-3">
+                                @Convert.ToInt32(line.QtyOrdered).ToString()
+                            </div>
+                            <div class="col-info w-20 px-3">
+                                <input type="hidden" id="hdnQuanity_@line.ProductId" value="@line.QtyOrdered" />
+                                <input type="hidden" id="hdnProductId" name="hdnProductId" value="@line.ProductId" />
+                                <input type="number" value="0" class="qtyreturn" min="1" max="@Convert.ToInt32(line.QtyOrdered)" id="qtyreturned_@line.ProductId" data-line-quantity="@line.QtyOrdered" data-productid="@line.ProductId" />
+                                <span class="" id="qty_returning_@line.ProductId" style="display:none;">@Model.CurrentContent.QTYReturningValidationMessage</span>
+                                <span class="" id="returnQuantityGreater_@line.ProductId" style="display:none;">@Model.CurrentContent.ReturnQuantityValidationMessage</span>
+                            </div>
+                            <div class="col-info w-40 px-3 text-left">
+                                <select id="returnReason_@line.ProductId" class="span-value returnreason" data-productid="@line.ProductId">
+                                    <option value="-1">Select a Reason Code</option>
+                                    @foreach (var reasonCode in Model.ReturnRequestViewModel.Order.ReturnReasons)
+                                    {
+                                        <option value='@reasonCode'>@reasonCode</option>
+                                    }
+                                </select>
+                                <span class="" id="return-reason_@line.ProductId" style="display:none;">
+                                    @Model.CurrentContent.ReturnReasonValidationMessage
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="error-context">
+            <span class="returnrequest-error-context" style="display:none;">@Model.CurrentContent.ReturnRequestSelectAtleastOneValidationMessage</span>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6 return-notes">
+                <span class="header-lbl">
+                    @Model.CurrentContent.ReturnNotesLabel
+                </span>
+                <textarea id="returnRequestNotes"></textarea>
+            </div>
+            <div class="col-md-6">
+                <i class="italic-text">@Model.CurrentContent.SendRequestLabelText</i>
+                <div class="btn-holder btn-holder-order-detail btn-saved-order-view">
+                    <button class="btn btn-primary btn-sendrequest" data-popup-msg="@Model.CurrentContent.ReturnRequestConfirmationTitle">@Html.PropertyFor(x => x.CurrentContent.SendRequestButtonText)</button>
+                </div>
+                <div class="btn-holder btn-holder-order-detail btn-saved-order-view btn-returnorder-details">
+                    <a id="orderDetailViewReturnRequestButton" href="@(string.Format("{0}?ordernumber={1}", Model.CurrentContent.ReturnToOrderDetailLink, Model.ReturnRequestViewModel.Order.WebOrderNumber))" class="btn btn-outline-primary d-block d-md-inline-block">@Model.CurrentContent.ReturnToOrderDetailLinkText</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

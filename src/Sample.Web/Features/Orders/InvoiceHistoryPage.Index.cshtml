@@ -1,0 +1,206 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.InvoiceHistoryPageViewModel
+<div class="container">
+    <div class="page-content invoice-history" role="main">
+        <div class="ui-lock use-fastclick"></div>
+        <div class="cms-rearrangeable">
+            <div class="row main-row">
+                <div class="col-12">
+                    <div class="invoice-history">
+                        <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-10" @Html.EditAttributes(x => x.CurrentContent.MetaTitle)><span>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span></h1>
+                        <section class="accordion search-orders">
+                            @if (Model.InvoiceHistoryViewModel.InvoiceCollection.Invoices != null && Model.InvoiceHistoryViewModel.InvoiceCollection.Invoices.Count() > 0)
+                            {
+                                <form novalidate="novalidate" id="orderHistorySearchForm" name="orderHistorySearchForm">
+                                    <input name="CurrentPage" id="CurrentPage" value="1" type="hidden">
+                                    <input name="PageSize" id="PageSize" value="10" type="hidden">
+                                    <input name="Sort" id="Sort" value="OrderDate DESC" type="hidden">
+                                    <input type="hidden" id="hdnInvoiceHistoryPage" value="@Url.ContentUrl(Model.CurrentContent.InvoicHistoryPageLink)" />
+                                    <div class="cm">
+                                        <input id="accord-1" class="accord-check" type="checkbox">
+                                        <label for="accord-1" class="accord-head" @Html.EditAttributes(x => x.CurrentContent.TabName)>@Html.PropertyFor(x => x.CurrentContent.TabName)</label>
+                                        <article class="accord-content">
+                                            <div class="row">
+                                                <div class="col-lg-4 search-col-1">
+                                                    <div class="search-ship-to">
+                                                        <label @Html.EditAttributes(x => x.CurrentContent.ShipToAddress)>@Html.PropertyFor(x => x.CurrentContent.ShipToAddress)</label>
+                                                        <select id="shipto">
+                                                            @if (Model.InvoiceHistoryViewModel.ShipToCollection != null && Model.InvoiceHistoryViewModel.ShipToCollection.ShipTos != null)
+                                                            {
+                                                                foreach (var type in Model.InvoiceHistoryViewModel.ShipToCollection.ShipTos)
+                                                                {
+                                                                    <option value="@type.CustomerSequence" label="@type.Label">
+                                                                        @type.Label
+                                                                    </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="search-order-num">
+                                                        <label @Html.EditAttributes(x => x.CurrentContent.OrderNumber)>@Html.PropertyFor(x => x.CurrentContent.OrderNumber)</label>
+                                                        <input class="" name="OrderNumber" id="OrderNumber" type="text">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-5 search-col-2">
+                                                    <div class="search-order-num">
+                                                        <label @Html.EditAttributes(x => x.CurrentContent.InvoiceNo)>@Html.PropertyFor(x => x.CurrentContent.InvoiceNo)</label>
+                                                        <input class="" name="InvoiceNumber" id="InvoiceNumber" type="text">
+                                                    </div>
+                                                    <div class="search-date">
+                                                        <label @Html.EditAttributes(x => x.CurrentContent.DateRange)>@Html.PropertyFor(x => x.CurrentContent.DateRange)</label>
+                                                        <div class="row">
+                                                            <div class="col-6 search-date-from">
+                                                                <em>@Html.PropertyFor(x => x.CurrentContent.DateRangeFrom)</em>
+                                                                <input id="fromdate" type="date" value="" class="datepicker" />
+                                                            </div>
+                                                            <div class="col-6 search-date-to">
+                                                                <em>@Html.PropertyFor(x => x.CurrentContent.DateRangeTo)</em>
+                                                                <input id="todate" type="date" value="" class="datepicker" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 search-col-3">
+                                                    <div class="search-po">
+                                                        <label @Html.EditAttributes(x => x.CurrentContent.PoNumber)>@Html.PropertyFor(x => x.CurrentContent.PoNumber)</label>
+                                                        <input class="" name="PONumber" id="PONumber" type="text">
+                                                    </div>
+                                                    <div class="search-show-open">
+                                                        <div class="indicator-holder d-none-list">
+                                                            <label>
+                                                                <input type="checkbox" aria-label="checkbox" id="openInvoices">
+                                                                <span class="fake-indicator"></span>
+                                                                @Html.PropertyFor(x => x.CurrentContent.ShowOpenInvoices)
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="btns">
+                                                <button id="invoiceListViewSearchButton" type="button" class="btn btn-primary btn-search">@Html.PropertyFor(x => x.CurrentContent.SearchButton)</button>
+                                                <button id="invoiceListViewClearButton" type="button" class="btn btn-primary-outline btn-clear">@Html.PropertyFor(x => x.CurrentContent.ClearButton)</button>
+                                            </div>
+                                        </article>
+                                    </div>
+                                </form>
+                            }
+                        </section>
+
+                        <p class="error"></p><div class="validation-summary-valid" data-valmsg-summary="true">
+                            <ul>
+                                <li style="display:none"></li>
+                            </ul>
+                        </div><p></p>
+
+                        <div class="results-count"><span class="result-num">@(Model.InvoiceHistoryViewModel.InvoiceCollection.Pagination != null ? Model.InvoiceHistoryViewModel.InvoiceCollection.Pagination.TotalItemCount : 0)</span> <span class="result-lbl">@Model.CurrentContent.InvoicesFoundText</span></div>
+                        @if (Model.InvoiceHistoryViewModel.InvoiceCollection.Pagination != null && Model.InvoiceHistoryViewModel.InvoiceCollection.Pagination.TotalItemCount > Model.InvoiceHistoryViewModel.InvoiceCollection.Pagination.DefaultPageSize)
+                        {
+                            <div class="uibar tertiary paginator-34 ptop">
+                                <ul>
+                                    <li class="results-list row">
+                                        <div class="small-6 columns per-page">
+                                            <label>@Html.PropertyFor(x => x.CurrentContent.PerPage)</label>
+                                        </div>
+                                        <div class="small-6 columns per-page-select">
+                                            <select name="select" id="select" class="" onchange="">
+                                                @foreach (var pageSize in Model.InvoiceHistoryViewModel.InvoiceCollection.Pagination.PageSizeOptions)
+                                                {
+                                                    <option value="@pageSize">@pageSize</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </li>
+                                    <li class="pagination" id="topPagingContainer">
+                                        <div class="arrow unavailable page-prev">
+                                            <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-prev p-first disabled pagerNextPageArrow"></a>
+                                            <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-prev disabled pagerNextPageArrow"></a>
+                                        </div>
+                                        <div class="page-current">
+                                            <span class="current-page">1</span> of
+                                            <span class="total-pages">2</span>
+                                        </div>
+                                        <div class="arrow unavailable page-next">
+                                            <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-next pagerNextPageArrow"></a>
+                                            <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-next p-last pagerNextPageArrow"></a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div style="clear:both;"></div>
+                        }
+                        <div class="overflow-table small">
+                            @Html.HiddenFor(x => x.InvoiceDetailsPageLink, new { id = "invoiceDetailPageUrl" })
+                            <table class="responsive info-tbl">
+                                <tbody>
+                                    @if (Model.InvoiceHistoryViewModel.InvoiceCollection.Invoices != null && Model.InvoiceHistoryViewModel.InvoiceCollection.Invoices.Count() > 0)
+                                    {
+                                    <thead>
+                                        <tr id="invoicetr">
+                                            <th class="col-date"><a href="#" aria-label="InvoiceDate" data-sort="InvoiceDate" class="sort sort-ascending">@Model.CurrentContent.TableHeaderDate</a></th>
+                                            <th class="col-invoicenum"><a href="#" aria-label="InvoiceNumber" data-sort="InvoiceNumber" class="sort">@Model.CurrentContent.TableHeaderInvoiceNo</a></th>
+                                            <th class="col-Duedate"><a href="#" aria-label="DueDate" data-sort="DueDate" class="sort">@Model.CurrentContent.TableHeaderDuedate</a></th>
+                                            <th class="col-shipto"><a href="#" aria-label="CustomerSequence" data-sort="CustomerSequence" class="sort">@Model.CurrentContent.TableHeaderShipToPickUp</a></th>
+                                            <th class="col-po"><a href="#" aria-label="CustomerPO" data-sort="CustomerPO" class="sort">@Model.CurrentContent.TableHeaderPoNumber</a></th>
+                                            <th class="col-Terms"><a href="#" aria-label="Terms" data-sort="Terms" class="sort">@Model.CurrentContent.TableHeaderTerms</a></th>
+                                            <th class="col-tot"><a href="#" aria-label="InvoiceTotal" data-sort="InvoiceTotal" class="sort">@Model.CurrentContent.TableHeaderTotal</a></th>
+                                            <th class="col-Balance"><a href="#" aria-label="CurrentBalance" data-sort="CurrentBalance" class="sort">@Model.CurrentContent.TableHeaderBalance</a></th>
+                                        </tr>
+                                    </thead>
+                                    foreach (var invoice in Model.InvoiceHistoryViewModel.InvoiceCollection.Invoices)
+                                    {
+                                        <tr>
+                                            <td class="col-date"><a href="@(string.Format("{0}?invoicenumber={1}", Model.InvoiceDetailsPageLink, invoice.InvoiceNumber))">@invoice.InvoiceDate.Value.ToShortDateString()</a></td>
+                                            <td class="col-invoicenum"><a class="link-action" href="@(string.Format("{0}?invoicenumber={1}", Model.InvoiceDetailsPageLink, invoice.InvoiceNumber))">@invoice.InvoiceNumber</a></td>
+                                            <td class="col-Duedate"><a class="link-action" href="@(string.Format("{0}?invoicenumber={1}", Model.InvoiceDetailsPageLink, invoice.InvoiceNumber))">@invoice.DueDate.Value.ToShortDateString()</a></td>
+                                            <td class="col-shipto">@invoice.STCompanyName</td>
+                                            <td class="col-po">@invoice.CustomerPO</td>
+                                            <td class="col-Terms">@invoice.Terms</td>
+                                            <td class="col-tot">@invoice.InvoiceTotalDisplay</td>
+                                            <td class="col-Balance">@invoice.CurrentBalanceDisplay</td>
+                                        </tr>
+                                    }
+                                }
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                            @if (@Model.InvoiceHistoryViewModel.InvoiceCollection.Pagination != null && @Model.InvoiceHistoryViewModel.InvoiceCollection.Pagination.TotalItemCount > 9)
+                            {
+                                <div class="uibar tertiary paginator-34 pbtm">
+                                    <ul>
+                                        <li class="pagination" id="btmPagingContainer">
+                                            <div class="arrow unavailable page-prev">
+                                                <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-prev p-first disabled pagerNextPageArrow"></a>
+                                                <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-prev disabled pagerNextPageArrow"></a>
+                                            </div>
+                                            <div class="page-current">
+                                                <span class="current-page">1</span> of
+                                                <span class="total-pages">2</span>
+                                            </div>
+                                            <div class="arrow unavailable page-next">
+                                                <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-next pagerNextPageArrow"></a>
+                                                <a aria-label="arrow" href="javascript:void(0)" class="next-prev p-next p-last pagerNextPageArrow"></a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script id="invoice-oh-template" type="text/x-custom-template">
+        <tr>
+            <td class="col-date"><a aria-label="date" href="#" class="link-action"> </a></td>
+            <td class="col-invoicenum"><a class="link-action" aria-label="number" href="#" class="link-action"></a></td>
+            <td class="col-Duedate"><a href="#" class="link-action" aria-label="WebDueDate" data-sort="WebDueDate" class="sort">DueDate</a></td>
+            <td class="col-shipto"></td>
+            <td class="col-po"></td>
+            <td class="col-Terms"></td>
+            <td class="col-tot"></td>
+            <td class="col-Balance"></td>
+        </tr>
+    </script>

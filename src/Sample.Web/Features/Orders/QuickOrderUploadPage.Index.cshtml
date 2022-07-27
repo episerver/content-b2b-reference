@@ -1,0 +1,62 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.QuickOrderUploadPageViewModel
+
+@{
+    var uploadOrderUrl = Url.Action("OrderUpload", "quickorderuploadpage");
+    if (!uploadOrderUrl.Contains(string.Format("/{0}", Model.Language)))
+    {
+        uploadOrderUrl = string.Format("/{0}{1}", Model.Language, uploadOrderUrl);
+    }
+    var checkOutUrl = Url.Action("CheckOutQuickOrder", "quickorderuploadpage");
+    if (!checkOutUrl.Contains(string.Format("/{0}", Model.Language)))
+    {
+        checkOutUrl = string.Format("/{0}{1}", Model.Language, checkOutUrl);
+    }
+}
+<div class="orderuploadFU">
+    <h1>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</h1>
+
+    <div class="quick-order-form-content">
+    </div>
+    <div class="upload-main-container">
+        <div class="orderupload-left-container">
+            <div class="orderuploadFU-desc">
+                <p>@Html.PropertyFor(x => x.CurrentContent.ShortDescription)</p>
+            </div>
+            <div class="fileUpload-container">
+                <div class="file-upload-area">
+                    <div class="file-upload-top">
+                        <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                        <span name="filename" data-default-text="@Model.CurrentContent.UploadAreaHeader">@Html.PropertyFor(x => x.CurrentContent.UploadAreaHeader)</span>
+                    </div>
+                    <input type="file" id="fileUpload" class="input-upload" />
+                </div>
+                <div class="header-row-option">
+                    <input type="checkbox" id="headerOption" value="" />
+                    <label for="headerOption">@Html.PropertyFor(x => x.CurrentContent.HeaderOption)</label>
+                </div>
+                <div class="error-msg-container">
+                    <span class="field-validation-valid"></span>
+                </div>
+                <div class="btns">
+                    <button id="btnQuickOrderUpload" class="btn primary btn-upload" data-goalid="" data-uploadurl="@uploadOrderUrl" data-checkoutpageurl="@checkOutUrl">@Html.PropertyFor(x => x.CurrentContent.UploadButton)</button>
+                </div>
+            </div>
+        </div>
+        <div class="orderupload-right-container">
+            <h3>@Html.PropertyFor(x => x.CurrentContent.InstructionsHeader)</h3>
+            @Html.PropertyFor(x => x.CurrentContent.InstructionsDetails)
+        </div>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+<div class="reveal-modal-bg" id="hideQuickOrderPopup" onclick="epiceler.core.HideValMsg()"></div>
+<div id="QuickOrderPopup" class="reveal-modal medium open" style="opacity: 1; visibility: visible; top: 874px; position: fixed; top: 20px !important;">
+    <div class="modal-wrap popup-wrap">
+        <strong id="popup-title"> @Html.PropertyFor(x => x.CurrentContent.QuickOrderCartPopUpConfirmationTitle)</strong>
+        <br />
+        <div class="popup-buttons btn">
+            <a id="genericPopupLink" href="@Model.CurrentContent.CartPageRedirectUrl">@Model.CurrentContent.QuickOrderPopupButtonLabel</a>
+        </div>
+    </div>
+</div>

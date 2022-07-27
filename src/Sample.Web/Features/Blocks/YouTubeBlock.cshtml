@@ -1,0 +1,17 @@
+@model  IBlockViewModel<YouTubeBlock>
+
+<div style="opacity:@Model.CurrentBlock.BlockOpacity;" class="@(Model.CurrentBlock.Padding + " " + Model.CurrentBlock.Margin + " " + @Model.CurrentBlock.BackgroundColor)">
+    <div class="w-full">
+        @if (Model.CurrentBlock.HasHeadingText)
+        {
+            <h1 @Html.EditAttributes(x => x.CurrentBlock.Heading)>@Model.CurrentBlock.Heading</h1>
+            @Html.PropertyFor(x => x.CurrentBlock.MainBody)
+        }
+        @if (Model.CurrentBlock.HasVideo)
+        {
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%;">
+                <iframe src="@Model.CurrentBlock.YouTubeLink" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"></iframe>
+            </div>
+        }
+    </div>
+</div>

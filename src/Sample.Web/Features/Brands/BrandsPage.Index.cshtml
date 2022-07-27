@@ -1,0 +1,37 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.BrandsPageViewModel
+
+@{ Layout = "~/Views/Shared/Layouts/_root.cshtml"; }
+
+<div class="container position-relative">
+    <div>
+        <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-10">
+            <span>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span>
+        </h1>
+        @foreach (var brandGroup in Model.BrandsSorting)
+        {
+            <div class="container mb-10">
+                <div class="block-heading secondary heading-lg text-md-left text-capitalize font-weight-normal mb-10">
+                    <div class="brandgroup">
+                        @brandGroup.Key
+                    </div>
+                    <div class="brand-backtotop-link">
+                        <a href="#top">@Model.CurrentContent.BackToTopLabel</a>
+                    </div>
+                </div>
+                <div class="row">
+                    @foreach (var brand in brandGroup)
+                    {
+                        <div class="col-md-4 col-lg-3">
+                            <div class="item-name brand-display">
+                                <a id="tst_brandCategories_itemLink" href="@Model.CurrentContent.BrandPageUrl/@brand.Name">@brand.Name</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+

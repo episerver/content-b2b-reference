@@ -1,0 +1,13 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.SearchPageViewModel
+
+<div class="container">
+    @if ((Model?.ProductListViewModel?.ProductCollection?.Products?.Count ?? 0) > 0)
+    {
+        @await Html.PartialAsync("ProductList", Model.ProductListViewModel)
+    }
+    else
+    {
+        <span>@Model?.CurrentContent?.ProductsEmptyMessage</span>
+    }
+</div>

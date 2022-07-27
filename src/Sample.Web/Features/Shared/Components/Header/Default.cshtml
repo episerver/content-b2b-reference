@@ -1,0 +1,348 @@
+﻿@inject IContentLanguageAccessor languageAccessor
+@model HeaderViewModel
+<header class="bg-white shadow-sm">
+    <div x-data="{ open: false }" class="container max-w-screen-xl mx-auto px-4">
+        <div class="py-3 flex items-center justify-between font-medium">
+            <div class="flex items-center space-x-7">
+                <!-- brand -->
+                <a href="/" title="@Model.Title"><img src="@Model.Logo" height="38" width="150"></a>
+                <!-- brand //end -->
+                @await Component.InvokeAsync("Menu")
+            </div>
+
+            <div x-data="{ search: false, myAccountOpen: false, changeCustomer:false, language:false, currency:false }" class="hidden lg:block ml-auto md:ml-0">
+                <button class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" @@click.prevent="search = !search">
+                    <i class="fa fa-search text-gray-500"></i>
+                </button>
+                <div x-show="search" x-cloak class="absolute top-5 right-7 z-10 w-screen max-w-[300px] sm:max-w-sm">
+                    <form role="search" method="GET" class="search-d relative" action="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.SearchPage))">
+                        <input name="search" placeholder="@Html.TranslateFallback("/pc/searchplaceholder", "Type and press enter")" type="search" class="block w-full border-primary-300 ring ring-primary-200 ring-opacity-50 bg-white rounded-full text-sm font-normal h-11 px-4 py-3 pl-10">
+                        <input type="submit" hidden="" value="">
+                    </form>
+                </div>
+
+                @if (Model.IsAuthenticated && Model.Session != null)
+                {
+                    <a class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" href="@Url.ContentUrl(Model.CartPage)">
+                        <i class="fa fa-shopping-cart text-gray-500"></i>
+                        <span id="miniCartNumber">@(Model.CartCount > 0 ? Model.CartCount.ToString() : "")</span>
+                    </a>
+                    <a class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" href="#" @@click.prevent="myAccountOpen = !myAccountOpen">
+                        <i class="fa fa-user text-gray-500"></i>
+                    </a>
+                    <div x-show="myAccountOpen" x-cloak @@click.away="myAccountOpen=false" class="absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 w-1/3">
+                        <div class="m-5 p-5">
+                            <ul class="py-1">
+                                <li>
+                                    <p class="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">
+                                        @Model.CustomerNumberText @Model.Session.BillTo?.CustomerNumber
+                                    </p>
+                                </li>
+                                <li>
+                                    <a href="@Url.ContentUrl(Model.MyAccountPage)" class="px-3 text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">
+                                        @Model.MyAccountText
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.ContentUrl(Model.ChangePasswordPage)" class="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">
+                                        @Model.ChangePasswordText
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.ContentUrl(Model.ForgotPasswordPage)" class="ptext-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">
+                                        @Model.ForgotPasswordText
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.ContentUrl(Model.SignoutPage)" class="ptext-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">
+                                        @Model.SingoutText
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <button class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" @@click.prevent="changeCustomer = !changeCustomer">
+                        <i class="fa fa-map-marker text-gray-500"></i>
+                    </button>
+                    <div x-data="{ showWarehouses: false }" x-show="changeCustomer" @@click.away="changeCustomer=false" x-cloak class="absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 w-1/3">
+                        <div class="m-5 p-5">
+                            <h2 class="text-xl font-semibold mb-5">@Model.ChangeCustomerText</h2>
+                            <div x-data="billToShipTo()">
+                                <div class="mb-4">
+                                    <label class="block mb-1"> Select Bill To: </label>
+                                    <select id="header_BillTo" x-model="selectedBillTo" x-bind:disabled="isLoading" x-on:input.debounce.750="getShipTos()" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                        <template x-for="option in billTos">
+                                            <option x-bind:value="option.id" x-bind:selected="option.id === '@(Model?.Session.BillTo?.Id ?? "")'" x-text="option.label"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block mb-1"> Select ShipTo </label>
+                                    <select id="header_ShipTo" x-model="selectedShipTo" x-bind:disabled="isLoading" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                        <template x-for="option in shipTos">
+                                            <option x-bind:value="option.id" x-bind:selected="option.id === '@(Model?.Session.ShipTo?.Id ?? "")'" x-text="option.label"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+                            <label class="block mb-1"> Fulfillment Method: </label>
+                            <div class="flex flex-row">
+                                <label class="flex p-3">
+                                    @if ((Model.Session?.FulfillmentMethod ?? "").Equals("Ship"))
+                                    {
+                                        <input id="header_Ship_FulfillmentMethod" @@click="showWarehouses = false" name="fulfillmentMethod" value="Ship" checked="checked" type="radio" class="h-4 w-4 mt-1" />
+                                    }
+
+                                    else
+                                    {
+                                        <input id="header_Ship_FulfillmentMethod" @@click="showWarehouses = false" name="fulfillmentMethod" value="Ship" type="radio" class="h-4 w-4 mt-1" />
+                                    }
+                                    <span class="ml-2 inline-block text-gray-500"> Ship </span>
+                                </label>
+                                <label class="flex p-3">
+                                    @if ((Model.Session?.FulfillmentMethod ?? "").Equals("PickUp"))
+                                    {
+                                        <input id="header_Pickup_FulfillmentMethod" @@click="showWarehouses = true" name="fulfillmentMethod" value="PickUp" checked="checked" type="radio" class="h-4 w-4 mt-1" />
+                                    }
+
+                                    else
+                                    {
+                                        <input id="header_Pickup_FulfillmentMethod" @@click="showWarehouses = true" name="fulfillmentMethod" value="PickUp" type="radio" class="h-4 w-4 mt-1" />
+                                    }
+                                    <span class="ml-2 inline-block text-gray-500"> Pick up </span>
+                                </label>
+                            </div>
+                            <div class="mb-4" x-show="showWarehouses" x-cloak>
+                                <label class="block mb-1"> Select Warehouse </label>
+                                <select id="header_Warehouse" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                    @foreach (var warehouse in Model.Warehouses ?? new List<Warehouse>())
+                                    {
+                                        @if (warehouse.IsDefault)
+                                        {
+                                            <option selected="selected" value="@warehouse.Id">@warehouse.Name</option>
+                                        }
+
+                                        else
+                                        {
+                                            <option value="@warehouse.Id">@warehouse.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-4 flex justify-start space-x-2">
+                                <a id="header_UpdateCustomer" class="px-5 py-2 inline-block text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700" href="#">Save</a>
+                                <a @@click="changeCustomer = false" class="px-5 py-2 inline-block text-gray-700 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 hover:text-blue-600" href="#">
+                                    Cancel
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" href="@(Url.ContentUrl(Model.LoginPage) + "?ReturnUrl=" + System.Web.HttpUtility.UrlEncode(Model.CurrentUrl))">
+                        <i class="fa fa-user text-gray-500"></i>
+                    </a>
+                }
+                <button class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" @@click.prevent="language = !language">
+                    <span id="languageText">@(Model.Session?.Language?.LanguageCode ?? "en")</span>
+                </button>
+                <div x-show="language" x-cloak @@click.away="language=false" class="absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 w-1/3">
+                    <div class="m-5 p-5">
+                        <label class="block mb-1"> Select Language </label>
+                        <select class="changeLanguage block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                            @foreach (var language in Model.Website?.Languages?.Languages ?? new List<Language>())
+                            {
+                                @if ((Model.Session?.Language?.Id.ToString() ?? "").Equals(language.Id.ToString()))
+                                {
+                                    <option selected="selected" value="@language.Id">@language.Description</option>
+                                }
+
+                                else
+                                {
+                                    <option value="@language.Id">@language.Description</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <button class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" @@click.prevent="currency = !currency">
+                    <span id="currencyText">@(Model.Session?.Currency?.CurrencySymbol ?? "$")</span>
+                </button>
+                <div x-show="currency" x-cloak @@click.away="currency=false" class="absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 w-1/3">
+                    <div class="m-5 p-5">
+                        <label class="block mb-1"> Select Currency </label>
+                        <select class="changeCurrency block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                            @foreach (var currency in Model.Website?.Currencies?.Currencies ?? new List<Currency>())
+                            {
+                                @if ((Model.Session?.Currency?.ID.ToString() ?? "").Equals(currency.ID.ToString()))
+                                {
+                                    <option selected="selected" value="@currency.ID">@currency.Description</option>
+                                }
+
+                                else
+                                {
+                                    <option value="@currency.ID">@currency.Description</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- mobile-only -->
+            <div class="lg:hidden pl-2">
+                <button type="button" @@click.prevent="open = !open"
+                        class="bg-white p-3 inline-flex items-center justify-center  rounded-md text-gray-400 font-semibold hover:bg-gray-200 hover:text-gray-800 border border-transparent">
+                    <span class="sr-only">Open menu</span>
+                    <i class="fa fa-bars fa-lg"></i>
+                </button>
+            </div>
+            <!-- mobile-only //end  -->
+        </div>
+        <div x-show="open" x-cloak x-data="{ mobileSearch: false, mobileChangeCustomer: false, mobileCurrency: false, mobileLanguage: false }" class="navbar-menu relative z-50" @@click.away="open=false">
+            <div class="ml-auto md:ml-0">
+                <button class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" @@click.prevent="mobileSearch = !mobileSearch">
+                    <i class="fa fa-search text-gray-500"></i>
+                </button>
+                <div x-show="mobileSearch" x-cloak class="absolute top-5 right-7 z-10 w-screen max-w-[300px] sm:max-w-sm">
+                    <form role="search" method="GET" class="search-d relative" action="@(Html.GetPageReferenceUrl<PageReferenceSettings>(x => x.SearchPage))">
+                        <input name="mobileSearch" placeholder="@Html.TranslateFallback("/pc/searchplaceholder", "Type and press enter")" type="search" class="block w-full border-primary-300 ring ring-primary-200 ring-opacity-50 bg-white rounded-full text-sm font-normal h-11 px-4 py-3 pl-10">
+                        <input type="submit" hidden="" value="">
+                    </form>
+                </div>
+                @if (Model.IsAuthenticated && Model.Session != null)
+                {
+                    <a class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" href="@Url.ContentUrl(Model.CartPage)">
+                        <i class="fa fa-shopping-cart text-gray-500"></i>
+                        <span id="miniCartNumber">@(Model.CartCount > 0 ? Model.CartCount.ToString() : "")</span>
+                    </a>
+                    <button class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" @@click.prevent="mobileChangeCustomer = !mobileChangeCustomer">
+                        <i class="fa fa-map-marker text-gray-500"></i>
+                    </button>
+                    <div x-data="{ mobileShowWarehouses: false }" x-show="mobileChangeCustomer" @@click.away="mobileChangeCustomer=false" x-cloak class="absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 w-full">
+                        <div class="m-5 p-5">
+                            <h2 class="text-xl font-semibold mb-5">@Model.ChangeCustomerText</h2>
+                            <div x-data="billToShipTo()">
+                                <div class="mb-4">
+                                    <label class="block mb-1"> Select Bill To: </label>
+                                    <select id="header_mobile_BillTo" x-model="selectedBillTo" x-bind:disabled="isLoading" x-on:input.debounce.750="getShipTos()" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                        <template x-for="option in billTos">
+                                            <option x-bind:value="option.id" x-bind:selected="option.id === '@(Model?.Session.BillTo?.Id ?? "")'" x-text="option.label"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block mb-1"> Select ShipTo </label>
+                                    <select id="header_mobile_ShipTo" x-model="selectedShipTo" x-bind:disabled="isLoading" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                        <template x-for="option in shipTos">
+                                            <option x-bind:value="option.id" x-bind:selected="option.id === '@(Model?.Session.ShipTo?.Id ?? "")'" x-text="option.label"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+                            <label class="block mb-1"> Fulfillment Method: </label>
+                            <div class="flex flex-row">
+                                <label class="flex p-3">
+                                    @if ((Model.Session?.FulfillmentMethod ?? "").Equals("Ship"))
+                                    {
+                                        <input x-on:click="mobileShowWarehouses = false" name="mobile_FulfillmentMethod" value="Ship" checked="checked" type="radio" class="h-4 w-4 mt-1" />
+                                    }
+
+                                    else
+                                    {
+                                        <input x-on:click="mobileShowWarehouses = false" name="mobile_FulfillmentMethod" value="Ship" type="radio" class="h-4 w-4 mt-1" />
+                                    }
+                                    <span class="ml-2 inline-block text-gray-500"> Ship </span>
+                                </label>
+                                <label class="flex p-3">
+                                    @if ((Model.Session?.FulfillmentMethod ?? "").Equals("PickUp"))
+                                    {
+                                        <input x-on:click="mobileShowWarehouses = true" name="mobile_FulfillmentMethod" value="PickUp" checked="checked" type="radio" class="h-4 w-4 mt-1" />
+                                    }
+
+                                    else
+                                    {
+                                        <input x-on:click="mobileShowWarehouses = true" name="mobile_FulfillmentMethod" value="PickUp" type="radio" class="h-4 w-4 mt-1" />
+                                    }
+                                    <span class="ml-2 inline-block text-gray-500"> Pick up </span>
+                                </label>
+                            </div>
+                            <div class="mb-4" x-show="mobileShowWarehouses" x-cloak>
+                                <label class="block mb-1"> Select Warehouse </label>
+                                <select id="header_mobile_Warehouse" class="block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                                    @foreach (var warehouse in Model.Warehouses ?? new List<Warehouse>())
+                                    {
+                                        @if (warehouse.IsDefault)
+                                        {
+                                            <option selected="selected" value="@warehouse.Id">@warehouse.Name</option>
+                                        }
+
+                                        else
+                                        {
+                                            <option value="@warehouse.Id">@warehouse.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-4 flex justify-start space-x-2">
+                                <a id="header_mobile_UpdateCustomer" class="px-5 py-2 inline-block text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700" href="#">Save</a>
+                                <a @@click="changeCustomer = false" class="px-5 py-2 inline-block text-gray-700 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 hover:text-blue-600" href="#">
+                                    Cancel
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                    
+                }
+                <button class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" @@click.prevent="mobileLanguage = !mobileLanguage">
+                    <span id="mobile_LanguageText">@(Model.Session?.Language?.LanguageCode ?? "en")</span>
+                </button>
+                <div x-show="mobileLanguage" x-cloak @@click.away="mobileLanguage=false" class="absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 w-full">
+                    <div class="m-5 p-5">
+                        <label class="block mb-1"> Select Language </label>
+                        <select class="changeLanguage block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                            @foreach (var language in Model.Website?.Languages?.Languages ?? new List<Language>())
+                            {
+                                @if ((Model.Session?.Language?.Id.ToString() ?? "").Equals(language.Id.ToString()))
+                                {
+                                    <option selected="selected" value="@language.Id">@language.Description</option>
+                                }
+
+                                else
+                                {
+                                    <option value="@language.Id">@language.Description</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <button class="px-3 py-2 inline-block border border-gray-300 ml-1 rounded-md hover:bg-gray-100" @@click.prevent="mobileCurrency = !mobileCurrency">
+                    <span id="currencyText">@(Model.Session?.Currency?.CurrencySymbol ?? "$")</span>
+                </button>
+                <div x-show="mobileCurrency" x-cloak @@click.away="mobileCurrency=false" class="absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 w-full">
+                    <div class="m-5 p-5">
+                        <label class="block mb-1"> Select Currency </label>
+                        <select class="changeCurrency block cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
+                            @foreach (var currency in Model.Website?.Currencies?.Currencies ?? new List<Currency>())
+                            {
+                                @if ((Model.Session?.Currency?.ID.ToString() ?? "").Equals(currency.ID.ToString()))
+                                {
+                                    <option selected="selected" value="@currency.ID">@currency.Description</option>
+                                }
+
+                                else
+                                {
+                                    <option value="@currency.ID">@currency.Description</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+             @await Component.InvokeAsync("MobileMenu")
+        </div>
+    </div> <!-- container.// -->
+</header>

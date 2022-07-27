@@ -1,0 +1,118 @@
+@model CartPageViewModel
+@using EPiServer.Web.Mvc.Html
+@using CommerceApiSDK.Models.Enums
+<section class="py-10">
+    <div class="container max-w-screen-xl mx-auto px-4">
+        @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
+        @if ((Model.Cart?.CartLines.Count ?? 0) > 0)
+        {
+            <div class="flex flex-col md:flex-row gap-4">
+                <main class="md:w-2/3">
+                    <article x-data="{ fulfillmentMethodType:'@(Model.CurrentFulfillmentMethod ?? "Ship")' }" class="border border-gray-200 bg-white shadow-sm rounded mb-5 p-3 lg:p-5">
+                        @await Html.PartialAsync("_Fullfilment", Model)
+                        @foreach (var line in Model.Cart.CartLines)
+                        {
+                            <div class="flex flex-wrap lg:flex-row gap-5  mb-4">
+                                <div class="w-full lg:w-2/5 xl:w-2/4">
+                                    <figure class="flex leading-5">
+                                        <div>
+                                            <div class="block w-16 h-16 rounded border border-gray-200 overflow-hidden">
+                                                <img src="@line.SmallImagePath" alt="@line.AltText">
+                                            </div>
+                                        </div>
+                                        <figcaption class="ml-3">
+                                            <p><a href="@line.ProductUri" class="hover:text-blue-600">@line.ShortDescription </a></p>
+                                            <p class="mt-1 text-gray-400">Part #: @line.ProductName </p>
+                                            <p class="mt-1 text-gray-400">MFG #: @line.ManufacturerItem </p>
+                                        </figcaption>
+                                    </figure>
+                                </div>
+                                <div class="">
+                                    <div class="w-24 relative">
+                                        <input value="@(line.QtyOrdered.HasValue ? line.QtyOrdered.Value.ToString("f0") : "1")"
+                                            type="text"
+                                            data-cartLineId="@line.Id.ToString()"
+                                            data-productId="@line.ProductId?.ToString()"
+                                            class="actionChangeCartQuantity appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full" placeholder="1" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="leading-5">
+                                        <p class="font-semibold not-italic">@line.Pricing.ExtendedUnitNetPriceDisplay</p>
+                                        <small class="text-gray-400"> @line.Pricing.UnitRegularPriceDisplay / @line.UnitOfMeasure </small>
+                                    </div>
+                                </div>
+                                <div class="flex-auto">
+                                    <div class="float-right">
+                                        <a href="#"
+                                            data-productId="@line.ProductId?.ToString()"
+                                            data-unitOfMeasure="@line.UnitOfMeasure"
+                                            class="actionAddToWishList px-3 py-2 inline-block text-blue-600 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200">
+                                            <i class="fa fa-heart"></i>
+                                        </a>
+                                        <a class="actionRemoveFromCart px-4 py-2 inline-block text-red-600 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100"
+                                            data-cartLineId="@line.Id.ToString()"
+                                            data-productId="@line.ProductId?.ToString()"
+                                            href="#">
+                                            Remove
+                                        </a>
+                                    </div>
+                                </div>
+                            </div> <!-- item-cart end// -->
+                            <div class="flex flex-wrap lg:flex-row gap-5  mb-4">
+                                <div class="flex flex-auto">
+                                    <h3>Line Notes</h3>
+                                    <textarea rows="4"
+                                            class="actionCartNotes appearance-none border border-gray-200 bg-gray-100 rounded-md hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
+                                            placeholder="Type here"
+                                            data-cartLineId="@line.Id.ToString()">
+                                            @line.Notes?.Trim()
+                                    </textarea>
+                                </div>
+                                <div>
+                                    @if (line.HasInsufficientInventory)
+                                    {@*
+                                        if (line.LowStockErrorLineMessage != null)
+                                        {
+                                            <strong class="in-stock">
+                                                @(new HtmlString(line.LowStockErrorLineMessage.Replace("{QtyOnHand}", Math.Round(line.QtyOnHand, 0).ToString()).Replace("{QtyOrdered}", Math.Round((decimal)line.QtyOrdered, 0).ToString())))
+                                            </strong>
+                                            <strong class="error">@line.Availability.Message</strong>
+                                        }*@
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-pallet"></i>
+                                    }
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                        }
+                        
+                    </article>
+                </main>
+                <aside class="md:w-1/3">
+                    <article class="border border-gray-200 bg-white shadow-sm rounded mb-5 p-3 lg:p-5">
+                        @await Html.PartialAsync("_OrderTotals", Model)
+
+                        <a class="px-4 py-3 mb-2 inline-block text-lg w-full text-center font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+                           href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(settings => settings.ChecoutPage))"> @Model.CurrentContent.CheckoutButtonText </a>
+
+                        <a class="px-4 py-3 inline-block text-lg w-full text-center font-medium text-blue-600 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100"
+                            href="#"> Submit for Quote </a>
+
+                        <a class="px-4 py-3 inline-block text-lg w-full text-center font-medium text-blue-600 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100"
+                            href="@(Html.GetPageReferenceUrl<PageReferenceSettings>(settings => settings.SavedOrderDetailPage))"> @Model.CurrentContent.SaveOrderButtonText </a>
+
+                    </article>
+                </aside>
+            </div>
+        }
+        else
+        {
+            <div>
+                <h2>@Model.CurrentContent.CartLineEmptyMessage</h2>
+            </div>
+        }
+    </div>
+</section>

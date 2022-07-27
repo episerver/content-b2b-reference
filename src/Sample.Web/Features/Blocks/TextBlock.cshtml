@@ -1,0 +1,5 @@
+﻿@model IBlockViewModel<TextBlock>
+
+<div style="opacity:@Model.CurrentBlock.BlockOpacity;" class="@(Model.CurrentBlock.Padding + " " + Model.CurrentBlock.Margin + " " + Model.CurrentBlock.BackgroundColor)">
+    @Html.PropertyFor(x => x.CurrentBlock.MainBody, new { CssClass = "word-break" })
+</div>

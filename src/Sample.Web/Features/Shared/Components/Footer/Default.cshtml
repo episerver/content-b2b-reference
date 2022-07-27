@@ -1,0 +1,46 @@
+﻿@model FooterSettings
+@inject UrlResolver urlResolver
+@inject IContentLanguageAccessor languageAccessor
+<footer class="flex justify-center px-4 text-black">
+    <div class="container py-6">
+        <hr class="h-px mt-6 bg-gray-700 border-none">
+        <div class="flex flex-col items-center justify-between mt-6 md:flex-row">
+            <div>
+                <h2 class="font-bold text-xl text-bold" @Html.EditAttributes(x => x.OurCompanyHeading)>@Model.OurCompanyHeading</h2>
+               @foreach(var link in Model.CompanyLinks)
+               {
+                    <div>
+                        <a href="@Url.GetFriendlyUrl(link.Href)" title="@link.Title">@link.Text</a>
+                    </div>
+               }
+            </div>
+            <div>
+               <h2 class="font-bold text-xl text-bold" @Html.EditAttributes(x => x.SupportHeading)>@Model.SupportHeading</h2>
+               @foreach(var link in Model.SupportLinks ?? new EPiServer.SpecializedProperties.LinkItemCollection())
+               {
+                    <div>
+                        <a href="@Url.GetFriendlyUrl(link.Href)" title="@link.Title">@link.Text</a>
+                    </div>
+               }
+            </div>
+            <div>
+               <h2 class="font-bold text-xl text-bold" @Html.EditAttributes(x => x.BrandHeading)>@Model.BrandHeading</h2>
+               @foreach(var link in Model.BrandLinks ?? new EPiServer.SpecializedProperties.LinkItemCollection())
+               {
+                    <div>
+                        <a href="@Url.GetFriendlyUrl(link.Href)" title="@link.Title">@link.Text</a>
+                    </div>
+               }
+            </div>
+            <div>
+               <h2 class="font-bold text-xl text-bold" @Html.EditAttributes(x => x.ProductLineHeading)>@Model.ProductLineHeading</h2>
+               @foreach(var link in Model.ProductLineLinks ?? new EPiServer.SpecializedProperties.LinkItemCollection())
+               {
+                    <div>
+                        <a href="@Url.GetFriendlyUrl(link.Href)" title="@link.Title">@link.Text</a>
+                    </div>
+               }
+            </div>
+        </div>
+    </div>
+</footer>

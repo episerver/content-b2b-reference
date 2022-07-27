@@ -1,0 +1,42 @@
+﻿@model ICartViewModel
+<ul class="mb-5">
+    <li class="flex justify-between text-gray-600  mb-1">
+        <span>@Model.SubtotalLabel:</span>
+        <span>@Model.Cart.OrderSubTotalDisplay</span>
+    </li>
+    @if ((Model.Promotions?.Promotions?.Count ?? 0) > 0)
+    {
+        foreach (var promotion in Model.Promotions.Promotions)
+        {
+            <li class="flex justify-between text-gray-600  mb-1">
+                <span>@promotion.Name</span>
+                <span class="text-green-500">- $@promotion.AmountDisplay</span>
+            </li>
+        }
+    }
+    <li class="flex justify-between text-gray-600  mb-1">
+        <span>@Model.ShippingHandlingLabel:</span>
+        <span>@Model.Cart.ShippingAndHandlingDisplay</span>
+    </li>
+    <li class="flex justify-between text-gray-600  mb-1">
+        <span>@Model.TaxLabel:</span>
+        <span>@Model.Cart.TotalTaxDisplay</span>
+    </li>
+    <li class="text-lg font-bold border-t flex justify-between mt-3 pt-3">
+        <span>@Model.TotalLabel:</span>
+        <span>@Model.Cart.OrderGrandTotalDisplay</span>
+    </li>
+    @if ((Model.Promotions?.Promotions?.Count ?? 0) > 0)
+    {
+        <li class="text-lg font-bold border-t flex justify-between mt-3 pt-3">
+            <span>@Model.PromotionLabel:</span>
+            <span>You saved @Model.Promotions.Promotions.Sum(x => x.Amount).ToString("f2")</span>
+        </li>
+    }
+    <li>
+        <div class="flex gap-3">
+            <input class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full" type="text" placeholder="Coupon code">
+            <button type="button" class="px-4 py-2 inline-block text-gray-700 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 hover:text-blue-600"> Apply  </button>
+        </div>
+    </li>
+</ul>

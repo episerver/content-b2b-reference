@@ -1,0 +1,20 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.ContactUsViewModel
+
+<div class="container">
+    <div class="page-content saved-orders" role="main">
+        <div class="ui-lock use-fastclick"></div>
+        <div class="cms-rearrangeable">
+            <div class="row main-row">
+                <div class="col-12">
+                    <div class=" saved-order">
+                        <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-10" @Html.EditAttributes(x => x.CurrentContent.MetaTitle)><span>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span></h1>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        @Html.PropertyFor(x => x.CurrentContent.ContactUsFormContentArea)
+
+    </div>
+    </div>

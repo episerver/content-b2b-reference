@@ -1,0 +1,140 @@
+﻿@model Sample.Models.ViewModels.ProductComparisonViewModel
+
+<div class="product-comparison">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="block-heading-pane">
+                    <h1 class="block-heading heading-lg text-md-right text-capitalize font-weight-normal">
+                        <span @Html.EditAttributes(x => x.CurrentContent.MetaTitle)>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span>
+                    </h1>
+                </div>
+                @if (Model.product == null || Model.product.Count == 0)
+                {
+                    <div>
+                        <br />
+                        <span>@Html.PropertyFor(x => x.CurrentContent.ProductComparisonWarningLabel)</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="panel panel-default compare-panel">
+                        <div class="row">
+                            <div class="col-md-6 count-compare">
+                                <input type="hidden" id="compare-page" value="productComparison" />
+                                <span class="icon-sa">@Model.product.Count</span>
+                                <span class="result-lbl">items</span>
+                            </div>
+                            <div class="col-md-6">
+                                <button id="productComparisonViewRemoveAllButton" data-return-url="@Model.ReturnUrl" class="btn btn-primary btn-block btn-remove btn-remove-compare">@Html.PropertyFor(x => x.CurrentContent.RemoveAllLabel)</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="item-wrap product-item product-attribute">
+                    <div class="visual same-height-left item-thumb">
+                    </div>
+                    <div class="info item-name">
+                    </div>
+                    <div class="product-comparison actions-panel">
+                    </div>
+                    <div class="height-adjuster"></div>
+                    @if (Model.product != null && Model.product.Count > 0)
+                    {
+                        <div class="row">
+                            @foreach (var p in Model.product)
+                            {
+                               
+                                <div class="col-md-3">
+                                    <div class="remove">
+                                        <a id="removeProductFromComparison" class="btn btn-remove removeProductFromComparison" data-productid=@p.Product.Id>
+                                            <i class="foundicon-remove" data-productid=@p.Product.Id></i>
+                                        </a>
+                                    </div>
+                                    <div class="product-info-block mb-0" itemscope itemtype="https://schema.org/Product">
+                                        <div class="product-image image-xs-slider mb-20 product-comparison-img-height">
+                                            <a href="@p.Product.ProductDetailUrl" class="img-holder" style="" aria-label="@p.Product.AltText" aria-hidden="true" role="tabpanel" id="slick-slide00">
+                                                <img itemprop="image" src="@p.DisplayImage" alt="Brand Helmets Bell MX 2021 Moto-9 Flex (Dark Blue/Blue)">
+                                            </a>
+                                            <a href="@p.Product.ProductDetailUrl" class="img-holder img-hover d-md-block" style="" aria-label="@p.Product.AltText" aria-hidden="true" tabindex="-1" role="tabpanel" id="slick-slide01">
+                                                <img itemprop="image" src="@p.DisplayHoverImage" alt="@p.Product.AltText">
+                                            </a>
+                                        </div>
+                                        <div class="product-description addtolistconfig">
+                                            <div class="title-holder">
+
+                                                <div class="h3" itemprop="name">
+                                                    <a href="@p.Product.ProductDetailUrl">
+                                                        <strong>@p.Product.ShortDescription.Truncate()</strong>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="meta-price-stat">
+                                                <ul class="list-inline prod-meta">
+                                                    <li>Item @p.Product.ERPNumber</li>
+                                                    <li>Model @p.Product.ManufacturerItem</li>
+                                                </ul>
+                                                <div class="sizes-rating-hold d-none-list">
+                                                    <div class="sizes-info-text">4 sizes</div>
+                                                    <div class="rating-info-block">
+                                                        <div class="rating-info">
+                                                            <ul class="star-rating list-unstyled" itemprop="aggregateRating" itemscope="" itemtype="https://schema.org/AggregateRating">
+                                                                <li class="sr-only"><span itemprop="ratingValue">4</span><span itemprop="reviewCount">16</span></li>
+                                                                <li><a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description" /></a></li>
+                                                                <li><a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description" /></a></li>
+                                                                <li><a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description" /></a></li>
+                                                                <li><a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description" /></a></li>
+                                                                <li><a href="#"><img src="@Url.ContentUrl(Model.CurrentContent.RatingImage)" alt="image description" /></a></li>
+                                                            </ul>
+                                                            <div class="review-count">(16)</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="info-pricing-pane">
+                                                    <div class="price-holder">
+                                                        <span class="price" itemprop="price">@p.Product.Pricing.UnitNetPriceDisplay</span>
+                                                        <span class="currency-info">/@p.Product.UnitOfMeasure</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @Html.PropertyFor(x => x.CurrentContent.ItemActionContentArea, new { cssclass = "product-config-pane", p.Product, SourcePageName = "ProductList" })
+                                        </div>
+                                    </div>
+                                    <table class="table table-bordered">
+                                        @foreach (var attribut in Model.AttributeList)
+                                        {
+                                            var attrCollection = "";
+                                            if (p.Product.AttributeTypes != null)
+                                            {
+
+                                                var attr = p.Product.AttributeTypes.Where(x => x.Id.ToString() == attribut.AttributeId).FirstOrDefault();
+                                                if (attr != null)
+                                                {
+
+                                                    foreach (var item in attr.AttributeValues)
+                                                    {
+                                                        attrCollection += item.Value + ", ";
+                                                    }
+                                                    attrCollection = attrCollection.Trim().TrimEnd(',');
+                                                }
+                                            }
+                                            <tr>
+                                                <th><strong>@attribut.AttributeLabel</strong></th>
+                                                <td>@attrCollection</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

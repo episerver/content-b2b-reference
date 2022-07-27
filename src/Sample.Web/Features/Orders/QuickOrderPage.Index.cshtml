@@ -1,0 +1,108 @@
+﻿@using EPiServer.Web.Mvc.Html
+@model Sample.Models.ViewModels.QuickOrderPageViewModel
+
+<div class="container mx-auto">
+    <input type="hidden" id="quickorder_ProductId" />
+    <div class="flex justify-between mb-5">
+        <h2 @Html.EditAttributes(x => x.CurrentContent.MetaTitle) class="text-xl font-semibold mb-2">@Model.CurrentContent.MetaTitle</h2>
+        <button class="px-4 py-2 inline-block text-blue-600 border border-gray-300 rounded-md hover:bg-gray-100">
+            <i class="mr-1 fa fa-upload"></i> @Model.CurrentContent.UploadOrderLabel
+        </button>
+    </div>
+    <p @Html.EditAttributes(x => x.CurrentContent.IntroductionText) class="m-5">@Model.CurrentContent.IntroductionText</p>
+    <div id="quickorder_container" x-data="productAutoComplete()" class="flex flex-col md:flex-row mb-5 gap-3 relative inline-block text-left">
+        <div class="md:w-3/6">
+            <input id="quickorder_Search" placeholder="@Model.CurrentContent.SearchPlaceholderText" type="search" x-model="search" x-on:input.debounce.750="getProducts()" class="w-5/6 border-primary-300 ring ring-primary-200 ring-opacity-50 bg-white rounded-full text-sm font-normal h-11 px-4 py-3 pl-10" />
+        </div>
+        <div x-show="showResults" x-cloak @@click.away="showResults=false" class="md:w-3/6 absolute top-20 z-10 mt-1 bg-white rounded-md shadow-lg">
+            <div class="m-5 p-5">
+                <template x-for="product in products">
+                    <div x-bind:data-productId="product.productId" class="quickorderAdd flex flex-row hover:bg-amber-200 cursor-pointer">
+                        <div class="p-1">
+                            <img width="50px" height="100%" class="mx-auto" x-bind:src="product.image" x-bind:alt="product.label">
+                        </div>
+                        <div class="p-1">
+                            <a href="#" class="block mb-1 hover:text-blue-600" x-text="product.label">
+                            </a>
+                            <span class="text-sm font-semibold text-black" x-text="product.name"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+        <div class="md:w-1/6">
+            <label @Html.EditAttributes(x => x.CurrentContent.QuantityLabel) class="mr-1">@Model.CurrentContent.QuantityLabel</label>
+            <input min="0" max="999999" type="number" id="quickorder_Quantity" class="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6" value="1">
+        </div>
+        <div id="uomContainer" class="md:w-1/6 invisible">
+            <label @Html.EditAttributes(x => x.CurrentContent.QuickOrderUM) class="mr-1">@Model.CurrentContent.QuickOrderUM</label>
+            <select id="quickorder_UOM" class="cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-5/6">
+            </select>
+        </div>
+        <div class="md:w-1/6">
+            <button id="quickorder_addToForm" class="px-4 py-2 inline-block text-blue-600 border border-gray-300 rounded-md hover:bg-gray-100">
+                @Model.CurrentContent.AddtoQuickOrderFormButtonText
+            </button>
+        </div>
+    </div>
+    <div class="border border-gray-200 bg-white shadow-sm rounded mb-5 p-3 lg:p-5 w-3/4" id="quickorder_items" x-data="{ quickorderItems: []}">
+        <div class="flex justify-between mb-5">
+            <h2 class="text-xl font-semibold mb-2">Order Form</h2>
+            <button class="quickorder_addToCart invisible px-4 py-2 inline-block text-blue-600 border border-gray-300 rounded-md hover:bg-gray-100">
+                <i class="mr-1 fa fa-plus"></i>  @Model.CurrentContent.AddToAllCartButtonText
+            </button>
+        </div>
+
+        <template x-for="item in $store.quickorderItems">
+            <div class="flex flex-wrap lg:flex-row gap-5  mb-4">
+                <div class="w-full lg:w-2/5 xl:w-2/4">
+                    <figure class="flex leading-5">
+                        <div>
+                            <div class="block w-16 h-16 rounded border border-gray-200 overflow-hidden">
+                                <img x-bind:src="item.product.smallImagePath" x-bind:alt="item.product.altText">
+                            </div>
+                        </div>
+                        <figcaption class="ml-3">
+                            <p><a x-bind:href="'@Model.CurrentContent.Language.Name' + item.product.productDetailUrl" class="hover:text-blue-600" x-text="item.product.shortDescription"></a></p>
+                            <p class="mt-1 text-gray-400" x-text="'Part #:' + item.product.name"> </p>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="">
+                    <div class="w-24 relative">
+                        <input x-bind:value="item.product.qtyOrdered.toString()"
+                               type="number"
+                               x-bind:data-productId="item.product.id"
+                               class="actionChangeCartQuantity appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full" placeholder="1" />
+                    </div>
+                </div>
+                <div>
+                    <div class="leading-5">
+                        <p class="font-semibold not-italic" x-text="item.product.pricing.extendedUnitNetPriceDisplay"></p>
+                        <small class="text-gray-400" x-text="item.product.pricing.unitRegularPriceDisplay + '/' + item.product.unitOfMeasure"></small>
+                    </div>
+                </div>
+                <div class="flex-auto">
+                    <div class="float-right">
+                        <a href="#"
+                           x-bind:data-productId="item.product.id"
+                           x-bind:data-unitOfMeasure="item.product.unitOfMeasure"
+                           class="actionAddToWishList px-3 py-2 inline-block text-blue-600 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200">
+                            <i class="fa fa-heart"></i>
+                        </a>
+                        <a class="quickorder_RemoveFromForm px-4 py-2 inline-block text-red-600 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100"
+                           x-bind:data-productId="item.product.id"
+                           href="#">
+                            Remove
+                        </a>
+                    </div>
+                </div>
+            </div> <!-- item-cart end// -->
+        </template>
+        <div>
+            <button class="quickorder_addToCart invisible px-4 py-2 inline-block text-blue-600 border border-gray-300 rounded-md hover:bg-gray-100">
+                <i class="mr-1 fa fa-plus"></i>  @Model.CurrentContent.AddToAllCartButtonText
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+﻿@model ContentPageViewModel
+<section class="bg-gray-100 py-10">
+    <div class="container max-w-screen-xl mx-auto px-4">
+        <h2 class="text-2xl font-semibold mb-4">
+            @Model?.CurrentContent?.MetaTitle
+        </h2>
+        <article>
+            @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
+            @Html.PropertyFor(x => x.CurrentContent.MainBody)
+        </article>
+    </div>
+</section>

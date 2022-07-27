@@ -1,0 +1,10 @@
+﻿@model CommerceApiSDK.Models.Category
+@{
+    if (Model.LargeImagePath != null)
+    {
+        <div class="bg-banner">
+            <div class="bg-cover has-bg plp-desktop-banner-image" id="bg-plp-desktop-image" style="background-image: url(@Model.LargeImagePath);">
+            </div>
+        </div>
+    }
+}

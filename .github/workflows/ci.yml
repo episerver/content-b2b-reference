@@ -1,0 +1,44 @@
+﻿name: Continuous integration
+
+on:
+  push:
+    branches:
+      - 'main'
+jobs:
+  build_test_pack:
+    name: Build, test & deploy
+    runs-on: ubuntu-latest
+    env:
+      buildConfiguration: release
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: ©
+      - name: Set up Node.js ⚙️
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Setup .NET Core @ Latest
+        uses: actions/setup-dotnet@v1
+      - name: Install dependencies
+        run: npm ci 
+        working-directory: src/Sample.Web
+      - name: Build styles
+        run: npm run styles:production
+        working-directory: src/Sample.Web
+      - name: Build scripts
+        run: npm run scripts:production
+        working-directory: src/Sample.Web
+      - name: Restore
+        run: dotnet restore src/Sample.sln --configfile src/NuGet.config
+      - name: Build 
+        run: dotnet build src/Sample.sln --no-restore --configuration release 
+      - name: Publish site
+        run: dotnet publish src/Sample.Web/Sample.Web.csproj -c release -o 'artifacts' 
+      - name: 'Run Azure webapp deploy action using publish profile credentials'
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: opti-b2b-cms
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }}
+          package: 'artifacts'

@@ -1,0 +1,53 @@
+@inject IWebHostEnvironment webhost
+@inject IContentLanguageAccessor languageAccessor
+@model IContentViewModel<BasePage>
+ 
+<!DOCTYPE html>
+<html lang="@(languageAccessor.Language?.Name ?? "en")" class="dark" x-data="{ darkMode: localStorage.getItem('dark') === 'true'} "
+  x-init="$watch('darkMode', val => localStorage.setItem('dark', val))"
+  x-bind:class="{ 'dark': darkMode }">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    <meta name="author" content="">
+    @Html.CanonicalLink()
+    <title> @Model.CurrentContent?.Name</title>
+    <link rel="icon" href="/icons/favicon.png" type="image/png" />
+    <link rel="shortcut icon" href="/icons/favicon.png" type="image/png" />
+    <link href="~/main.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    <link href="~/fonts/fontawesome/css/all.min.css" type="text/css" rel="stylesheet" />
+    <style type="text/css" asp-add-nonce>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+    @RenderSection("AdditionalStyles", required: false)
+    @Html.RequiredClientResources("Header") 
+</head>
+<body>
+    <div id="loading-box" class="hidden">
+        <div class="loader"></div>
+    </div>
+    @*@await Html.RenderEPiServerQuickNavigatorAsync()*@
+    @await Component.InvokeAsync("Header")
+    @if (Model.CurrentContent is not Sample.Models.Pages.CatalogPage)
+    {
+        @await Component.InvokeAsync("Breadcrumb")
+    }
+    @RenderBody()
+    <div id="layout_Toast" class="invisible alert-toast fixed bottom-0 right-0 m-8 w-5/6 md:w-full max-w-sm">
+        <label id="layout_ToastLabel" class="close cursor-pointer flex items-start justify-between w-full p-2 bg-green-500 h-24 rounded shadow-lg text-white"
+            title="close">
+            <span id="layout_ToastMessage"></span>
+            <svg id="layout_ToastClose" class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+            </svg>
+        </label>
+    </div>
+    @await Component.InvokeAsync("Footer")
+    <script src="~/main.min.js" asp-append-version="true"></script>
+    @RenderSection("AdditionalScripts", required: false)
+    @Html.RequiredClientResources("Footer")
+</body>
+</html>

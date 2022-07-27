@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="..\..\build\dependencies.props" />
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="EPiServer.CMS.UI.Core" Version="$(CmsUiVersionCommon)" />
+		<PackageReference Include="EPiServer.CMS.AspNetCore.Templating" Version="$(CmsCoreVersionCommon)" />
+		<PackageReference Include="EPiServer.Find.Cms" Version="$(FindVersion)" />
+		<PackageReference Include="Optimizely.Commerce.API" Version="$(CommerceApiSdk)" />
+	</ItemGroup>
+</Project>
