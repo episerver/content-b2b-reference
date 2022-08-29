@@ -91,13 +91,14 @@ public class Startup
 
         //Registration of Partial Routes
         services.AddSampleServices();
+        services.AddSingleton<ISettingsHelper, SettingsHelper>();
         //services.AddSingleton<IPartialRouter, ProductDetailPartialRouting>();
         services.AddSingleton<IPartialRouter, CatalogPartialRouting>();
         //services.AddSingleton<IPartialRouter, SearchPagePartialRouting>();
         services.AddSingleton<IPartialRouter, BrandDetailsPartialRouting>();
         services.AddSingleton<IPartialRouter, BrandsPartialRouting>();
         //services.AddSingleton<IClientResourceService, ClientResourceService>();
-        services.AddSingleton<ISettingsHelper, SettingsHelper>();
+       
 
         services.AddRazorPages();
         

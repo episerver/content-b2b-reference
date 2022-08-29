@@ -3,23 +3,34 @@ using EPiServer.Core.Routing.Pipeline;
 
 namespace Sample.Web.Infrastructure.Routing;
 
-class CatalogPartialRouting : IPartialRouter<Models.Pages.CatalogPage, CatalogViewModel>
+class CatalogPartialRouting : IPartialRouter<Models.Pages.CatalogPage, CatalogRoutedViewModel>
 {
+    private readonly ISettingsHelper _settingsHelper;
+
+    public CatalogPartialRouting(ISettingsHelper settingsHelper)
+    {
+        _settingsHelper = settingsHelper;
+    }
+
     public object RoutePartial(Models.Pages.CatalogPage content, UrlResolverContext segmentContext)
     {
-        var contentx = new CatalogViewModel(content)
+        var path = new CatalogRoutedViewModel()
         {
             Path = $"/{content.URLSegment}/{segmentContext.RemainingSegments}"
         };
         segmentContext.RemainingSegments = string.Empty.ToCharArray();
-        return contentx;
+        return path;
     }
 
     public PartialRouteData GetPartialVirtualPath(
-        CatalogViewModel content,
+       CatalogRoutedViewModel content,
         UrlGeneratorContext urlGeneratorContext
     )
     {
-        return null;
+        return new PartialRouteData()
+        {
+            BasePathRoot = _settingsHelper.GetCatalogPage().ContentLink,
+            PartialVirtualPath = content.Path
+        };
     }
 }

@@ -3,8 +3,6 @@ using EPiServer.Find.Cms;
 using EPiServer.Find.Cms.Conventions;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Sample.Models.Media;

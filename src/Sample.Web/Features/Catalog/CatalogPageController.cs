@@ -6,13 +6,21 @@ using CommerceApiSettings = Sample.Web.Infrastructure.CommerceApiSettings;
 
 namespace Sample.Web.Features.Catalog;
 
-public class CatalogPageController : Controller, IRenderTemplate<CatalogViewModel>
+public class CatalogPageController : PageController<Models.Pages.CatalogPage>
+{
+    public ActionResult Index(Models.Pages.CatalogPage currentPage)
+    {
+        return View(new CatalogViewModel(currentPage));
+    }
+}
+
+public class CatalogPagePartialController : Controller, IRenderTemplate<CatalogRoutedViewModel>
 {
     private readonly IProductService _productService;
     private readonly CommerceApiSettings _commerceApiSettings;
     private readonly ISettingsHelper _settingsHelper;
 
-    public CatalogPageController(
+    public CatalogPagePartialController(
         IProductService productService,
         IOptionsMonitor<CommerceApiSettings> commerceApiSettings,
         ISettingsHelper settingsHelper)
@@ -25,9 +33,12 @@ public class CatalogPageController : Controller, IRenderTemplate<CatalogViewMode
     [HttpGet]
     public async Task<IActionResult> Index(Models.Pages.CatalogPage currentPage, FilterOptionViewModel filterOptionViewModel)
     {
-        var catalogViewModel = HttpContext.Features.Get<IContentRouteFeature>().RoutedContentData.PartialRoutedObject as CatalogViewModel;
+        var catalogViewModel = new CatalogViewModel
+        {
+            Path = (HttpContext.Features.Get<IContentRouteFeature>().RoutedContentData.PartialRoutedObject as CatalogRoutedViewModel)?.Path
+        };
         var path = catalogViewModel.Path;
-        ViewData["path"] = catalogViewModel.Path;
+        ViewData["path"] = path;
         if (string.IsNullOrWhiteSpace(path))
         {
             LogManager
@@ -53,7 +64,7 @@ public class CatalogPageController : Controller, IRenderTemplate<CatalogViewMode
         }
 
         ViewData["path"] = catalogViewModel.Path;
-        return View(catalogViewModel);
+        return View("/Features/Catalog/CatalogPage.Index.cshtml", catalogViewModel);
     }
 
     private async Task<ProductDetailViewModel> GetProductDetailViewModel(Models.Pages.CatalogPage currentPage, CommerceApiSDK.Models.CatalogPage catalogPage)

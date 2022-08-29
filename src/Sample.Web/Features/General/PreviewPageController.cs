@@ -24,7 +24,7 @@ public class PreviewPageController : ActionControllerBase, IRenderTemplate<Block
         var viewmodel = new PreviewPageViewModel(startPage, currentContent);
         return await Task.FromResult(new ViewResult
         {
-            ViewName = "~/Features/General/PreviewPage.cshtml",
+            ViewName = "~/Features/General/PreviewPage.Index.cshtml",
             ViewData = new ViewDataDictionary<PreviewPageViewModel>(ViewData, viewmodel)
         });
     }

@@ -3,31 +3,13 @@
 @model Sample.Models.ViewModels.ProductListViewModel
 @{
     var url = new Uri(UriHelper.GetDisplayUrl(Context.Request)).GetLeftPart(UriPartial.Path);
-    var pagination = Model.ProductCollection.Pagination;
+    var pagination = Model?.ProductCollection?.Pagination;
     var pageName = Model.Category == null ? "SearchPage" : "ProductList";
     var className = Model.Category == null ? "" : (Model.Category.SubCategories.Count() > 0 ? "d-none" : "");
 }
 
 
-@if (Model.CatalogPage?.BreadCrumbs?.Any() ?? false)
-{
-    <section class="py-4">
-        <div class="container max-w-screen-xl mx-auto px-4">
-            <ol class="inline-flex flex-wrap text-gray-600 space-x-1 md:space-x-3 items-center">
-                @foreach (var breadCrumb in Model.CatalogPage.BreadCrumbs.Where(x => !string.IsNullOrEmpty(x.Url)))
-                {
-                    <li class="inline-flex items-center">
-                        <a class="text-gray-600 hover:text-blue-600" href="@($"/{Model.CurrentContent.Language.Name}{breadCrumb.Url}")">@breadCrumb.Text</a>
-                        @if (!breadCrumb.CategoryId.Equals(Model.CatalogPage.BreadCrumbs.Where(x => !string.IsNullOrEmpty(x.Url)).Last().CategoryId))
-                        {
-                            <i class="ml-3 text-gray-400 fa fa-chevron-right"></i>
-                        }
-                    </li>
-                }
-            </ol>
-        </div>
-    </section>
-}
+
 
 @if (Model.Category?.SubCategories != null)
 {
@@ -50,7 +32,7 @@
     </div>
 }
 
-@if (Model.ProductCollection.Products.Any())
+@if ((Model.ProductCollection?.Products.Any() ?? false))
 {
     <section class="py-2">
         <div class="container max-w-screen-xl mx-auto px-4">
