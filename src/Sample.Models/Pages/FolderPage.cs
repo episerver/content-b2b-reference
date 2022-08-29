@@ -1,9 +1,9 @@
 ﻿namespace Sample.Models.Pages;
 
 [ContentType(
-    DisplayName = "Folder Page",
+    DisplayName = "Container Page",
     GUID = "69EEB000-E24A-4362-8BA0-64EADCD5C8A4",
-    Description = "A page which allows you to structure pages.",
+    Description = "A page container for pages.",
     GroupName = Global.GroupNames.Utility
 )]
 [SiteImageUrl]
