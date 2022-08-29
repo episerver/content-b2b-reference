@@ -1,6 +1,6 @@
-<a href="https://github.com/InsiteSoftware/cms-b2b-starter-kit"><img src="https://www.optimizely.com/globalassets/02.-global-images/navigation/optimizely_logo_navigation.svg" title="Optimizely CMS to B2B Starter Kit" alt="Optimizely CMS to B2B Starter Kit"></a>
+<a href="https://github.com/episerver/cms-b2b-reference-kit"><img src="https://www.optimizely.com/globalassets/02.-global-images/navigation/optimizely_logo_navigation.svg" title="Optimizely CMS to B2B Starter Kit" alt="Optimizely CMS to B2B Starter Kit"></a>
 
-# Optimizely CMS to B2B Starter Kit 
+# Optimizely CMS to B2B Reference Kit 
 
  Optimizely CMS to B2B Starter Kit offers a starting point for when using content cloud and b2b commerce cloud together.
 
@@ -121,7 +121,7 @@ In the Sample.Web use can use te following appsettings to set the values in src\
 
 ```
 open command prompt as administrator
-git clone https://github.com/InsiteSoftware/cms-b2b-starter-kit.git
+git clone https://github.com/episerver/cms-b2b-reference-kit.git
 cd cms-b2b-starter-kit
 git checkout main
 setup.cmd 
@@ -132,7 +132,7 @@ dotnet run --project ./src/Sample.Web/Sample.Web.csproj
 
 ```
 Open a Terminal window
-git clone https://github.com/InsiteSoftware/cms-b2b-starter-kit.git
+git clone https://github.com/episerver/cms-b2b-reference-kit.git
 cd cms-b2b-starter-kit
 git checkout main
 chmod u+x setup.sh
@@ -144,7 +144,7 @@ dotnet run --project ./src/Sample.Web/Sample.Web.csproj
 
 ```
 Open a bash terminal window
-git clone https://github.com/InsiteSoftware/cms-b2b-starter-kit.git
+git clone https://github.com/episerver/cms-b2b-reference-kit.git
 cd cms-b2b-starter-kit
 git checkout main
 chmod u+x setup.sh
@@ -156,4 +156,4 @@ dotnet run --project ./src/Sample.Web/Sample.Web.csproj
 
 After completing the setup steps and running the solution, access the site at <a href="http://localhost:8000">http://localhost:8000</a>.
 
-To change the default port, modify the file <a href="https://github.com/InsiteSoftware/cms-b2b-starter-kit/blob/main/src/Sample.Web/Properties/launchSettings.json">/src/Sample.Web/Properties/launchSettings.json</a>.
+To change the default port, modify the file <a href="https://github.com/episerver/cms-b2b-reference-kit/blob/main/src/Sample.Web/Properties/launchSettings.json">/src/Sample.Web/Properties/launchSettings.json</a>.
