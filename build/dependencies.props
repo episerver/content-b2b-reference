@@ -1,13 +1,13 @@
 <Project>
 	<PropertyGroup>
 		<DependencyVersions_props>true</DependencyVersions_props>
-		<CmsCoreVersionCommon>12.9.0</CmsCoreVersionCommon>
-		<CmsUiVersionCommon>12.10.0</CmsUiVersionCommon>
+		<CmsCoreVersionCommon>12.9.1</CmsCoreVersionCommon>
+		<CmsUiVersionCommon>12.11.0</CmsUiVersionCommon>
 		<FormsVersion>5.2.1</FormsVersion>
 		<CloudPlatformVersion>1.0.5</CloudPlatformVersion>
-		<CommerceApiSdk>0.1.25</CommerceApiSdk>
+		<CommerceApiSdk>0.1.27</CommerceApiSdk>
 		<SystemLingAsync>6.0.1</SystemLingAsync>
-		<FindVersion>14.1.0</FindVersion>
+		<FindVersion>14.0.4</FindVersion>
 		<DependencyInjection>6.0.0</DependencyInjection>
 		<GetaNotFound>3.0.0</GetaNotFound>
 		<AutoMapperExtensions>11.0.0</AutoMapperExtensions>

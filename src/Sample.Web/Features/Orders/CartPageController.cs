@@ -5,6 +5,7 @@ using EPiServer.Logging;
 using Sample.Services.Catalog;
 using Sample.Services.Cart;
 using Sample.Services.Session;
+using CommerceApiSDK.Models;
 
 namespace Sample.Web.Features.Orders;
 
@@ -104,25 +105,35 @@ public class CartPageController : PageControllerBase<CartPage>
     }
 
     [HttpPost]
-    //[ValidateAntiForgeryToken]
     public async Task<bool> AddToCart([FromBody] CartDetails cartDetails)
     {
-        LogManager.GetLogger(GetType()).Information("At add to cart");
         try
         {
-            var properties = new Dictionary<string, string>();
-            var querystring = Request.QueryString;
-            if (querystring != default && querystring.HasValue)
+            var properties = new Dictionary<string, Guid>();
+            if (cartDetails.Options.Any())
             {
-                var styleTraitValues = await GetStyleTraitValues(
-                    HttpUtility.ParseQueryString(querystring.Value),
-                    cartDetails.productId
-                );
-                if (styleTraitValues != null)
+                var variations = await _productService.GetVariations(Guid.Parse(cartDetails.productId), new VariantChildrenParameters
                 {
-                    properties = styleTraitValues;
+                    PageSize = 500
+                });
+                foreach (var variant in variations.Products)
+                {
+                    bool[] foundChild = new bool[cartDetails.Options.Count];
+                    for (var i = 0; i < cartDetails.Options.Count; i++)
+                    {
+                        foundChild[i] = variant.ChildTraitValues.Any(x => x.StyleTraitId.ToString().Equals(cartDetails.Options[i].TraitId) &&
+                        x.Id.ToString().Equals(cartDetails.Options[i].Value));
+                    }
+
+                    if (foundChild.All(x => x))
+                    {
+                        cartDetails.productId = variant.Id.ToString();
+                        break;
+                    }
                 }
+               //var childProduct = parentProduct.Product.StyledProducts.FirstOrDefault(x => x.StyleValues.All())
             }
+
             if (string.IsNullOrEmpty(cartDetails.qty))
             {
                 cartDetails.qty = "1";
@@ -133,7 +144,7 @@ public class CartPageController : PageControllerBase<CartPage>
                 cartDetails.unitOfMeasure,
                 properties
             );
-            if (result.ProductId != null)
+            if (result?.ProductId != null)
             {
                 return true;
             }

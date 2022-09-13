@@ -17,6 +17,10 @@ public class ProductDetailViewModel : ContentViewModel<Pages.CatalogPage>
     public string ProductUrl { get; set; }
     public string CommerceApiUrl { get; set; }
     public string MetaDescription { get; set; }
+    public string SelectedOption { get; set; }
+    public GetProductCollectionResult RelatedProducts { get; set; }
+    public GetProductCollectionResult AlsoBought { get; set; }
+    public GetProductCollectionResult SiteCrossSells { get; set; }
 }
 
 public class ProductDetails

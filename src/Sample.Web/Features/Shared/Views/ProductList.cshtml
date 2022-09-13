@@ -35,7 +35,7 @@
 @if ((Model.ProductCollection?.Products.Any() ?? false))
 {
     <section class="py-2">
-        <div class="container max-w-screen-xl mx-auto px-4">
+        <div>
             @using (Html.BeginForm("Index", " CatalogPage", FormMethod.Get, new { @class = "actionSearchForm" }))
             {
                 <input class="actionPageInfo"  id="FilterOption_Page" name="FilterOptionViewModel.Page" type="hidden" value="@Model.FilterOptionViewModel.Page" />
@@ -219,21 +219,21 @@
                                 <div class="flex flex-col">
                                     <!-- COMPONENT: PRODUCT CARD -->
                                     <article class="flex-1 shadow-sm rounded bg-white border border-gray-200">
-                                        <a href="@($"/{Model.Language}{product.ProductDetailUrl}")" class="block relative p-1">
+                                        <a href="@($"/{Model.Language}/catalog{product.CanonicalUrl}")" class="block relative p-1">
                                             <img src="@(product.MediumImagePath)" class="mx-auto w-auto" height="240" alt="@product.Name">
                                         </a>
                                         <div class="p-4 border-t border-t-gray-200">
-                                            <p class="font-semibold">@product.BasicListPrice.ToString("c")</p>
+                                            <p class="font-semibold">@product.UnitListPriceDisplay</p>
                                             <div class="h-16">
-                                                <a href="@($"/{Model.Language}{product.ProductDetailUrl}")" class="text-gray-600 mb-3 hover:text-blue-500">
-                                                    @product.ShortDescription
+                                                <a href="@($"/{Model.Language}/catalog{product.CanonicalUrl}")" class="text-gray-600 mb-3 hover:text-blue-500">
+                                                    @product.ProductTitle
                                                 </a>
                                             </div>
                                             <div>
                                                 <a class="actionAddToCart px-4 py-2 inline-block text-white text-center bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
                                                    href="#"
                                                    data-productId="@product.Id.ToString()"
-                                                   data-unitOfMeasure="@product.UnitOfMeasure">
+                                                   data-unitOfMeasure="@(product.UnitOfMeasures?.FirstOrDefault()?.UnitOfMeasure ?? "")">
                                                     Add to cart
                                                 </a>
                                                 <a class="px-3 py-2 inline-block text-blue-600 border border-gray-300 rounded-md hover:bg-gray-100" href="#">

@@ -65,16 +65,9 @@ public class QuickOrderPageController : PageControllerBase<QuickOrderPage>
             Product = result.Product
         };
 
-        if (result.Product.Availability?.RequiresRealTimeInventory ?? false)
-        {
-            model.ProductInventory = await _productService.GetProductRealTimeInventory(productData.ProductId);
-        }
-
-        if(result.Product.Pricing?.RequiresRealTimePrice ?? false)
-        {
-            result.Product.Pricing = await _productService.GetProductPrice(productData.ProductId, productData.Uom, 
-                decimal.Parse(productData.Qty), result.Product.Pricing?.RequiresRealTimePrice ?? false);
-        }
+        model.ProductInventory = await _productService.GetProductRealTimeInventory(productData.ProductId);
+        result.Product.Pricing = await _productService.GetProductPrice(productData.ProductId, productData.Uom, 
+                decimal.Parse(productData.Qty));
         
         return Json(model);
     }
@@ -129,7 +122,7 @@ public class QuickOrderPageController : PageControllerBase<QuickOrderPage>
 
             )
             {
-                var prices = await _productService.GetProductPrice(result.Id.ToString(), uom, decimal.Parse(qty), false);
+                var prices = await _productService.GetProductPrice(result.Id.ToString(), uom, decimal.Parse(qty));
                 if (prices != null)
                 {
                     if (

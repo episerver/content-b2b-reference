@@ -14,12 +14,12 @@ class CatalogPartialRouting : IPartialRouter<Models.Pages.CatalogPage, CatalogRo
 
     public object RoutePartial(Models.Pages.CatalogPage content, UrlResolverContext segmentContext)
     {
-        var path = new CatalogRoutedViewModel()
+        var model = new CatalogRoutedViewModel
         {
             Path = $"/{content.URLSegment}/{segmentContext.RemainingSegments}"
         };
         segmentContext.RemainingSegments = string.Empty.ToCharArray();
-        return path;
+        return model;
     }
 
     public PartialRouteData GetPartialVirtualPath(
@@ -27,10 +27,6 @@ class CatalogPartialRouting : IPartialRouter<Models.Pages.CatalogPage, CatalogRo
         UrlGeneratorContext urlGeneratorContext
     )
     {
-        return new PartialRouteData()
-        {
-            BasePathRoot = _settingsHelper.GetCatalogPage().ContentLink,
-            PartialVirtualPath = content.Path
-        };
+        return null;
     }
 }

@@ -10,7 +10,7 @@ public interface ICartService
         string productId,
         string qtyOrdered,
         string unitOfMeasure,
-        Dictionary<string, string> properties
+        Dictionary<string, Guid> properties
     );
     Task<bool> RemoveCartLine(string cartLineId);
     Task<bool> EmptyCart();

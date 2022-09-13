@@ -12,4 +12,5 @@ public class SearchPageViewModel : ContentViewModel<SearchPage>
     public string Path { get; set; }
     public string GetSearchPageLink { get; set; }
     public ProductListViewModel ProductListViewModel { get; set; }
+    public ContentSearchResult ContentSearchResult { get; set; }
 }

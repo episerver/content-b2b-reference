@@ -100,7 +100,7 @@ public class QuickOrderUploadPageController : PageControllerBase<QuickOrderUploa
 
             )
             {
-                var prices = await _productService.GetProductPrice(result.Id.ToString(), uom, decimal.Parse(qty), false);
+                var prices = await _productService.GetProductPrice(result.Id.ToString(), uom, decimal.Parse(qty));
                 if (prices != null)
                 {
                     if (

@@ -4,19 +4,19 @@
 
 
 <section class="bg-white py-10">
-    <div class="container max-w-screen-xl mx-auto px-4">
+    <div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <aside>
                 <!-- gallery -->
                 <div class="border border-gray-200 shadow-sm p-3 text-center rounded mb-5">
-                    @if (Model.ProductModel.Product.ProductImages?.Any() ?? false)
+                    @if (Model.ProductModel.Product.Images?.Any() ?? false)
                     {
-                        <img x-ref="mainImage" loading="lazy" class="object-cover inline-block" width="400" src="@Model.ProductModel.Product.ProductImages.First().LargeImagePath" alt="@Model.ProductModel.Product.ProductImages.First().AltText" />
+                        <img x-ref="mainImage" loading="lazy" class="object-cover inline-block" width="400" src="@Model.ProductModel.Product.Images.First().LargeImagePath" alt="@Model.ProductModel.Product.Images.First().AltText" />
                     }
                 </div>
                 <div class="space-x-2 overflow-auto text-center whitespace-nowrap">
-                    @foreach (var productImage in Model.ProductModel.Product.ProductImages)
+                    @foreach (var productImage in Model.ProductModel.Product.Images)
                     {
                         <a href="#" class="inline-block border border-gray-200 p-1 rounded-md hover:border-blue-500">
                             <img class="w-14 h-14" src="@productImage.SmallImagePath" alt="@productImage.AltText" x-on:click="$refs.mainImage.src = '@productImage.LargeImagePath'" />
@@ -27,16 +27,16 @@
             </aside>
             <main>
                 <h2 class="font-semibold text-2xl mb-4">
-                    @Model.ProductModel.Product.ShortDescription
+                    @Model.ProductModel.Product.PageTitle
                 </h2>
 
                 <p class="mb-4 font-semibold text-xl">
-                    @if (Model.ProductModel.Product.BasicListPrice > 0)
+                    @if (Model.ProductModel.Product.UnitListPrice > 0)
                     {
-                        @(@Model.ProductModel.Product.CurrencySymbol + @Model.ProductModel.Product.BasicListPrice.ToString("F2"))
-                        if (!string.IsNullOrEmpty(Model.ProductModel.Product.UnitOfMeasureDisplay))
+                        @Model.ProductModel.Product.UnitListPriceDisplay
+                        if (Model.ProductModel.Product.UnitOfMeasures.FirstOrDefault() != null)
                         {
-                            <span class="text-base font-normal">/@Model.ProductModel.Product.UnitOfMeasureDisplay</span>
+                            <span class="text-base font-normal">/@Model.ProductModel.Product.UnitOfMeasures.FirstOrDefault().UnitOfMeasureDisplay</span>
                         }
                     }
                     else
@@ -45,16 +45,16 @@
                     }
                 </p>
 
-                @if (!string.IsNullOrEmpty(Model.ProductModel.Product.HtmlContent))
+                @if (!string.IsNullOrEmpty(Model.ProductModel.Product.Content?.HtmlContent))
                 {
                     <p class="mb-4 text-gray-500">
-                        @Html.Raw(await Model.ProductModel.Product.HtmlContent.GetBodyInnerHtml())
+                        @Html.Raw(await Model.ProductModel.Product.Content.HtmlContent.GetBodyInnerHtml())
                     </p>
                 }
                 <ul class="mb-5">
                     <li class="mb-1 ">
                         <b class="font-medium w-1/3 inline-block">Part Number:</b>
-                        <span class="text-gray-500 w-2/3">@Model.ProductModel.Product.Name</span>
+                        <span class="text-gray-500 w-2/3">@Model.ProductModel.Product.ProductNumber</span>
                     </li>
                     <li class="mb-1">
                         <b class="font-medium w-1/3 inline-block">MFG Number:</b>
@@ -72,16 +72,20 @@
                     }
                 </ul>
 
-                @if (Model.ProductModel.Product.StyleTraits.Count() > 0)
+                @if (Model.ProductModel.Product.VariantTraits.Count() > 0)
                 {
                     <div class="flex flex-wrap mb-4">
-                        @foreach (var styleTraits in Model.ProductModel.Product.StyleTraits.OrderBy(x => x.Name).ToList())
+                        @foreach (var styleTraits in Model.ProductModel.Product.VariantTraits.OrderBy(x => x.Name).ToList())
                         {
                             <div class="relative w-1/3 lg:w-1/4 mr-2 mb-4">
-                                <select name="@styleTraits.Name" class="block appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 pr-5 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full">
-                                    @foreach (var value in styleTraits.StyleValues)
+                            <label class="block">@styleTraits.NameDisplay</label>
+                                <select name="@("style_" + styleTraits.Name)" 
+                                    class="actionChangeVariant block appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 pr-5 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
+                                    data-productId="@Model.ProductModel.Product.Id.ToString()"
+                                    data-traitId="@styleTraits.Id.ToString()">
+                                    @foreach (var value in styleTraits.TraitValues)
                                     {
-                                        <option value="@value.Value@value.ValueDisplay"></option>
+                                        <option value="@value.Id.ToString()">@value.ValueDisplay</option>
                                     }
                                 </select>
                                 <i class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
@@ -180,22 +184,22 @@
                 </div>
                 <aside class="lg:w-1/4 px-2">
                     <article class="border border-gray-200 shadow-sm rounded bg-white p-4">
-						<h3 class="mb-5 text-lg font-semibold">Accessories</h3>
-                        @if (Model.ProductModel.Product.CrossSells?.Any() ?? false)
+						<h3 class="mb-5 text-lg font-semibold">Cross Sells</h3>
+                        @if (Model.SiteCrossSells != null && (Model.SiteCrossSells.Products?.Any() ?? false))
                         {
-                            foreach (var crossSell in Model.ProductModel.Product.CrossSells)
+                            foreach (var crossSell in Model.SiteCrossSells.Products)
                             {
                                 <figure class="flex flex-row mb-4">
 							        <div>
-								        <a href="@($"/{Model.CurrentContent.Language.Name}{crossSell.ProductDetailUrl}")" class="block w-20 h-20 rounded border border-gray-200 overflow-hidden">
+                                        <a href="@($"/{Model.CurrentContent.Language.Name}/catalog{crossSell.CanonicalUrl}")" class="block w-20 h-20 rounded border border-gray-200 overflow-hidden">
 									        <img src="@crossSell.SmallImagePath" alt="@crossSell.AltText">
 								        </a>
 							        </div>
 							        <figcaption class="ml-3">
-								        <p
-                                            ><a href="@($"/{Model.CurrentContent.Language.Name}{crossSell.ProductDetailUrl}")" class="text-gray-600 hover:text-blue-600">@crossSell.ShortDescription</a>
+								        <p>
+                                            <a href="@($"/{Model.CurrentContent.Language.Name}/catalog{crossSell.CanonicalUrl}")" class="text-gray-600 hover:text-blue-600">@crossSell.ProductTitle</a>
                                         </p>
-								        <p class="mt-1 font-semibold">@(crossSell.CurrencySymbol + crossSell.BasicListPrice.ToString("F2"))</p>
+								        <p class="mt-1 font-semibold">@crossSell.UnitListPriceDisplay</p>
 							        </figcaption>
 						        </figure>
                             }

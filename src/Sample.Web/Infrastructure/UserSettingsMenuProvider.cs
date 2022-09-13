@@ -31,7 +31,7 @@ public class UserSettingsMenuProvider : IMenuProvider
             new UrlMenuItem(
                 "B2B Commerce Admin",
                 MenuPaths.User + "/episerver2",
-                $"{commerceApiUrl}/admin"
+                $"{VirtualPathUtilityEx.AppendTrailingSlash(commerceApiUrl)}admin"
             )
             {
                 SortIndex = SortIndex.Last + 10,

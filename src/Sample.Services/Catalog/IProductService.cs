@@ -21,7 +21,7 @@ public interface IProductService
     );
     Task<AutocompleteResult> GetAutoCompleteProducts(string query);
     Task<IEnumerable<string>> GetAllProductIds();
-    Task<ProductPrice> GetProductPrice(string productId, string uom, decimal qty, bool realtime);
+    Task<ProductPrice> GetProductPrice(string productId, string uom, decimal qty);
     Task<Product> GetProductByName(
         string productName,
         IEnumerable<string> expands
@@ -29,4 +29,8 @@ public interface IProductService
     Task<GetProductCollectionResult> GetCompareProducts(List<string> expands);
     Task<GetProductCollectionResult> GetRecentlyViewedProducts();
     Task<ProductInventory> GetProductRealTimeInventory(string productId);
+    Task<GetProductCollectionResult> GetVariations(Guid productId, VariantChildrenParameters parameters = null);
+    Task<GetProductCollectionResult> GetRelatedProducts(Guid productId, RelatedProductParameters parameters = null);
+    Task<GetProductCollectionResult> GetAlsoPurchased(Guid productId, AlsoPurchasedParameters parameters = null);
+    Task<GetProductCollectionResult> GetSiteCrossSells(int productCount = 5);
 }

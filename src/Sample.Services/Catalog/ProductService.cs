@@ -5,7 +5,7 @@ namespace Sample.Services.Catalog;
 
 public class ProductService : BaseService, IProductService
 {
-    private readonly CommerceApiSDK.Services.Interfaces.IProductService _productClient;
+    private readonly IProductV2Service _productClient;
     private readonly IAutocompleteService _autocompleteService;
     private readonly ICatalogpagesService _catalogPagesClient;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -13,7 +13,7 @@ public class ProductService : BaseService, IProductService
     private readonly IRealTimePricingService _realTimePricingService;
 
     public ProductService(
-        CommerceApiSDK.Services.Interfaces.IProductService productClient,
+        IProductV2Service productClient,
         ICatalogpagesService catalogPagesClient,
         IAutocompleteService autocompleteService,
         IHttpContextAccessor httpContextAccessor,
@@ -40,7 +40,7 @@ public class ProductService : BaseService, IProductService
 
     public virtual async Task<GetProductCollectionResult> GetProductCrossSells(string productId)
     {
-        var paramters = new ProductQueryParameters() { Expand = "crosssells" };
+        var paramters = new ProductQueryV2Parameters() { Expand = "crosssells" };
         var result = await _productClient.GetProduct(Guid.Parse(productId), paramters);
         return new GetProductCollectionResult()
         {
@@ -71,17 +71,20 @@ public class ProductService : BaseService, IProductService
                 .Aggregate(str1, (current, str2) => current + str2 + '+');
             str1 = str1.TrimEnd('+');
         }
-        var parameters = new ProductsQueryParameters()
+        var parameters = new ProductsQueryV2Parameters()
         {
             CategoryId = string.IsNullOrEmpty(categoryId) ? null : Guid.Parse(categoryId),
             Expand = expands,
             PriceFilters = priceFilters,
-            Query = str1,
+            Search = str1,
             Sort = sortBy,
             Page = pageIndex,
             PageSize = pageSize,
             AttributeValueIds = attributeFilters,
-            SearchWithin = searchWithinQuery
+            SearchWithin = searchWithinQuery,
+            ApplyPersonalization = true,
+            IncludeAttributes = "includeOnProduct",
+            IncludeSuggestions = "true"
         };
 
         if (brandIds?.Any() ?? false)
@@ -93,7 +96,7 @@ public class ProductService : BaseService, IProductService
         {
             parameters.ProductLineIds = productLineIds;
         }
-        var products = await _productClient.GetProductsNoCache(parameters);
+        var products = await _productClient.GetProducts(parameters);
         if (products != null && products.Products.Any())
         {
             foreach (var product in products.Products)
@@ -117,7 +120,7 @@ public class ProductService : BaseService, IProductService
                 .Aggregate(str1, (current, str2) => current + str2 + ',');
             str1 = str1.TrimEnd(',');
         }
-        var paramters = new ProductQueryParameters() { Expand = str1 };
+        var paramters = new ProductQueryV2Parameters() { Expand = str1 };
         return await _productClient.GetProduct(Guid.Parse(productId), paramters);
     }
 
@@ -137,7 +140,7 @@ public class ProductService : BaseService, IProductService
 
     public virtual async Task<IEnumerable<string>> GetAllProductIds()
     {
-        var parameters = new ProductsQueryParameters()
+        var parameters = new ProductsQueryV2Parameters()
         {
             PageSize = 32,
             Page = 1,
@@ -178,33 +181,22 @@ public class ProductService : BaseService, IProductService
         return products;
     }
 
-    public virtual async Task<ProductPrice> GetProductPrice(string productId, string uom, decimal qty, bool realtime)
+    public virtual async Task<ProductPrice> GetProductPrice(string productId, string uom, decimal qty)
     {
-        if (realtime)
+       
+        var result = await _realTimePricingService.GetProductRealTimePrices(new RealTimePricingParameters
         {
-            var result = await _realTimePricingService.GetProductRealTimePrices(new RealTimePricingParameters
+            ProductPriceParameters = new List<ProductPriceQueryParameters>
             {
-                ProductPriceParameters = new List<ProductPriceQueryParameters>
+                new ProductPriceQueryParameters
                 {
-                    new ProductPriceQueryParameters
-                    {
-                        ProductId = new Guid(productId),
-                        UnitOfMeasure = uom,
-                        QtyOrdered = qty
-                    }
+                    ProductId = new Guid(productId),
+                    UnitOfMeasure = uom,
+                    QtyOrdered = qty
                 }
-            });
-            return result?.RealTimePricingResults.FirstOrDefault();
-        }
-
-        return await _productClient.GetProductPrice(
-            Guid.Parse(productId),
-            new ProductPriceQueryParameters
-            {
-                QtyOrdered = qty,
-                UnitOfMeasure = uom
             }
-        );
+        });
+        return result?.RealTimePricingResults.FirstOrDefault();
     }
 
     public virtual async Task<ProductInventory> GetProductRealTimeInventory(string productId)
@@ -218,7 +210,7 @@ public class ProductService : BaseService, IProductService
 
     public virtual async Task<Product> GetProductByName(string productName, IEnumerable<string> expands)
     {
-        var parameters = new ProductsQueryParameters()
+        var parameters = new ProductsQueryV2Parameters()
         {
             ExtendedNames = new List<string>() { productName },
             Expand = expands.ToList()
@@ -264,23 +256,48 @@ public class ProductService : BaseService, IProductService
                 .Select(Guid.Parse)
                 .Cast<Guid?>()
                 .ToList();
-            var parameters = new ProductsQueryParameters()
+            var parameters = new ProductsQueryV2Parameters()
             {
                 Expand = expands,
                 ProductIds = productIds
             };
 
-            return await _productClient.GetProductsNoCache(parameters);
+            return await _productClient.GetProducts(parameters);
         }
         return new GetProductCollectionResult();
     }
 
     public virtual async Task<GetProductCollectionResult> GetRecentlyViewedProducts()
     {
-        var parameters = new ProductsQueryParameters()
+        var parameters = new ProductsQueryV2Parameters()
         {
             Expand = new List<string>() { "pricing", "recentlyviewed", "brand" }
         };
         return await _productClient.GetProducts(parameters);
+    }
+
+    public virtual async Task<GetProductCollectionResult> GetVariations(Guid productId, VariantChildrenParameters parameters = null)
+    {
+        return await _productClient.GetVariantChildren(productId, parameters);
+    }
+
+    public virtual async Task<GetProductCollectionResult> GetRelatedProducts(Guid productId, RelatedProductParameters parameters = null)
+    {
+        return await _productClient.GetRelatedProduct(productId, parameters);
+    }
+
+    public virtual async Task<GetProductCollectionResult> GetAlsoPurchased(Guid productId, AlsoPurchasedParameters parameters = null)
+    {
+        return await _productClient.GetAlsoPurchased(productId, parameters);
+    }
+
+    public virtual async Task<GetProductCollectionResult> GetSiteCrossSells(int productCount = 5)
+    {
+        return await _productClient.GetProducts(new ProductsQueryV2Parameters
+        {
+            Filter = "siteCrosssells",
+            PageSize = productCount,
+            Expand = new List<string>() { "images"}
+        });
     }
 }

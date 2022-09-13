@@ -1,13 +1,55 @@
 ﻿@using EPiServer.Web.Mvc.Html
+@inject IContextModeResolver contextModeResolver
 @model Sample.Models.ViewModels.SearchPageViewModel
 
-<div class="container">
-    @if ((Model?.ProductListViewModel?.ProductCollection?.Products?.Count ?? 0) > 0)
+<div class="container max-w-screen-xl mx-auto px-4">
+    @if ((Model.CurrentContent.MainBody != null && !Model.CurrentContent.MainBody.IsEmpty) || contextModeResolver.CurrentMode == ContextMode.Edit)
     {
+        @Html.PropertyFor(m => m.CurrentContent.MainBody)
+    }
+    @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
+</div>
+
+
+<div class="container max-w-screen-xl mx-auto px-4 bg-white">
+    <h3 class="text-xl font-semibold">Products search results</h3>
+</div>
+
+@if ((Model?.ProductListViewModel?.ProductCollection?.Products?.Count ?? 0) > 0)
+{
+    <div class="container max-w-screen-xl mx-auto px-4">
         @await Html.PartialAsync("ProductList", Model.ProductListViewModel)
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <span>@Model?.CurrentContent?.ProductsEmptyMessage</span>
+    </div>
+}
+
+<div class="container max-w-screen-xl mx-auto px-4">
+    <h3 class="text-xl font-semibold">Content Search Results</h3>
+    @if (Model.ContentSearchResult.ContentSearchItems != null && Model.ContentSearchResult.ContentSearchItems.Any())
+    {
+        @foreach (var item in Model.ContentSearchResult.ContentSearchItems)
+        {
+            <div className="border rounded-md shadow px-3 py-2">
+                <div className="text-lg text-bold py-2">
+                    <a href="@item.Uri">
+                        @item.Title
+                    </a>
+                </div>
+                <div className="text-sm text-gray-700">
+                    @Html.Raw(item.Content)
+                </div>
+            </div>
+        }
     }
     else
     {
-        <span>@Model?.CurrentContent?.ProductsEmptyMessage</span>
+        <div class="text-center">
+            <span class="result-not-found" @Html.EditAttributes(x => x.CurrentContent.NoResults)>@Html.PropertyFor(x => x.CurrentContent.NoResults)</span>
+        </div>
     }
 </div>

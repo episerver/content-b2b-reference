@@ -69,16 +69,12 @@ public class SearchPageController : PageControllerBase<SearchPage>
 
         
         var categoryFilter = GetCategoryFilter();
-        var request = Request;
-        var sortBy = "1";
-        if (request.Query.TryGetValue("sort", out var sort))
-            sortBy = !StringValues.IsNullOrEmpty(sort) ? sort : "1";
         searchPageViewModel.ProductListViewModel.DataViewStyle =
             _settingsHelper.GetProductListSettings().DefaultProductListViewMode;
         searchPageViewModel.ProductListViewModel.MaxCompareProducts =
             _settingsHelper.GetProductListSettings().MaxCompareProducts;
 
-        var expands = new List<string>() { "pricing", "attributes", "facets", "brand" };
+        var expands = new List<string>() { "variantTraits", "attributes", "facets" };
         searchPageViewModel.ProductListViewModel.ProductCollection = await _productService.GetProducts(
             categoryFilter,
             expands,
@@ -91,6 +87,17 @@ public class SearchPageController : PageControllerBase<SearchPage>
             GetFilters(filterOptionViewModel, "brand"),
             GetFilters(filterOptionViewModel, "productLine")
         );
+
+        if (Request.Query.TryGetValue("search", out var query))
+        {
+            searchPageViewModel.ContentSearchResult = _contentSearchService.GetContentSearchResult(
+               query.ToString().Trim(),
+               1,
+               50,
+               50,
+               currentPage.Language.Name
+           );
+        }
         return View(searchPageViewModel);
     }
 

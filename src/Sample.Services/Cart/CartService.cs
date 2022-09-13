@@ -30,7 +30,7 @@ public class CartService : BaseService, ICartService
         string productId,
         string qtyOrdered,
         string unitOfMeasure,
-        Dictionary<string, string> properties
+        Dictionary<string, Guid> properties
     )
     {
         var line = new AddCartLine()
@@ -38,9 +38,12 @@ public class CartService : BaseService, ICartService
             ProductId = Guid.Parse(productId),
             QtyOrdered = decimal.Parse(qtyOrdered),
             UnitOfMeasure = unitOfMeasure,
-            SectionOptions = new List<SectionOptionDto>(),
+            SectionOptions = properties.ToList().Select(x => new SectionOptionDto
+            {
+                OptionName = x.Key,
+                SectionOptionId = x.Value
+            }).ToList()
         };
-
         return await _cartClient.AddCartLine(line);
     }
 

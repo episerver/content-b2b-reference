@@ -1,6 +1,10 @@
-﻿using EPiServer.Logging;
+﻿using CommerceApiSDK.Models;
+using EPiServer.Logging;
 using EPiServer.Web.Routing.Matching;
+using Microsoft.Azure.Amqp.Framing;
 using Microsoft.Extensions.Primitives;
+using Org.BouncyCastle.Asn1.Cms;
+using Sample.Models.ViewModels;
 using Sample.Services.Catalog;
 using CommerceApiSettings = Sample.Web.Infrastructure.CommerceApiSettings;
 
@@ -14,7 +18,7 @@ public class CatalogPageController : PageController<Models.Pages.CatalogPage>
     }
 }
 
-public class CatalogPagePartialController : Controller, IRenderTemplate<CatalogRoutedViewModel>
+public class CatalogPagePartialController : ActionControllerBase, IRenderTemplate<CatalogRoutedViewModel>
 {
     private readonly IProductService _productService;
     private readonly CommerceApiSettings _commerceApiSettings;
@@ -30,7 +34,6 @@ public class CatalogPagePartialController : Controller, IRenderTemplate<CatalogR
         _settingsHelper = settingsHelper;
     }
 
-    [HttpGet]
     public async Task<IActionResult> Index(Models.Pages.CatalogPage currentPage, FilterOptionViewModel filterOptionViewModel)
     {
         var catalogViewModel = new CatalogViewModel
@@ -72,30 +75,16 @@ public class CatalogPagePartialController : Controller, IRenderTemplate<CatalogR
         //Handle ProductDetail Page
         var apiResult = await _productService.GetProduct(new List<string>()
         {
-            "documents",
-            "specifications",
-            "styledproducts",
-            "htmlcontent",
-            "attributes",
-            "crosssells",
-            "pricing",
-            "relatedproducts",
-            "brand"
+            "detail","specifications","content","images","documents","attributes","variantTraits"
         }, catalogPage.ProductId.ToString());
 
-        var productDetailViewModel = new ProductDetailViewModel(currentPage)
+        return new ProductDetailViewModel(currentPage)
         {
             ProductModel = apiResult,
             CatalogPage = catalogPage,
-            CommerceApiUrl = new Uri(_commerceApiSettings.baseUrl).ToString()
+            CommerceApiUrl = new Uri(_commerceApiSettings.baseUrl).ToString(),
+            SiteCrossSells = await _productService.GetSiteCrossSells()
         };
-        foreach (var productImage in productDetailViewModel.ProductModel.Product.ProductImages)
-        {
-            productImage.MediumImagePath = productImage.MediumImagePath;
-            productImage.LargeImagePath = productImage.LargeImagePath;
-            productImage.SmallImagePath = productImage.SmallImagePath;
-        }
-        return productDetailViewModel;
     }
 
     private async Task<ProductListViewModel> GetProductListViewModel(Models.Pages.CatalogPage currentPage, 
@@ -148,7 +137,7 @@ public class CatalogPagePartialController : Controller, IRenderTemplate<CatalogR
         
         productListViewModel.ProductCollection = await _productService.GetProducts(
             catalogPage.Category?.Id.ToString(),
-            new List<string>() { "pricing", "attributes", "facets", "brand", "styledproducts" },
+            new List<string>() { "variantTraits", "attributes", "facets" },
             GetPriceFilters(),
             GetCriteria(),
             filterOptionViewModel.Sort,
@@ -237,4 +226,11 @@ public class CatalogPagePartialController : Controller, IRenderTemplate<CatalogR
         var result = await _productService.GetProduct(productDetails.ProductId);
         return Json(result);
     }
+}
+
+public class VariantOptions
+{
+    public string ProductId { get; set; }
+
+    public List<SelectListItem> Options { get; set; }
 }

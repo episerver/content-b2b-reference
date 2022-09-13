@@ -1,4 +1,5 @@
 ﻿import axios from "axios";
+import traitOptions from '../models/traitOptions';
 
 const product = (): void => {
 
@@ -15,7 +16,8 @@ const product = (): void => {
                 const data = {
                     productId: element.getAttribute('data-productId'),
                     qty: qty,
-                    unitOfMeasure: element.getAttribute('data-unitOfMeasure')
+                    unitOfMeasure: element.getAttribute('data-unitOfMeasure'),
+                    options: getSelectedOptions()
                 };
                 axios({
                     url: '/cartpage/addtocart',
@@ -52,6 +54,19 @@ const product = (): void => {
             document.getElementById('addToCartToast')?.classList.add("invisible");
         });
     };
+
+    const getSelectedOptions = (): Array<traitOptions> => {
+        const variants = document.getElementsByClassName('actionChangeVariant') as HTMLCollectionOf<HTMLElement>;
+        const options: traitOptions[] = [];
+        for (var i = 0; i < variants.length; i++) {
+            const select = variants[i] as HTMLSelectElement;
+            options.push({
+                value: select.options[select.selectedIndex].value,
+                traitId: select.getAttribute('data-traitId')
+            })
+        }
+        return options;
+    }
 
     init();
 };

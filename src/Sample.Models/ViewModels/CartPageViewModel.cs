@@ -36,4 +36,11 @@ public class CartDetails
     public string itemNote { get; set; }
     public string savedOrderDetailsPageLink { get; set; }
     public string cartPageLink { get; set; }
+    public List<TraitOptions> Options { get; set; } = new List<TraitOptions>();
+}
+
+public class TraitOptions
+{
+    public string TraitId { get; set; }
+    public string Value { get; set; }
 }
