@@ -1,8 +1,11 @@
 ﻿@model IBlockViewModel<HeroBlock>
 @Html.FullRefreshPropertiesMetaData(new[] { "BackgroundImage" })
 
+@if (Html.IsInEditMode())
+{
+}
 <div class="@($"{Model.CurrentBlock.Padding} {Model.CurrentBlock.Margin}")">
-    <div class="hero min-h-screen relative z-10" style="background-image: url('@Url.ContentUrl(Model.CurrentBlock.BackgroundImage)');">
+    <div class="@(Html.IsInEditMode() ? "hero bg-auto relative z-10" : "hero min-h-screen relative z-10")" style="background-image: url('@Url.ContentUrl(Model.CurrentBlock.BackgroundImage)');">
         <div class="hero-overlay bg-opacity-60"></div>
         <div class="hero-content text-center">
             <div class="max-w-md">

@@ -1,10 +1,6 @@
-﻿using CommerceApiSDK.Models;
-using EPiServer.Logging;
+﻿using EPiServer.Logging;
 using EPiServer.Web.Routing.Matching;
-using Microsoft.Azure.Amqp.Framing;
 using Microsoft.Extensions.Primitives;
-using Org.BouncyCastle.Asn1.Cms;
-using Sample.Models.ViewModels;
 using Sample.Services.Catalog;
 using CommerceApiSettings = Sample.Web.Infrastructure.CommerceApiSettings;
 
