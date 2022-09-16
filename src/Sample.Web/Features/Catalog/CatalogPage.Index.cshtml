@@ -1,6 +1,12 @@
 @model Sample.Models.ViewModels.CatalogViewModel
 @using EPiServer.Web.Mvc.Html
+@inject IContextModeResolver contextModeResolver
+@Html.FullRefreshPropertiesMetaData(new [] {"PreviewType"})
 
+@if (contextModeResolver.CurrentMode == ContextMode.Edit || contextModeResolver.CurrentMode == ContextMode.Preview)
+{
+    @Html.PropertyFor(x => x.CurrentContent.PreviewType)
+}
 <div class="container max-w-screen-xl mx-auto px-4 bg-white">
     
     @if (Model?.ProductDetailViewModel != null)

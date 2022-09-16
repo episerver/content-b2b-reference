@@ -4,6 +4,8 @@
 }
 
 <div class="mx-auto px-4">
+    @Html.PropertyFor(x => x.CurrentContent.MainBody)
+    @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
     <h3 class="text-xl font-semibold mb-5"  @Html.EditAttributes(x => x.CurrentContent.BillToLabel)>@Model.CurrentContent.BillToLabel</h3>
     <div class="flex flex-row mb-5 gap-2">
         <select id="addresses_BillTo" class="cursor-pointer appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-4/6">

@@ -12,5 +12,7 @@ public class SavedOrderDetailPageViewModel : ContentViewModel<SavedOrderDetailsP
     }
 
     public string ErrorMessage { get; set; }
-    public SavedOrderDetailViewModel SavedOrderDetailViewModel { get; set; }
+    public Cart Cart { get; set; }
+    public string CartId { get; set; }
+    public string Language { get; set; }
 }

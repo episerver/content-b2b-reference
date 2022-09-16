@@ -30,13 +30,13 @@ public class InvoiceHistoryPageController : PageControllerBase<InvoiceHistoryPag
         var shipTosResponse = new GetShipTosResult();
         var allAddresses = await _accountService.GetBillToAndShipTos();
         shipTosResponse.ShipTos = allAddresses?.BillTos.SelectMany(x => x.ShipTos).ToList() ?? new List<ShipTo>();
-        var invoiceHistoryResponse = await _invoiceService.GetInvoiceHistory(searchParameters);
+        var invoiceHistoryResponse =allAddresses == null ? new GetInvoiceResult() : await _invoiceService.GetInvoiceHistory(searchParameters);
         var model = new InvoiceHistoryPageViewModel(currentPage)
         {
             InvoiceHistoryViewModel = new InvoiceHistoryViewModel()
         };
-        model.InvoiceHistoryViewModel.ShipToCollection = shipTosResponse;
-        model.InvoiceHistoryViewModel.InvoiceCollection = invoiceHistoryResponse;
+        model.InvoiceHistoryViewModel.ShipToCollection = shipTosResponse ?? new GetShipTosResult();
+        model.InvoiceHistoryViewModel.InvoiceCollection = invoiceHistoryResponse ?? new GetInvoiceResult();
         model.InvoiceDetailsPageLink = Url.ContentUrl(currentPage.InvoiceDetailsPageLink);
         return View(model);
     }

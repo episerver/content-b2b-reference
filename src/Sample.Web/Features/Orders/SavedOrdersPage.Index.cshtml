@@ -2,6 +2,8 @@
 
 <!-- Saved Order Container block to be extracted -->
 <div class="container">
+    @Html.PropertyFor(x => x.CurrentContent.MainBody)
+    @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
     <div class="page-content saved-orders" role="main">
         <div class="ui-lock use-fastclick"></div>
         <div class="cms-rearrangeable">
@@ -98,8 +100,8 @@
                             <div class="overflow-table">
                                 @Html.HiddenFor(x => x.OrderDetailsPageLink, new { id = "detailPageUrl" })
                                 <table class="responsive info-tbl">
-                                    <tbody>
-                                        @if (Model.SavedOrdersViewModel.CartCollection.Carts.Count > 0)
+                                    <>
+                                        @if ((Model.SavedOrdersViewModel.CartCollection.Carts?.Count ?? 0) > 0)
                                         {
                                         <thead>
                                             <tr>
@@ -122,6 +124,7 @@
                                                 </th>
                                             </tr>
                                         </thead>
+
                                         foreach (var cart in Model.SavedOrdersViewModel.CartCollection.Carts)
                                         {
                                             <tr class="">
@@ -138,10 +141,9 @@
                                             </tr>
                                         }
                                     }
-                                        </tbody>
                                     </table>
                                 </div>
-                                @if (Model.SavedOrdersViewModel.CartCollection.Carts.Count > 0)
+                            @if ((Model.SavedOrdersViewModel.CartCollection.Carts?.Count ?? 0) > 0)
                                 {
                                     <div class="uibar tertiary paginator-34 pbtm">
                                         <ul>

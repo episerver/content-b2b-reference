@@ -1,17 +1,6 @@
-﻿@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title></title>
-</head>
-<body>
-    <div>
-        Brand details page
-    </div>
-</body>
-</html>
+﻿@model Sample.Models.ViewModels.BrandDetailsPageViewModel
+<div class="container max-w-screen-xl mx-auto px-4">
+    Brand details page
+    @Html.PropertyFor(x => x.CurrentContent.MainBody)
+    @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
+</div>

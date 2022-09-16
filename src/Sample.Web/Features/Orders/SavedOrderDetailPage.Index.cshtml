@@ -3,7 +3,10 @@
     Layout = "~/Features/MyAccount/_SidebarLayout.cshtml";
 }
 <main id="main">
+
     <div class="container order-confirmation-holder checkout-confirmation-page saved-order-details">
+        @Html.PropertyFor(x => x.CurrentContent.MainBody)
+        @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
         @using (Html.BeginForm("Index", "SavedOrderDetailPage", new { ReturnUrl = "/" }, FormMethod.Post))
         {
             @Html.AntiForgeryToken()
@@ -18,9 +21,9 @@
                     <div class="block-left">
                         <strong>@Html.PropertyFor(x => x.CurrentContent.DateHeading):</strong>
                         <time datetime="2021-01-15">
-                            @if (Model.SavedOrderDetailViewModel.Cart.OrderDate.HasValue)
+                            @if (Model.Cart.OrderDate.HasValue)
                             {
-                                @Model.SavedOrderDetailViewModel.Cart.OrderDate.Value.ToString("MMM dd yyyy")
+                                @Model.Cart.OrderDate.Value.ToString("MMM dd yyyy")
                             }
                         </time>
                     </div>
@@ -38,30 +41,30 @@
                         <div class="shipping-detail-text">
                             <strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.ShippingInformationHeading)</strong>
                             <address>
-                                @if (Model.SavedOrderDetailViewModel.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.ShipTo.CompanyName))
+                                @if (Model.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.Cart.ShipTo.CompanyName))
                                 {
-                                    @Model.SavedOrderDetailViewModel.Cart.ShipTo.CompanyName
+                                    @Model.Cart.ShipTo.CompanyName
                                 }
-                                @if (Model.SavedOrderDetailViewModel.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.ShipTo.Address1))
+                                @if (Model.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.Cart.ShipTo.Address1))
                                 {
-                                    @Model.SavedOrderDetailViewModel.Cart.ShipTo.Address1
+                                    @Model.Cart.ShipTo.Address1
                                 }
-                                @if (Model.SavedOrderDetailViewModel.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.ShipTo.Address2))
+                                @if (Model.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.Cart.ShipTo.Address2))
                                 {
-                                    @Model.SavedOrderDetailViewModel.Cart.ShipTo.Address2
+                                    @Model.Cart.ShipTo.Address2
                                 }
-                                @if (Model.SavedOrderDetailViewModel.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.City) && (Model.SavedOrderDetailViewModel.Cart.BillTo.State != null && Model.SavedOrderDetailViewModel.Cart.BillTo.State.Name != null) && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.PostalCode))
+                                @if (Model.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.Cart.BillTo.City) && (Model.Cart.BillTo.State != null && Model.Cart.BillTo.State.Name != null) && !string.IsNullOrEmpty(Model.Cart.BillTo.PostalCode))
                                 {
-                                    var shipInfo = Model.SavedOrderDetailViewModel.Cart.ShipTo.City + "," + Model.SavedOrderDetailViewModel.Cart.ShipTo.State.Name + "," + Model.SavedOrderDetailViewModel.Cart.ShipTo.PostalCode;
+                                    var shipInfo = Model.Cart.ShipTo.City + "," + Model.Cart.ShipTo.State.Name + "," + Model.Cart.ShipTo.PostalCode;
                                     @shipInfo
                                 }
-                                @if (Model.SavedOrderDetailViewModel.Cart.ShipTo != null && Model.SavedOrderDetailViewModel.Cart.ShipTo.Country != null)
+                                @if (Model.Cart.ShipTo != null && Model.Cart.ShipTo.Country != null)
                                 {
-                                    @Model.SavedOrderDetailViewModel.Cart.ShipTo.Country.Name
+                                    @Model.Cart.ShipTo.Country.Name
                                 }
-                                @if(Model.SavedOrderDetailViewModel.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.ShipTo.Phone))
+                                @if(Model.Cart.ShipTo != null && !string.IsNullOrEmpty(Model.Cart.ShipTo.Phone))
                                 {
-                                    @Model.SavedOrderDetailViewModel.Cart.ShipTo.Phone
+                                    @Model.Cart.ShipTo.Phone
                                 }
                             </address>
                         </div>
@@ -69,39 +72,39 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        @Html.HiddenFor(x => x.SavedOrderDetailViewModel.CartId)
-                        <input type="hidden" id="cartid" value="Model.SavedOrderDetailViewModel.CartId" />
+                        @Html.HiddenFor(x => x.CartId)
+                        <input type="hidden" id="cartid" value="Model.CartId" />
                         <div class="shipping-detail-text">
                             <strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.BillingInformationHeading)</strong>
                             <address>
-                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.CompanyName))
+                                @if (Model.Cart.BillTo != null && !string.IsNullOrEmpty(Model.Cart.BillTo.CompanyName))
                                 {
-                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.CompanyName
+                                    @Model.Cart.BillTo.CompanyName
                                 }
-                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.Address1))
+                                @if (Model.Cart.BillTo != null && !string.IsNullOrEmpty(Model.Cart.BillTo.Address1))
                                 {
-                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.Address1
+                                    @Model.Cart.BillTo.Address1
                                 }
-                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(@Model.SavedOrderDetailViewModel.Cart.BillTo.Address2))
+                                @if (Model.Cart.BillTo != null && !string.IsNullOrEmpty(@Model.Cart.BillTo.Address2))
                                 {
-                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.Address2
+                                    @Model.Cart.BillTo.Address2
                                 }
-                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.City) && (Model.SavedOrderDetailViewModel.Cart.BillTo.State != null && Model.SavedOrderDetailViewModel.Cart.BillTo.State.Name != null) && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.PostalCode))
+                                @if (Model.Cart.BillTo != null && !string.IsNullOrEmpty(Model.Cart.BillTo.City) && (Model.Cart.BillTo.State != null && Model.Cart.BillTo.State.Name != null) && !string.IsNullOrEmpty(Model.Cart.BillTo.PostalCode))
                                 {
-                                    var billInfo = Model.SavedOrderDetailViewModel.Cart.BillTo.City + "," + Model.SavedOrderDetailViewModel.Cart.BillTo.State.Name + "," + Model.SavedOrderDetailViewModel.Cart.BillTo.PostalCode;
+                                    var billInfo = Model.Cart.BillTo.City + "," + Model.Cart.BillTo.State.Name + "," + Model.Cart.BillTo.PostalCode;
                                     @billInfo
                                 }
-                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && Model.SavedOrderDetailViewModel.Cart.BillTo.Country != null)
+                                @if (Model.Cart.BillTo != null && Model.Cart.BillTo.Country != null)
                                 {
-                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.Country.Name
+                                    @Model.Cart.BillTo.Country.Name
                                 }
-                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.Phone))
+                                @if (Model.Cart.BillTo != null && !string.IsNullOrEmpty(Model.Cart.BillTo.Phone))
                                 {
-                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.Phone
+                                    @Model.Cart.BillTo.Phone
                                 }
-                                @if (Model.SavedOrderDetailViewModel.Cart.BillTo != null && !string.IsNullOrEmpty(Model.SavedOrderDetailViewModel.Cart.BillTo.Email))
+                                @if (Model.Cart.BillTo != null && !string.IsNullOrEmpty(Model.Cart.BillTo.Email))
                                 {
-                                    @Model.SavedOrderDetailViewModel.Cart.BillTo.Email
+                                    @Model.Cart.BillTo.Email
                                 }
                             </address>
                         </div>
@@ -122,9 +125,9 @@
                     </div>
                 </div>
                 <div class="product-order-summary product-info-block secondary">
-                    @if (Model.SavedOrderDetailViewModel.Cart.CartLines.Count > 0)
+                    @if ((Model.Cart.CartLines?.Count ?? 0) > 0)
                     {
-                        foreach (var line in Model.SavedOrderDetailViewModel.Cart.CartLines)
+                        foreach (var line in Model.Cart.CartLines)
                         {
                             <div class="product-order-info savedOrderdetail"  data-lineId="@line.Id" data-productid="@line.ProductId" data-uom="@line.UnitOfMeasure" data-qty="@Convert.ToInt32(line.QtyOrdered).ToString()">
                                 <div class="row">
@@ -138,7 +141,7 @@
                                                     
                                                     <div class="h3" itemprop="name">
                                                         <strong class="d-md-block mb-md-10"> </strong>
-                                                        <a href="@(line.ProductId != null ? Model.SavedOrderDetailViewModel.Language + "" + Url.ContentUrl(line.ProductUri) : "#")">
+                                                        <a href="@(line.ProductId != null ? Model.Language + "" + Url.ContentUrl(line.ProductUri) : "#")">
                                                             <span>
                                                                 @line.ShortDescription
                                                             </span>
@@ -201,7 +204,7 @@
                         <ul class="list-unstyled list-order-summary">
                             <li class="d-flex justify-content-between">
                                 <span class="info-title pr-1 text-uppercase">@Html.PropertyFor(x => x.CurrentContent.SubTotalText)</span>
-                                <strong class="font-weight-medium">@Model.SavedOrderDetailViewModel.Cart.OrderSubTotalDisplay</strong>
+                                <strong class="font-weight-medium">@Model.Cart.OrderSubTotalDisplay</strong>
                             </li>
                         </ul>
                     </div>

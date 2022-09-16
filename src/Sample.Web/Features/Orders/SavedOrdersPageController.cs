@@ -39,7 +39,7 @@ public class SavedOrdersPageController : PageControllerBase<SavedOrdersPage>
             SavedOrdersViewModel = new SavedOrdersViewModel
             {
                 ShipToCollection = shipTosResponse,
-                CartCollection = savedOrdersResponse
+                CartCollection = savedOrdersResponse ?? new CartCollectionModel()
             },
             OrderDetailsPageLink = Url.ContentUrl(currentPage.SavedOrderDetailsPageLink)
         };

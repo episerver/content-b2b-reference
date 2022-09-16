@@ -98,6 +98,10 @@ public class SearchPageController : PageControllerBase<SearchPage>
                currentPage.Language.Name
            );
         }
+        else
+        {
+            searchPageViewModel.ContentSearchResult = new ContentSearchResult();
+        }
         return View(searchPageViewModel);
     }
 

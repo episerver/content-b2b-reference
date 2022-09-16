@@ -1,6 +1,8 @@
 ﻿@using EPiServer.Web.Mvc.Html
 @model Sample.Models.ViewModels.WishListViewModel
 <div class="container wishlist" id="wishListPage">
+    @Html.PropertyFor(x => x.CurrentContent.MainBody)
+    @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
     <div class="page-content" role="main">
         <div class="cms-rearrangeable">
             <div class="row main-row">

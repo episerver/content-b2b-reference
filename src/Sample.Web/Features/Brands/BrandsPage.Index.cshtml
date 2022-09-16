@@ -1,16 +1,15 @@
 ﻿@using EPiServer.Web.Mvc.Html
 @model Sample.Models.ViewModels.BrandsPageViewModel
-
-@{ Layout = "~/Views/Shared/Layouts/_root.cshtml"; }
-
-<div class="container position-relative">
+<div class="container max-w-screen-xl mx-auto px-4">
+    @Html.PropertyFor(x => x.CurrentContent.MainBody)
+    @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
     <div>
-        <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-10">
+        <h1 class="font-semibold text-2xl mb-4">
             <span>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span>
         </h1>
         @foreach (var brandGroup in Model.BrandsSorting)
         {
-            <div class="container mb-10">
+            <div class="mb-10">
                 <div class="block-heading secondary heading-lg text-md-left text-capitalize font-weight-normal mb-10">
                     <div class="brandgroup">
                         @brandGroup.Key
@@ -19,10 +18,10 @@
                         <a href="#top">@Model.CurrentContent.BackToTopLabel</a>
                     </div>
                 </div>
-                <div class="row">
+                <div class="flex flex-row">
                     @foreach (var brand in brandGroup)
                     {
-                        <div class="col-md-4 col-lg-3">
+                        <div class="md:basis-1/4 lg:basis-1/3">
                             <div class="item-name brand-display">
                                 <a id="tst_brandCategories_itemLink" href="@Model.CurrentContent.BrandPageUrl/@brand.Name">@brand.Name</a>
                             </div>

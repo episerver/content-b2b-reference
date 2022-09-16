@@ -1,6 +1,6 @@
 ﻿@model CommerceApiSDK.Models.Results.GetOrderCollectionResult
 <div id="orderHistoryTable" class="p-2 md:p-8 overflow-auto relative">
-    <input type="hidden" value="@Model.Pagination.TotalItemCount.ToString()" id="orderHistory_TotalCount" />
+    <input type="hidden" value="@(Model.Pagination?.TotalItemCount.ToString() ?? "0")" id="orderHistory_TotalCount" />
     <table class="table-fixed border-x border-b w-full whitespace-no-wrap">
         <thead>
             <tr class="text-xs font-semibold uppercase bg-gray-200">
@@ -33,7 +33,7 @@
             </tr>
         </thead>
         <tbody class="bg-white divide-y">
-            @foreach (var order in Model.Orders)
+            @foreach (var order in (Model.Orders ?? new List<Order>()))
             {
                 <tr class="odd:bg-gray-100 hover:!bg-stone-200 text-xs">
                     <td class="px-3 py-3">

@@ -10,7 +10,113 @@ public class CatalogPageController : PageController<Models.Pages.CatalogPage>
 {
     public ActionResult Index(Models.Pages.CatalogPage currentPage)
     {
-        return View(new CatalogViewModel(currentPage));
+        var model = new CatalogViewModel(currentPage);
+        if (string.IsNullOrEmpty(currentPage.PreviewType))
+        {
+            model.PreviewType = "Listing";
+        }
+        else
+        {
+            model.PreviewType = currentPage.PreviewType;
+        }
+        if (model.PreviewType.Equals("Listing"))
+        {
+            model.ProductListViewModel = new ProductListViewModel
+            {
+                FilterOptionViewModel = new FilterOptionViewModel
+                {
+                    Page = 1,
+                    PageSize = 8,
+                },
+                CatalogPage = new CommerceApiSDK.Models.CatalogPage
+                {
+                    BreadCrumbs = new List<BreadCrumb>
+                    {
+                        new BreadCrumb
+                        {
+                            CategoryId = "Home",
+                            Text = "Home",
+                            Url = "/"
+                        }
+                    }
+                },
+                ProductCollection = new CommerceApiSDK.Models.Results.GetProductCollectionResult
+                {
+                    Pagination = new Pagination
+                    {
+                        TotalItemCount = 1,
+                        Page = 1,
+                        PageSize = 8,
+                        PageSizeOptions = new List<int>
+                        {
+                            1,
+                            2
+                        },
+                        SortOptions = new List<CommerceApiSDK.Models.SortOption>
+                        {
+                            new CommerceApiSDK.Models.SortOption
+                            {
+                                DisplayName = "test",
+                                SortType = "1"
+                            }
+                        }
+                    },
+                    Products = new List<Product>
+                    {
+                        new Product
+                        {
+                            ProductNumber = "Test",
+                            ProductTitle = "ProductTitle",
+                            Images = new List<ProductImage>()
+                            {
+                                new ProductImage
+                                {
+                                    SmallImagePath = "https://www.fillmurray.com/640/360",
+                                    MediumImagePath = "https://www.fillmurray.com/640/360",
+                                    LargeImagePath = "https://www.fillmurray.com/640/360"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+        }
+        else
+        {
+            model.ProductDetailViewModel = new ProductDetailViewModel
+            {
+                CatalogPage = new CommerceApiSDK.Models.CatalogPage
+                {
+                    BreadCrumbs = new List<BreadCrumb>
+                    {
+                        new BreadCrumb
+                        {
+                            CategoryId = "Home",
+                            Text = "Home",
+                            Url = "/"
+                        }
+                    }
+                },
+                ProductModel = new CommerceApiSDK.Models.Results.GetProductResult
+                {
+                    Product = new Product
+                    {
+                        ProductNumber = "Test",
+                        ProductTitle = "ProductTitle",
+                        Images = new List<ProductImage>()
+                        {
+                            new ProductImage
+                            {
+                                SmallImagePath = "https://www.fillmurray.com/640/360",
+                                MediumImagePath = "https://www.fillmurray.com/640/360",
+                                LargeImagePath = "https://www.fillmurray.com/640/360"
+                            }
+                        }
+                    }
+                }
+            };
+        }
+        return View(model);
     }
 }
 
@@ -54,7 +160,7 @@ public class CatalogPagePartialController : ActionControllerBase, IRenderTemplat
         {
             catalogViewModel.ProductDetailViewModel = await GetProductDetailViewModel(currentPage, catalogPage);
             catalogViewModel.ProductDetailViewModel.MetaDescription = catalogPage.MetaDescription;
-            
+
         }
         else
         {
@@ -83,9 +189,9 @@ public class CatalogPagePartialController : ActionControllerBase, IRenderTemplat
         };
     }
 
-    private async Task<ProductListViewModel> GetProductListViewModel(Models.Pages.CatalogPage currentPage, 
-        FilterOptionViewModel filterOptionViewModel, 
-        string path, 
+    private async Task<ProductListViewModel> GetProductListViewModel(Models.Pages.CatalogPage currentPage,
+        FilterOptionViewModel filterOptionViewModel,
+        string path,
         CommerceApiSDK.Models.CatalogPage catalogPage)
     {
         var productListSettings = _settingsHelper.GetProductListSettings();
@@ -130,7 +236,7 @@ public class CatalogPagePartialController : ActionControllerBase, IRenderTemplat
         {
             productListViewModel.Category = catalogPage.Category;
         }
-        
+
         productListViewModel.ProductCollection = await _productService.GetProducts(
             catalogPage.Category?.Id.ToString(),
             new List<string>() { "variantTraits", "attributes", "facets" },
@@ -172,7 +278,7 @@ public class CatalogPagePartialController : ActionControllerBase, IRenderTemplat
         {
             return filters;
         }
-        
+
         foreach (var facet in filterOptionViewModel.SelectedFacet.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
         {
             var data = facet.Split(':');
@@ -194,7 +300,7 @@ public class CatalogPagePartialController : ActionControllerBase, IRenderTemplat
                 filters.Add(Guid.Parse(data[1]));
             }
         }
-        
+
         return filters;
     }
 

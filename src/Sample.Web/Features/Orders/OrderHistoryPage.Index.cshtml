@@ -4,9 +4,11 @@
     Layout = "~/Features/MyAccount/_SidebarLayout.cshtml";
 }
 <div x-data="{ openFilter: false }" class="">
+    @Html.PropertyFor(x => x.CurrentContent.MainBody)
+    @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
     <h2 class="text-3xl font-semibold mb-6">Order History.</h2>
     <div class="flex justify-between mb-6">
-        <label id="orderHistory_TotalOrders">@Model.OrderCollection.Pagination.TotalItemCount orders</label>
+        <label id="orderHistory_TotalOrders">@(Model.OrderCollection.Pagination?.TotalItemCount ?? 0) orders</label>
         <a @@click="openFilter = !openFilter">
             <i class="fa fa-filter"></i>
         </a>

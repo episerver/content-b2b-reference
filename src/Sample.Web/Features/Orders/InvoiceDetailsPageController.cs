@@ -16,9 +16,18 @@ public class InvoiceDetailsPageController : PageControllerBase<InvoiceDetailsPag
     public async Task<IActionResult> Index(InvoiceDetailsPage currentPage)
     {
         StringValues invoiceNumber;
-        Request.Query.TryGetValue("invoicenumber", out invoiceNumber);
-        var expands = new List<string> { "invoicelines", "shipments" };
         var model = new InvoiceDetailsPageViewModel(currentPage);
+        if (!Request.Query.TryGetValue("invoicenumber", out invoiceNumber))
+        {
+            model.InvoiceDetailsViewModel = new InvoiceDetailsViewModel
+            {
+                Invoice = new Invoice()
+            };
+            model.ReturnPageLink = Url.ContentUrl(currentPage.ReturnPageLink);
+            return View(model);
+        }
+        var expands = new List<string> { "invoicelines", "shipments" };
+        
         if (!string.IsNullOrEmpty(invoiceNumber))
         {
             var invoiceDetailParameter = new InvoiceDetailParameter()

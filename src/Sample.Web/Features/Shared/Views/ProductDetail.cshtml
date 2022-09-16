@@ -72,7 +72,7 @@
                     }
                 </ul>
 
-                @if (Model.ProductModel.Product.VariantTraits.Count() > 0)
+                @if ((Model.ProductModel.Product.VariantTraits?.Count() ?? 0) > 0)
                 {
                     <div class="flex flex-wrap mb-4">
                         @foreach (var styleTraits in Model.ProductModel.Product.VariantTraits.OrderBy(x => x.Name).ToList())

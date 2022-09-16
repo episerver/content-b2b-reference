@@ -16,10 +16,14 @@ public class OrderDetailsPageController : PageControllerBase<OrderDetailsPage>
     {
         Request.Query.TryGetValue("ordernumber", out var orderNumber);
         var model = new OrderDetailsPageViewModel(currentPage);
+        model.ReturnPageLink = Url.ContentUrl(currentPage.ReturnPageLink);
         if (!string.IsNullOrEmpty(orderNumber.ToString()))
         {
             model.Order = await _orderService.GetOrderLine(orderNumber.ToString());
-            model.ReturnPageLink = Url.ContentUrl(currentPage.ReturnPageLink);
+        }
+        else
+        {
+            model.Order = new Order();
         }
         return View(model);
     }

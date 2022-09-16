@@ -2,6 +2,8 @@
 @model Sample.Models.ViewModels.QuickOrderPageViewModel
 
 <div class="container mx-auto">
+    @Html.PropertyFor(x => x.CurrentContent.MainBody)
+    @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
     <input type="hidden" id="quickorder_ProductId" />
     <div class="flex justify-between mb-5">
         <h2 @Html.EditAttributes(x => x.CurrentContent.MetaTitle) class="text-xl font-semibold mb-2">@Model.CurrentContent.MetaTitle</h2>

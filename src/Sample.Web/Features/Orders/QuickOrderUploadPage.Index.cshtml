@@ -19,6 +19,8 @@
     <div class="quick-order-form-content">
     </div>
     <div class="upload-main-container">
+        @Html.PropertyFor(x => x.CurrentContent.MainBody)
+        @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
         <div class="orderupload-left-container">
             <div class="orderuploadFU-desc">
                 <p>@Html.PropertyFor(x => x.CurrentContent.ShortDescription)</p>

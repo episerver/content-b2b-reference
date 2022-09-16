@@ -25,16 +25,24 @@ public class SavedOrderDetailPageController : PageControllerBase<SavedOrderDetai
     {
         var current = _httpContextAccessor.HttpContext;
         var queryString = current.Request.Query;
-        var model = new SavedOrderDetailPageViewModel(currentPage);
+        var model = new SavedOrderDetailPageViewModel(currentPage)
+        {
+            Language = $"/{currentPage.Language.Name}"
+        };
         if (queryString.TryGetValue("cartid", out var cartid))
-            model.SavedOrderDetailViewModel.CartId = cartid;
-        model.SavedOrderDetailViewModel.Language =
-            $"/{LanguageSelector.AutoDetect().Language.TwoLetterISOLanguageName}";
+        {
+            model.CartId = cartid;
+        }
+        else
+        {
+            model.Cart = new Cart();
+            return View(model);
+        }
         var expands = new List<string> { "cartlines", "costcodes", "hiddenproducts" };
-        model.SavedOrderDetailViewModel.Cart = await _cartService.GetCartByIdWithChildren(
-            model.SavedOrderDetailViewModel.CartId,
+        model.Cart = await _cartService.GetCartByIdWithChildren(
+            model.CartId,
             expands
-        );
+        ) ?? new Cart();
         return View(model);
     }
 
@@ -46,7 +54,7 @@ public class SavedOrderDetailPageController : PageControllerBase<SavedOrderDetai
     {
         try
         {
-            var cartId = savedOrderDetailPageViewModel.SavedOrderDetailViewModel.CartId;
+            var cartId = savedOrderDetailPageViewModel.CartId;
             if (
                 _httpContextAccessor.HttpContext != null
                 && !string.IsNullOrEmpty(

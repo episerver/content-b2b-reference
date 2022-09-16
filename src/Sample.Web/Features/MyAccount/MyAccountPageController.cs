@@ -38,8 +38,8 @@ public class MyAccountPageController : PageControllerBase<MyAccountPage>
             searchText
         );
         var dashboardPanelResponse = await _sharedService.GetDashboardPanels();
-        model.MyAccountViewModel.WishListCollection = wishListResponse.WishListCollection;
-        model.MyAccountViewModel.DashBoardPanelCollection = dashboardPanelResponse;
+        model.MyAccountViewModel.WishListCollection = wishListResponse?.WishListCollection ?? new List<WishList>();
+        model.MyAccountViewModel.DashBoardPanelCollection = dashboardPanelResponse ?? new CommerceApiSDK.Models.Results.DashboardPanelsResult();
         return View(model);
     }
 }

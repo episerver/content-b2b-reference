@@ -72,12 +72,12 @@ public class WishListPageController : PageControllerBase<WishListPage>
             }
         }
 
-        wishListViewModel.AvailableStatusCount = GetAvailableStatusInWishListLine(
+        wishListViewModel.AvailableStatusCount = wishList.WishListLineCollection != null ? GetAvailableStatusInWishListLine(
             wishList.WishListLineCollection.ToList()
-        );
-        wishListViewModel.OutOfStockStatusCount = GetOutOfStockStatusInWishListLine(
+        ) : 0;
+        wishListViewModel.OutOfStockStatusCount = wishList.WishListLineCollection != null ? GetOutOfStockStatusInWishListLine(
             wishList.WishListLineCollection.ToList()
-        );
+        ) : 0;
         return View(wishListViewModel);
     }
 

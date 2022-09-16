@@ -32,9 +32,10 @@ public class OrderHistoryPageController : PageControllerBase<OrderHistoryPage>
             Status = null,
         };
         
+
         var allAddresses = await _accountService.GetBillToAndShipTos();
         var status = await _orderService.GetOrderStatus();
-        var orders = await _orderService.GetOrderHistory(searchParameters);
+        var orders = allAddresses == null ? new GetOrderCollectionResult() : await _orderService.GetOrderHistory(searchParameters);
         var orderStatus = new List<SelectListItem>()
         {
             new SelectListItem

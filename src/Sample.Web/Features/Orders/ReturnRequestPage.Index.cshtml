@@ -6,6 +6,8 @@
     url = string.Format("{0}/{1}", url, Model.Language);
 }
 <div class="container checkout-confirmation-page order-confirmation-holder">
+    @Html.PropertyFor(x => x.CurrentContent.MainBody)
+    @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
     <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-30" @Html.EditAttributes(x => x.CurrentContent.MetaTitle)><span>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span></h1>
     <div class="info-order-table">
         <div class="summary-heading">

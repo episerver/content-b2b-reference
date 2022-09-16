@@ -6,6 +6,8 @@
     url = string.Format("{0}/{1}", url, Model.Language);
 }
 <main id="main">
+    @Html.PropertyFor(x => x.CurrentContent.MainBody)
+    @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
     <div class="container order-confirmation-holder checkout-confirmation-page">
         <h1 class="block-heading secondary heading-lg text-md-right text-capitalize font-weight-normal mb-10">
             <span @Html.EditAttributes(x => x.CurrentContent.MetaTitle)>@Html.PropertyFor(x => x.CurrentContent.MetaTitle)</span>
@@ -19,9 +21,9 @@
                     <div class="summary-info">
                         <ul class="list-unstyled order-status">
                             <li>
-                                <strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.InvoiceDate)</strong> <time datetime="2021-01-15">@Model.InvoiceDetailsViewModel.Invoice.InvoiceDate.Value.ToString("MMM dd yyyy")</time>
+                                <strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.InvoiceDate)</strong> <time datetime="2021-01-15">@(Model.InvoiceDetailsViewModel.Invoice.InvoiceDate.HasValue ? Model.InvoiceDetailsViewModel.Invoice.InvoiceDate.Value.ToString("MMM dd yyyy") : DateTime.Now.ToString("MMM dd yyyy"))</time>
                             </li>
-                            <li><strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.InvoiceDueDate)</strong><time datetime="2021-01-15">@Model.InvoiceDetailsViewModel.Invoice.DueDate.Value.ToString("MMM dd yyyy")</time></li>
+                            <li><strong class="info-text-title">@Html.PropertyFor(x => x.CurrentContent.InvoiceDueDate)</strong><time datetime="2021-01-15">@(Model.InvoiceDetailsViewModel.Invoice.DueDate.HasValue ? Model.InvoiceDetailsViewModel.Invoice.DueDate.Value.ToString("MMM dd yyyy") : DateTime.Now.ToString("MMM dd yyyy"))</time></li>
                             @if (Model.InvoiceDetailsViewModel.Invoice.Terms != "")
                             {
                                 <li>
@@ -96,7 +98,7 @@
                 </div>
             </div>
             <div class="product-order-summary product-info-block secondary">
-                @foreach (var line in Model.InvoiceDetailsViewModel.Invoice.InvoiceLines)
+                @foreach (var line in (Model.InvoiceDetailsViewModel.Invoice.InvoiceLines ?? Array.Empty<InvoiceLine>()))
                 {
                     url = string.Format("{0}{1}", url, line.ProductUri);
                     <div class="product-order-info" data-lineId="@line.Id" data-uom="@line.UnitOfMeasure" data-qty="@line.QtyInvoiced">

@@ -22,7 +22,7 @@
                 <div class="flex flex-row pt-3">
                     <div class="basis-1/3">
                         <div @Html.EditAttributes(x => x.CurrentBlock.Image)>
-                            <img class="img-fluid lazyload" style="width: @(Model.CurrentBlock.ImageSize)%" data-src="@Url.ContentUrl(Model.CurrentBlock.Image)" />
+                            <img class="img-fluid lazyload" style="width: @(Model.CurrentBlock.ImageSize)%" src="@Url.ContentUrl(Model.CurrentBlock.Image)" />
                         </div>
                     </div>
                     <div class="basis-2/3">
@@ -46,7 +46,7 @@
                 <div class="flex flex-row">
                     <div class="basis-1/3">
                         <div @Html.EditAttributes(x => x.CurrentBlock.SecondImage)>
-                            <img class="img-fluid lazyload" style="width: @(Model.CurrentBlock.SecondImageSize)%" data-src="@Url.ContentUrl(Model.CurrentBlock.SecondImage)" />
+                            <img class="img-fluid lazyload" style="width: @(Model.CurrentBlock.SecondImageSize)%" src="@Url.ContentUrl(Model.CurrentBlock.SecondImage)" />
                         </div>
                     </div>
                     <div class="basis-2/3">

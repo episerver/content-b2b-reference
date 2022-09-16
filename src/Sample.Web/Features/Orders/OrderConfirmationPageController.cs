@@ -15,7 +15,12 @@ public class OrderConfirmationPageController : PageControllerBase<OrderConfirmat
     {
         var queryString = Request.Query;
         var model = new OrderConfirmationPageViewModel(currentPage);
-        queryString.TryGetValue("cartid", out var cartid);
+        if (!queryString.TryGetValue("cartid", out var cartid))
+        {
+            model.Cart = new Cart();
+            model.Promotions = new PromotionCollectionModel();
+            return View(model);
+        }
         var expands = new List<string>
         {
             "cartlines",

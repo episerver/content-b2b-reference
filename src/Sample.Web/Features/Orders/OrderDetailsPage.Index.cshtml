@@ -5,6 +5,8 @@
     Layout = "~/Features/MyAccount/_SidebarLayout.cshtml";
 }
 <div class="mx-auto px-4">
+    @Html.PropertyFor(x => x.CurrentContent.MainBody)
+    @Html.PropertyFor(x => x.CurrentContent.MainContentArea)
     <div class="bg-white rounded-lg p-2 sm:p-5 border-2 m-5">
         <span class="block text-xl font-semibold pb-4">Order Status</span>
         <div class="flex justify-between items-center w-4/5 mx-auto gap-2 pb-5">
