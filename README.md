@@ -1,159 +1,119 @@
 <a href="https://github.com/episerver/cms-b2b-reference-kit"><img src="https://www.optimizely.com/globalassets/02.-global-images/navigation/optimizely_logo_navigation.svg" title="Optimizely CMS to B2B Starter Kit" alt="Optimizely CMS to B2B Starter Kit"></a>
 
-# Optimizely CMS to B2B Reference Kit 
-
- Optimizely CMS to B2B Starter Kit offers a starting point for when using content cloud and b2b commerce cloud together.
-
----
+ 
+# Optimizely CMS to B2B Reference Kit
+This kit provides a starting point for connecting Content Cloud and B2B Commerce. 
 
 ## Prerequisites
-
-You will need these to run locally on your machine.
-
-[Instance of Optimizely B2B Commerce](https://docs.developers.optimizely.com/commerce/v1.2.0-b2b-commerce/docs/b2b-commerce-cloud-environment-setup-for-developers) Follow the steps in the link to create local developer environment or use cloud environment.
-
-[Net 6](https://dotnet.microsoft.com/download/dotnet/6.0) sdk is required to use with visual studio.  Runtime maybe sufficent to just run the application.
-
-[Node JS](https://nodejs.org/en/download/)
-
-Mac/Linux
-
-[Docker](https://docs.docker.com/desktop/mac/install/)
-
-Windows
-
-[Sql Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
-
-
----
+You will need the following running locally:
+- A local developer or cloud Optimizely B2B Commerce instance.
+- Net 6 SDK is required to use visual studio. Runtime may be sufficient to run the application alone.
+- Node JS
+- Docker (Mac/Linux)
+- Sql Server (Windows)
 
 ## Introduction
+This repository is a sample integration between Content Cloud and B2B Commerce.
 
-Ths repoistory is a sample content cloud application connecting with Optimziely B2B Commerce.
+![Integration Overview Diagram](https://github.com/episerver/content-b2b-reference/blob/main/diagram.png?raw=true)
 
-<img src="diagram.png?raw=true" width="60%"/>
-
-
-
----
-
-Here are the following components included in the solution.
-
-### Pages
+### Included Components
 
 | Features               | Status              |
 |------------------------|---------------------|
 | Address Book           | Complete            |
-| Brands                 | Incomplete          |
+| Brands                 | Not Provided        |
 | Cart                   | Complete            |
 | Catalog listing        | Complete            |
 | Catalog product detail | Complete            |
-| Change Password        | Incomplete          |
+| Change Password        | Not Provided        |
 | Checkout               | Complete            |
-| Contact Us             | Incomplete          |
+| Contact Us             | Not Provided        |
 | Content Page           | Complete            |
 | Content Search         | Complete            |
 | Create Account         | Complete            |
-| Forgot Password        | Incomplete          |
+| Forgot Password        | Not Provided        |
 | Home Page              | Complete            |
-| Invoices               | Incomplete          |
+| Invoices               | Not Provided        |
 | Login                  | Complete            |
 | Logout                 | Complete            |
-| My Account             | Needs love          |
+| My Account             | In Progress         |
 | Order Confirmation     | Complete            |
 | Order History          | Complete            |
-| Product Comparison     | Incomplete          |
-| Quick Order            | Partially completed |
-| Reset password         | Incomplete          |
-| Return Request         | Incomplete          |
-| Saved Orders           | Incomplete          |
+| Product Comparison     | Not Provided        |
+| Quick Order            | In Progress         |
+| Reset password         | Not Provided        |
+| Return Request         | Not Provided        |
+| Saved Orders           | Not Provided        |
 | Search                 | Complete            |
-| Saved Lists            | Incomplete          |
-
+| Saved Lists            | Not Provided        |
 
 ### Block Types
 
-| Features              | Status     |
-|-----------------------|------------|
-| Button Block          | Complete   |
-| Call To Action Block  | Ccomplete  |
-| Hero Block            | Complete   |
-| Page List Block       | Complete   |
-| Recently Viewed Block | Incomplete |
-| Recent Orders Block   | Incomplete |
-| Teaser Block          | Complete   |
-| Text Block            | Complete   |
-| Video Block           | Complete   |
-| Vimeo Block           | Complete   |
-| Youtube Block         | Complete   |
+| Blocks          | Status              |
+|-----------------|---------------------|
+| Button          | Complete            |
+| Call to Action  | Complete            |
+| Hero            | Complete            |
+| Page List       | Complete            |
+| Recently Viewed | Not Provided        |
+| Recent Orders   | Not Provided        |
+| Teaser          | Complete            |
+| Text            | Complete            |
+| Video           | Complete            |
+| Vimeo           | Complete            |
+| Youtube         | Complete            |
 
+## Setup Instructions
+1.	Clone Repository
+    
+    #### Windows
+    open command prompt as administrator
+    git clone https://github.com/episerver/cms-b2b-reference-kit.git
+    cd cms-b2b-starter-kit
+    git checkout main
+    setup.cmd 
+    dotnet run --project ./src/Sample.Web/Sample.Web.csproj
 
----
+    #### Mac
+    Open a Terminal window
+    git clone https://github.com/episerver/cms-b2b-reference-kit.git
+    cd cms-b2b-starter-kit
+    git checkout main
+    chmod u+x setup.sh
+    ./setup.sh
+    dotnet run --project ./src/Sample.Web/Sample.Web.csproj
 
-## Installation
+    #### Linux
+    Open a bash terminal window
+    git clone https://github.com/episerver/cms-b2b-reference-kit.git
+    cd cms-b2b-starter-kit
+    git checkout main
+    chmod u+x setup.sh
+    ./setup.sh
+    dotnet run --project ./src/Sample.Web/Sample.Web.csproj
+    
+2.	Configure B2B Commerce API SDK
 
-### Optimizely B2B Commerce
+    The CMS application uses the C# Optimizely SDK NuGet package. You can also access and download the code repository.
 
-The cms application utilizes the c-sharp Optimizely SDK nuget package which can be found <a href="https://www.nuget.org/packages/Optimizely.Commerce.API">here</a>.
+    To configure the SDK you must register the services in Startup.cs
 
-If you need to step into the code you can download the repo <a href="https://github.com/InsiteSoftware/commerce-csharp-sdk">here</a>.  
+    `services.AddCommerceSdk("url", "clientId", "clientSecret"", cachingEnabled)`
 
-The nuget pacakge should also contain symbols if you need to step through in the the debugger.
+    In the Sample.Web you can use the following appsettings to set the values in **src\sample.web\appsettings.json**. 
+    
+    You should change the client ID and secret for production.
 
-To configure the SDK you ust register the services in Startup.cs
+    ```
+    "CommerceApi": {
+        "BaseUrl": "https://commerce.local.com", //B2B Commerce API Url
+        "ClientId": "isc",
+        "ClientSecret": "009AC476-B28E-4E33-8BAE-B5F103A142BC",
+        "EnableCaching": "false" //Required to be false
+    }
+    ```
 
-```
-services.AddCommerceSdk("url", "clientId", "clientSecret"", cachingEnabled); 
-```
-
-In the Sample.Web use can use te following appsettings to set the values in src\sample.web\appsettings.json.  You will want to change the client id and secret for production.
-
-```
-"CommerceApi": {
-    "BaseUrl": "changme",
-    "ClientId": "clientId",
-    "ClientSecret": "clientSecret",
-    "EnableCaching": "false"
-  },
-```
-
-### Windows
-
-```
-open command prompt as administrator
-git clone https://github.com/episerver/cms-b2b-reference-kit.git
-cd cms-b2b-starter-kit
-git checkout main
-setup.cmd 
-dotnet run --project ./src/Sample.Web/Sample.Web.csproj
-```
-
-### Mac
-
-```
-Open a Terminal window
-git clone https://github.com/episerver/cms-b2b-reference-kit.git
-cd cms-b2b-starter-kit
-git checkout main
-chmod u+x setup.sh
-./setup.sh
-dotnet run --project ./src/Sample.Web/Sample.Web.csproj
-```
-
-### Linux
-
-```
-Open a bash terminal window
-git clone https://github.com/episerver/cms-b2b-reference-kit.git
-cd cms-b2b-starter-kit
-git checkout main
-chmod u+x setup.sh
-./setup.sh
-dotnet run --project ./src/Sample.Web/Sample.Web.csproj
-```
-
-### View the site
-
-After completing the setup steps and running the solution, access the site at <a href="http://localhost:8000">http://localhost:8000</a>.
-
-To change the default port, modify the file <a href="https://github.com/episerver/cms-b2b-reference-kit/blob/main/src/Sample.Web/Properties/launchSettings.json">/src/Sample.Web/Properties/launchSettings.json</a>.
+## View the site
+You can access the site at http://localhost:8000 after completing the setup and running the solution.
+To change the default port, modify the /src/Sample.Web/Properties/launchSettings.json file.
