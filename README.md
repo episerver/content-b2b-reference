@@ -8,12 +8,22 @@ This kit provides a starting point for connecting Content Cloud and B2B Commerce
 You will need the following running locally:
 - A local developer or cloud Optimizely B2B Commerce instance.
 - Net 6 SDK is required to use visual studio. Runtime may be sufficient to run the application alone.
-- Node JS
+- Node JS 14+
 - Docker (Mac/Linux)
 - Sql Server (Windows)
 
 ## Introduction
-This repository is a sample integration between Content Cloud and B2B Commerce.
+This repository is a sample integration between Content Cloud and B2B Commerce. It is meant to show how to create a content cloud site as the front end for a Optimizely B2B commerce instance.  This repository requires a working instance of B2B commerce cloud.  Please look <a src="https://docs.developers.optimizely.com/commerce/v1.2.0-b2b-commerce/docs/b2b-commerce-cloud-environment-setup-for-developers">here</a> on how to create a local instance of B2B commerce or you can use your cloud instance. When running the setup script it will create a local instance of content cloud by performing the following actions
+
+1.  Install node dependencies
+2.  Webpack the scripts
+3.  Create the stylesheets
+4.  Build the solution
+5.  Create the database
+6.  Update the connectionstrings
+7.  When starting the site, the sample content will be imported which contains the site structure of the site.
+
+After developing locally you can push your code to content cloud through the deployment api <a src="https://docs.developers.optimizely.com/digital-experience-platform/v1.2.0-dxp-cloud-services/docs/deploy-using-powershell">here<a>.  If you would like to deploy to your own <a src="https://docs.developers.optimizely.com/content-cloud/v12.0.0-content-cloud/docs/deploying-to-windows-servers">server</a> or <a src="https://docs.developers.optimizely.com/content-cloud/v12.0.0-content-cloud/docs/deploying-to-azure-webapps">cloud instance</a>. 
 
 ![Integration Overview Diagram](https://github.com/episerver/content-b2b-reference/blob/main/diagram.png?raw=true)
 
@@ -65,17 +75,22 @@ This repository is a sample integration between Content Cloud and B2B Commerce.
 | Youtube         | Complete            |
 
 ## Setup Instructions
-1.	Clone Repository
-    
-    #### Windows
+1. Setup
+
+### Windows
+
+```
     open command prompt as administrator
     git clone https://github.com/episerver/cms-b2b-reference-kit.git
     cd cms-b2b-starter-kit
     git checkout main
     setup.cmd 
     dotnet run --project ./src/Sample.Web/Sample.Web.csproj
+```
 
-    #### Mac
+### Mac
+
+```
     Open a Terminal window
     git clone https://github.com/episerver/cms-b2b-reference-kit.git
     cd cms-b2b-starter-kit
@@ -83,8 +98,11 @@ This repository is a sample integration between Content Cloud and B2B Commerce.
     chmod u+x setup.sh
     ./setup.sh
     dotnet run --project ./src/Sample.Web/Sample.Web.csproj
+```
 
-    #### Linux
+ ### Linux
+
+ ```   
     Open a bash terminal window
     git clone https://github.com/episerver/cms-b2b-reference-kit.git
     cd cms-b2b-starter-kit
@@ -92,7 +110,8 @@ This repository is a sample integration between Content Cloud and B2B Commerce.
     chmod u+x setup.sh
     ./setup.sh
     dotnet run --project ./src/Sample.Web/Sample.Web.csproj
-    
+ ```
+
 2.	Configure B2B Commerce API SDK
 
     The CMS application uses the C# Optimizely SDK NuGet package. You can also access and download the code repository.

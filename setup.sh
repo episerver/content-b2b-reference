@@ -37,7 +37,8 @@ mkdir "$ROOTPATH/Build/Logs" 2>nul
 
 cd src/Sample.Web/
 npm ci
-npm run build
+npm run scripts:dev
+npm run styles:dev
 cd ../..
 
 docker exec -it sql_server_optimizely /opt/mssql-tools/bin/sqlcmd -S $SQLSERVER -U SA -P $password -Q "EXEC msdb.dbo.sp_delete_database_backuphistory N'$cms_db'"
