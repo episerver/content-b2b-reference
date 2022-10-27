@@ -13,7 +13,7 @@ You will need the following running locally:
 - Sql Server (Windows)
 
 ## Introduction
-This repository is a sample integration between Content Cloud and B2B Commerce. It is meant to show how to create a content cloud site as the front end for a Optimizely B2B commerce instance.  This repository requires a working instance of B2B commerce cloud.  Please look <a src="https://docs.developers.optimizely.com/commerce/v1.2.0-b2b-commerce/docs/b2b-commerce-cloud-environment-setup-for-developers">here</a> on how to create a local instance of B2B commerce or you can use your cloud instance. When running the setup script it will create a local instance of content cloud by performing the following actions
+This repository is a sample integration between Content Cloud and B2B Commerce. It is meant to show how to create a content cloud site as the front end for a Optimizely B2B commerce instance.  This repository requires a working instance of B2B commerce cloud.  Please look [here](https://docs.developers.optimizely.com/commerce/v1.2.0-b2b-commerce/docs/b2b-commerce-cloud-environment-setup-for-developers) on how to create a local instance of B2B commerce or you can use your cloud instance. When running the setup script it will create a local instance of content cloud by performing the following actions
 
 1.  Install node dependencies
 2.  Webpack the scripts
@@ -23,7 +23,7 @@ This repository is a sample integration between Content Cloud and B2B Commerce. 
 6.  Update the connectionstrings
 7.  When starting the site, the sample content will be imported which contains the site structure of the site.
 
-After developing locally you can push your code to content cloud through the deployment api <a src="https://docs.developers.optimizely.com/digital-experience-platform/v1.2.0-dxp-cloud-services/docs/deploy-using-powershell">here<a>.  If you would like to deploy to your own <a src="https://docs.developers.optimizely.com/content-cloud/v12.0.0-content-cloud/docs/deploying-to-windows-servers">server</a> or <a src="https://docs.developers.optimizely.com/content-cloud/v12.0.0-content-cloud/docs/deploying-to-azure-webapps">cloud instance</a>. 
+After developing locally you can push your code to content cloud through the deployment api [here](https://docs.developers.optimizely.com/digital-experience-platform/v1.2.0-dxp-cloud-services/docs/deploy-using-powershell).  If you would like to deploy to your own [server](https://docs.developers.optimizely.com/content-cloud/v12.0.0-content-cloud/docs/deploying-to-windows-servers) or [cloud instance](https://docs.developers.optimizely.com/content-cloud/v12.0.0-content-cloud/docs/deploying-to-azure-webapps). 
 
 ![Integration Overview Diagram](https://github.com/episerver/content-b2b-reference/blob/main/diagram.png?raw=true)
 
